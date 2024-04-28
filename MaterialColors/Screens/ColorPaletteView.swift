@@ -121,10 +121,7 @@ struct ColorPaletteView: View {
         hctConfig.hctColor.tone = Double(orderedDones[hctConfig.index])
         hctConfig.hctColor.chroma = hctConfig.hctColor.chroma * (hctConfig.light ? 1 : 0.75)
         let argb = hctConfig.hctColor.toInt()
-        let red = ColorUtils.redFromArgb(argb)
-        let green = ColorUtils.greenFromArgb(argb)
-        let blue = ColorUtils.blueFromArgb(argb)
-        let color = Color(red: Double(red) / 255.0, green: Double(green) / 255.0, blue: Double(blue) / 255.0)
+        let color = Color(hctColor: hctConfig.hctColor)
         return (color: color, argb: argb)
     }
     

@@ -20,14 +20,14 @@ struct ColorsForm: View {
     @AppStorage(key(.foregroundColor)) var foregroundColor: Color = .gray
     
     var colorList: [ColorConfig] {[
-        ColorConfig(hexColor: primaryColor.hexString, groupName: "Brand", colorName: "Primary"),
-        ColorConfig(hexColor: secondaryColor.hexString, groupName: "Brand", colorName: "Secondary"),
-        ColorConfig(hexColor: tertiaryColor.hexString, groupName: "Brand", colorName: "Tertiary"),
-        ColorConfig(hexColor: successColor.hexString, groupName: "Semantic", colorName: "Success"),
-        ColorConfig(hexColor: warningColor.hexString, groupName: "Semantic", colorName: "Warning"),
-        ColorConfig(hexColor: destructiveColor.hexString, groupName: "Semantic", colorName: "Destructive"),
-        ColorConfig(hexColor: backgroundColor.hexString, groupName: "Neutral", colorName: "Background"),
-        ColorConfig(hexColor: foregroundColor.hexString, groupName: "Neutral", colorName: "Foreground", reversed: true)
+        ColorConfig(hexColor: primaryColor.hexRGB, groupName: "Brand", colorName: "Primary"),
+        ColorConfig(hexColor: secondaryColor.hexRGB, groupName: "Brand", colorName: "Secondary"),
+        ColorConfig(hexColor: tertiaryColor.hexRGB, groupName: "Brand", colorName: "Tertiary"),
+        ColorConfig(hexColor: successColor.hexRGB, groupName: "Semantic", colorName: "Success"),
+        ColorConfig(hexColor: warningColor.hexRGB, groupName: "Semantic", colorName: "Warning"),
+        ColorConfig(hexColor: destructiveColor.hexRGB, groupName: "Semantic", colorName: "Destructive"),
+        ColorConfig(hexColor: backgroundColor.hexRGB, groupName: "Neutral", colorName: "Background", reversed: true),
+        ColorConfig(hexColor: foregroundColor.hexRGB, groupName: "Neutral", colorName: "Foreground")
     ]}
     
     var body: some View {
@@ -35,14 +35,14 @@ struct ColorsForm: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack {
-                        ColorPicker("Primary", selection: $primaryColor, supportsOpacity: false).rounded()
-                        ColorPicker("Secondary", selection: $secondaryColor, supportsOpacity: false).rounded()
-                        ColorPicker("Tertiary", selection: $tertiaryColor, supportsOpacity: false).rounded()
-                        ColorPicker("Success", selection: $successColor, supportsOpacity: false).rounded()
-                        ColorPicker("Warning", selection: $warningColor, supportsOpacity: false).rounded()
-                        ColorPicker("Destructive", selection: $destructiveColor, supportsOpacity: false).rounded()
-                        ColorPicker("Background", selection: $backgroundColor, supportsOpacity: false).rounded()
-                        ColorPicker("Foreground", selection: $foregroundColor, supportsOpacity: false).rounded()
+                        HCTColorPicker(title: "Primary", color: $primaryColor).rounded()
+                        HCTColorPicker(title: "Secondary", color: $secondaryColor).rounded()
+                        HCTColorPicker(title: "Tertiary", color: $tertiaryColor).rounded()
+                        HCTColorPicker(title: "Success", color: $successColor).rounded()
+                        HCTColorPicker(title: "Warning", color: $warningColor).rounded()
+                        HCTColorPicker(title: "Destructive", color: $destructiveColor).rounded()
+                        HCTColorPicker(title: "Background", color: $backgroundColor).rounded()
+                        HCTColorPicker(title: "Foreground", color: $foregroundColor).rounded()
                     }
                     .padding()
                     .frame(maxWidth: .infinity)
