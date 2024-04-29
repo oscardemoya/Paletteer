@@ -105,8 +105,6 @@ struct ColorPaletteView: View {
             let darkColor = color(from: darkConfig, colorConfig: config)
             let lightTone = ColorPalette.tones[index]
             let lightCode = String(format: "%03d", lightTone * 10)
-            let lightHex = StringUtils.hexFromArgb(lightColor.argb)
-            let darkHex = StringUtils.hexFromArgb(darkColor.argb)
             let colorName = "\(config.colorName)-\(lightCode)"
             saveFile(groupPath: "\(config.groupName)/\(config.colorName)", colorName: colorName,
                      lightArgb: lightColor.argb, darkArgb: darkColor.argb)
