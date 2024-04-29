@@ -28,7 +28,7 @@
 		267533CE2BDEE5A5007C1F51 /* ViewSizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533CD2BDEE5A5007C1F51 /* ViewSizing.swift */; };
 		267533D02BDEE62B007C1F51 /* CircularCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533CF2BDEE62B007C1F51 /* CircularCloseButton.swift */; };
 		267533D22BDEE64C007C1F51 /* Closures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D12BDEE64C007C1F51 /* Closures.swift */; };
-		267533D62BDEFABA007C1F51 /* HctColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D52BDEFABA007C1F51 /* HctColor.swift */; };
+		267533D62BDEFABA007C1F51 /* HCTColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D52BDEFABA007C1F51 /* HCTColor.swift */; };
 		267533D82BDEFC8C007C1F51 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D72BDEFC8C007C1F51 /* Binding.swift */; };
 		267533DA2BDF3728007C1F51 /* IntRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D92BDF3728007C1F51 /* IntRange.swift */; };
 		267533DC2BDF409C007C1F51 /* ColorSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533DB2BDF409C007C1F51 /* ColorSpace.swift */; };
@@ -96,7 +96,7 @@
 		267533CD2BDEE5A5007C1F51 /* ViewSizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewSizing.swift; sourceTree = "<group>"; };
 		267533CF2BDEE62B007C1F51 /* CircularCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularCloseButton.swift; sourceTree = "<group>"; };
 		267533D12BDEE64C007C1F51 /* Closures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Closures.swift; sourceTree = "<group>"; };
-		267533D52BDEFABA007C1F51 /* HctColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HctColor.swift; sourceTree = "<group>"; };
+		267533D52BDEFABA007C1F51 /* HCTColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCTColor.swift; sourceTree = "<group>"; };
 		267533D72BDEFC8C007C1F51 /* Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binding.swift; sourceTree = "<group>"; };
 		267533D92BDF3728007C1F51 /* IntRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntRange.swift; sourceTree = "<group>"; };
 		267533DB2BDF409C007C1F51 /* ColorSpace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorSpace.swift; sourceTree = "<group>"; };
@@ -168,10 +168,10 @@
 			isa = PBXGroup;
 			children = (
 				267533962BDD923D007C1F51 /* ActivityController.swift */,
+				267533CF2BDEE62B007C1F51 /* CircularCloseButton.swift */,
+				267533CB2BDEE408007C1F51 /* HCTColorPicker.swift */,
 				267533A32BDDD7EE007C1F51 /* TextFieldStyle.swift */,
 				267533B12BDE8981007C1F51 /* Triangle.swift */,
-				267533CB2BDEE408007C1F51 /* HCTColorPicker.swift */,
-				267533CF2BDEE62B007C1F51 /* CircularCloseButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -192,12 +192,12 @@
 				267533C92BDEAAB3007C1F51 /* ColorRepresentable.swift */,
 				267533C02BDE9AAC007C1F51 /* ColorSchemeSwitcher.swift */,
 				267533BB2BDE8AD7007C1F51 /* FileManager.swift */,
-				267533D52BDEFABA007C1F51 /* HctColor.swift */,
+				267533D52BDEFABA007C1F51 /* HCTColor.swift */,
 				267533B92BDE8A9D007C1F51 /* IntFormatting.swift */,
+				267533D92BDF3728007C1F51 /* IntRange.swift */,
 				267533942BDD7532007C1F51 /* StringFile.swift */,
 				267533C52BDE9E2D007C1F51 /* UserDefaults.swift */,
 				267533CD2BDEE5A5007C1F51 /* ViewSizing.swift */,
-				267533D92BDF3728007C1F51 /* IntRange.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -207,8 +207,8 @@
 			children = (
 				26BF53CD2BD75EFD001CAFBC /* MaterialColorUtilities */,
 				267533B72BDE8A64007C1F51 /* ColorConfig.swift */,
-				267533AF2BDE896B007C1F51 /* ColorPalette.swift */,
 				267533C32BDE9C9A007C1F51 /* ColorPair.swift */,
+				267533AF2BDE896B007C1F51 /* ColorPalette.swift */,
 				267533DB2BDF409C007C1F51 /* ColorSpace.swift */,
 				267533B32BDE89DF007C1F51 /* HCTConfig.swift */,
 				267533BE2BDE982E007C1F51 /* Theme.swift */,
@@ -484,7 +484,7 @@
 				267533D02BDEE62B007C1F51 /* CircularCloseButton.swift in Sources */,
 				267533952BDD7532007C1F51 /* StringFile.swift in Sources */,
 				26BF533D2BD75C82001CAFBC /* ColorsForm.swift in Sources */,
-				267533D62BDEFABA007C1F51 /* HctColor.swift in Sources */,
+				267533D62BDEFABA007C1F51 /* HCTColor.swift in Sources */,
 				267533BA2BDE8A9D007C1F51 /* IntFormatting.swift in Sources */,
 				26BF53EC2BD75EFD001CAFBC /* SchemeVibrant.swift in Sources */,
 				26BF53E22BD75EFD001CAFBC /* QuantizerWsmeans.swift in Sources */,

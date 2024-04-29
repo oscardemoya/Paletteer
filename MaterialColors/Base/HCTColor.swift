@@ -1,5 +1,5 @@
 //
-//  HctColor.swift
+//  HCTColor.swift
 //  MaterialColors
 //
 //  Created by Oscar De Moya on 28/04/24.

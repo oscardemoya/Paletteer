@@ -104,11 +104,10 @@ struct ColorPaletteView: View {
             let darkConfig = HCTConfig(hctColor: hctColor, index: index, light: false)
             let darkColor = color(from: darkConfig, colorConfig: config)
             let lightTone = ColorPalette.tones[index]
-            let lightCode = String(format: "%03d", (100 - lightTone) * 10)
+            let lightCode = String(format: "%03d", lightTone * 10)
             let lightHex = StringUtils.hexFromArgb(lightColor.argb)
             let darkHex = StringUtils.hexFromArgb(darkColor.argb)
             let colorName = "\(config.colorName)-\(lightCode)"
-            print("\(colorName): Light(\(lightHex)) / Dark(\(darkHex))")
             saveFile(groupPath: "\(config.groupName)/\(config.colorName)", colorName: colorName,
                      lightArgb: lightColor.argb, darkArgb: darkColor.argb)
             return (light: lightColor.color, dark: darkColor.color)

@@ -8,6 +8,6 @@
 import Foundation
 
 struct ColorPalette {
-    static let tones = [98, 95, 90, 80, 70, 60, 50, 40, 30, 20, 10, 02]
+    static let tones = [02, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98]
     static func tones(light: Bool) -> [Int] { light ? tones.reversed() : tones }
 }

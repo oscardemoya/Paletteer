@@ -26,8 +26,8 @@ struct ColorsForm: View {
         ColorConfig(hexColor: successColor.hexRGB, groupName: "Semantic", colorName: "Success"),
         ColorConfig(hexColor: warningColor.hexRGB, groupName: "Semantic", colorName: "Warning"),
         ColorConfig(hexColor: destructiveColor.hexRGB, groupName: "Semantic", colorName: "Destructive"),
-        ColorConfig(hexColor: backgroundColor.hexRGB, groupName: "Neutral", colorName: "Background", reversed: true),
-        ColorConfig(hexColor: foregroundColor.hexRGB, groupName: "Neutral", colorName: "Foreground")
+        ColorConfig(hexColor: backgroundColor.hexRGB, groupName: "Neutral", colorName: "Background"),
+        ColorConfig(hexColor: foregroundColor.hexRGB, groupName: "Neutral", colorName: "Foreground", reversed: true)
     ]}
     
     var body: some View {
