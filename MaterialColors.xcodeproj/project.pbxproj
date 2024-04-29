@@ -30,6 +30,8 @@
 		267533D22BDEE64C007C1F51 /* Closures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D12BDEE64C007C1F51 /* Closures.swift */; };
 		267533D62BDEFABA007C1F51 /* HctColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D52BDEFABA007C1F51 /* HctColor.swift */; };
 		267533D82BDEFC8C007C1F51 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D72BDEFC8C007C1F51 /* Binding.swift */; };
+		267533DA2BDF3728007C1F51 /* IntRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D92BDF3728007C1F51 /* IntRange.swift */; };
+		267533DC2BDF409C007C1F51 /* ColorSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533DB2BDF409C007C1F51 /* ColorSpace.swift */; };
 		26BF533B2BD75C82001CAFBC /* MaterialColorsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BF533A2BD75C82001CAFBC /* MaterialColorsApp.swift */; };
 		26BF533D2BD75C82001CAFBC /* ColorsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BF533C2BD75C82001CAFBC /* ColorsForm.swift */; };
 		26BF533F2BD75C84001CAFBC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26BF533E2BD75C84001CAFBC /* Assets.xcassets */; };
@@ -96,6 +98,8 @@
 		267533D12BDEE64C007C1F51 /* Closures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Closures.swift; sourceTree = "<group>"; };
 		267533D52BDEFABA007C1F51 /* HctColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HctColor.swift; sourceTree = "<group>"; };
 		267533D72BDEFC8C007C1F51 /* Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binding.swift; sourceTree = "<group>"; };
+		267533D92BDF3728007C1F51 /* IntRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntRange.swift; sourceTree = "<group>"; };
+		267533DB2BDF409C007C1F51 /* ColorSpace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorSpace.swift; sourceTree = "<group>"; };
 		26BF53372BD75C82001CAFBC /* MaterialColors.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MaterialColors.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BF533A2BD75C82001CAFBC /* MaterialColorsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialColorsApp.swift; sourceTree = "<group>"; };
 		26BF533C2BD75C82001CAFBC /* ColorsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsForm.swift; sourceTree = "<group>"; };
@@ -193,6 +197,7 @@
 				267533942BDD7532007C1F51 /* StringFile.swift */,
 				267533C52BDE9E2D007C1F51 /* UserDefaults.swift */,
 				267533CD2BDEE5A5007C1F51 /* ViewSizing.swift */,
+				267533D92BDF3728007C1F51 /* IntRange.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -201,9 +206,10 @@
 			isa = PBXGroup;
 			children = (
 				26BF53CD2BD75EFD001CAFBC /* MaterialColorUtilities */,
-				267533AF2BDE896B007C1F51 /* ColorPalette.swift */,
 				267533B72BDE8A64007C1F51 /* ColorConfig.swift */,
+				267533AF2BDE896B007C1F51 /* ColorPalette.swift */,
 				267533C32BDE9C9A007C1F51 /* ColorPair.swift */,
+				267533DB2BDF409C007C1F51 /* ColorSpace.swift */,
 				267533B32BDE89DF007C1F51 /* HCTConfig.swift */,
 				267533BE2BDE982E007C1F51 /* Theme.swift */,
 			);
@@ -471,6 +477,7 @@
 				26BF53DD2BD75EFD001CAFBC /* PointProvider.swift in Sources */,
 				26BF53E82BD75EFD001CAFBC /* SchemeMonochrome.swift in Sources */,
 				267533D22BDEE64C007C1F51 /* Closures.swift in Sources */,
+				267533DA2BDF3728007C1F51 /* IntRange.swift in Sources */,
 				267533B22BDE8981007C1F51 /* Triangle.swift in Sources */,
 				26BF53ED2BD75EFD001CAFBC /* Score.swift in Sources */,
 				267533A42BDDD7EE007C1F51 /* TextFieldStyle.swift in Sources */,
@@ -482,6 +489,7 @@
 				26BF53EC2BD75EFD001CAFBC /* SchemeVibrant.swift in Sources */,
 				26BF53E22BD75EFD001CAFBC /* QuantizerWsmeans.swift in Sources */,
 				267533B42BDE89DF007C1F51 /* HCTConfig.swift in Sources */,
+				267533DC2BDF409C007C1F51 /* ColorSpace.swift in Sources */,
 				26BF53D32BD75EFD001CAFBC /* DynamicScheme.swift in Sources */,
 				26BF53E32BD75EFD001CAFBC /* QuantizerWu.swift in Sources */,
 				26BF53EF2BD75EFD001CAFBC /* ColorUtils.swift in Sources */,

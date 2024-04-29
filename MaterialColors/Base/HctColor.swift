@@ -13,7 +13,7 @@ extension Color {
         let red = ColorUtils.redFromArgb(argb)
         let green = ColorUtils.greenFromArgb(argb)
         let blue = ColorUtils.blueFromArgb(argb)
-        self.init(red: Double(red) / 255.0, green: Double(green) / 255.0, blue: Double(blue) / 255.0)
+        self.init(.sRGB, red: Double(red) / 255.0, green: Double(green) / 255.0, blue: Double(blue) / 255.0)
     }
 }
 
