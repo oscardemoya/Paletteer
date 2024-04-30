@@ -116,7 +116,7 @@ struct ColorPaletteView: View {
         let tones = ColorPalette.tones(light: hctConfig.light)
         let orderedDones = colorConfig.reversed ? tones.reversed() : tones
         hctConfig.hctColor.tone = Double(orderedDones[hctConfig.index])
-        hctConfig.hctColor.chroma = hctConfig.hctColor.chroma * (hctConfig.light ? 1 : 0.75)
+        hctConfig.hctColor.chroma = hctConfig.hctColor.chroma * (hctConfig.light ? 1 : 0.95)
         let argb = hctConfig.hctColor.toInt()
         let color = Color(hctColor: hctConfig.hctColor)
         return (color: color, argb: argb)
