@@ -153,10 +153,10 @@ struct ColorPaletteView: View {
             color = Color(hctColor: hctColor)
             argb = hctColor.toInt()
         case .rgb(let baseColor):
-            let opacity = ColorPalette.overlayOpacities[config.index]
+            let opacity = Double(ColorPalette.overlayOpacities[config.index]) / 100.0
             let light = group.reversed ? !config.light : config.light
             let overlay = ColorPalette.overlay(for: config.index, light: light)
-            color = Color.blend(color1: baseColor, intensity1: 1 - opacity, color2: overlay, intensity2: opacity)
+            color = Color.blend(color1: baseColor, intensity1: opacity, color2: overlay, intensity2: 1 - opacity)
             argb = color.rgbInt ?? 0
         }
         return (color: color, argb: argb)
