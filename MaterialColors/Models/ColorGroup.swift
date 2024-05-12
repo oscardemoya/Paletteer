@@ -1,18 +1,20 @@
 //
-//  ColorConfig.swift
+//  ColorGroup.swift
 //  MaterialColors
 //
 //  Created by Oscar De Moya on 28/04/24.
 //
 
-import Foundation
+import SwiftUI
 
-struct ColorConfig: Identifiable, Hashable {
+struct ColorGroup: Identifiable, Hashable {
     var id: String { "\(hexColor)\(reversed)" }
-    var hexColor: String
+    var color: Color
     var groupName: String
     var colorName: String
     var reversed: Bool = false
+    
+    var hexColor: String { color.hexRGB }
     
     func hash(into hasher: inout Hasher) {
         var hasher = hasher

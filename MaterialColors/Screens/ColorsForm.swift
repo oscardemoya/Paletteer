@@ -19,15 +19,15 @@ struct ColorsForm: View {
     @AppStorage(key(.backgroundColor)) var backgroundColor: Color = .gray
     @AppStorage(key(.foregroundColor)) var foregroundColor: Color = .gray
     
-    var colorList: [ColorConfig] {[
-        ColorConfig(hexColor: primaryColor.hexRGB, groupName: "Brand", colorName: "Primary"),
-        ColorConfig(hexColor: secondaryColor.hexRGB, groupName: "Brand", colorName: "Secondary"),
-        ColorConfig(hexColor: tertiaryColor.hexRGB, groupName: "Brand", colorName: "Tertiary"),
-        ColorConfig(hexColor: successColor.hexRGB, groupName: "Semantic", colorName: "Success"),
-        ColorConfig(hexColor: warningColor.hexRGB, groupName: "Semantic", colorName: "Warning"),
-        ColorConfig(hexColor: destructiveColor.hexRGB, groupName: "Semantic", colorName: "Destructive"),
-        ColorConfig(hexColor: backgroundColor.hexRGB, groupName: "Neutral", colorName: "Background"),
-        ColorConfig(hexColor: foregroundColor.hexRGB, groupName: "Neutral", colorName: "Foreground", reversed: true)
+    var colorList: [ColorGroup] {[
+        ColorGroup(color: primaryColor, groupName: "Brand", colorName: "Primary"),
+        ColorGroup(color: secondaryColor, groupName: "Brand", colorName: "Secondary"),
+        ColorGroup(color: tertiaryColor, groupName: "Brand", colorName: "Tertiary"),
+        ColorGroup(color: successColor, groupName: "Semantic", colorName: "Success"),
+        ColorGroup(color: warningColor, groupName: "Semantic", colorName: "Warning"),
+        ColorGroup(color: destructiveColor, groupName: "Semantic", colorName: "Destructive"),
+        ColorGroup(color: backgroundColor, groupName: "Neutral", colorName: "Background"),
+        ColorGroup(color: foregroundColor, groupName: "Neutral", colorName: "Foreground", reversed: true)
     ]}
     
     var body: some View {
@@ -65,7 +65,7 @@ struct ColorsForm: View {
             }
             .navigationTitle("Color Generator")
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(for: [ColorConfig].self) { colorList in
+            .navigationDestination(for: [ColorGroup].self) { colorList in
                 ColorPaletteView(colorList: colorList)
             }
         }

@@ -1,5 +1,5 @@
 //
-//  HCTColorPicker.swift
+//  HSBColorPicker.swift
 //  MaterialColors
 //
 //  Created by Oscar De Moya on 28/04/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HCTColorPicker: View {
+struct HSBColorPicker: View {
     @State var title: String = ""
     @Binding var color: Color
     @State private var showingSheet = false
@@ -15,12 +15,12 @@ struct HCTColorPicker: View {
     @State private var colorSpace: ColorSpace = .hct
     @State private var squareHeight: CGFloat = .zero
     @State private var hueSliderValue = Self.hueRange.median
-    @State private var chromaSliderValue = Self.chromaRange.median
-    @State private var toneSliderValue = Self.toneRange.median
+    @State private var saturationSliderValue = Self.saturationRange.median
+    @State private var brightnessSliderValue = Self.brightnessRange.median
     
     static let hueRange: ClosedRange<Double> = 0...360
-    static let chromaRange: ClosedRange<Double> = 0...120
-    static let toneRange: ClosedRange<Double> = 0...100
+    static let saturationRange: ClosedRange<Double> = 0...100
+    static let brightnessRange: ClosedRange<Double> = 0...100
     
     func colorCreator() -> some View {
         VStack(spacing: 24) {
@@ -66,10 +66,10 @@ struct HCTColorPicker: View {
         .onChange(of: hueSliderValue) {
             updateColor()
         }
-        .onChange(of: chromaSliderValue) {
+        .onChange(of: saturationSliderValue) {
             updateColor()
         }
-        .onChange(of: toneSliderValue) {
+        .onChange(of: brightnessSliderValue) {
             updateColor()
         }
     }
@@ -94,12 +94,12 @@ struct HCTColorPicker: View {
             return
         }
         hueSliderValue = hct.hue
-        chromaSliderValue = hct.chroma
-        toneSliderValue = hct.tone
+        saturationSliderValue = hct.chroma
+        brightnessSliderValue = hct.tone
     }
     
     func updateColor() {
-        let hctColor = Hct.from(hueSliderValue, chromaSliderValue, toneSliderValue)
+        let hctColor = Hct.from(hueSliderValue, saturationSliderValue, brightnessSliderValue)
         color = Color(hctColor: hctColor)
     }
     
@@ -124,20 +124,20 @@ struct HCTColorPicker: View {
                 }
                 GridRow {
                     Text("Chroma").frame(alignment: .leading)
-                    Slider(value: $chromaSliderValue, in: Self.chromaRange)
+                    Slider(value: $saturationSliderValue, in: Self.saturationRange)
                     HStack {
                         Spacer(minLength: 0)
-                        Stepper("\(Int(chromaSliderValue))", value: $chromaSliderValue, in: Self.chromaRange)
+                        Stepper("\(Int(saturationSliderValue))", value: $saturationSliderValue, in: Self.saturationRange)
                             .fixedSize()
                     }
                     .gridColumnAlignment(.trailing)
                 }
                 GridRow {
                     Text("Tone").frame(alignment: .leading)
-                    Slider(value: $toneSliderValue, in: Self.toneRange)
+                    Slider(value: $brightnessSliderValue, in: Self.brightnessRange)
                     HStack {
                         Spacer(minLength: 0)
-                        Stepper("\(Int(toneSliderValue))", value: $toneSliderValue, in: Self.toneRange)
+                        Stepper("\(Int(brightnessSliderValue))", value: $brightnessSliderValue, in: Self.brightnessRange)
                             .fixedSize()
                     }
                     .gridColumnAlignment(.trailing)

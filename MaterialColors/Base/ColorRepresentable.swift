@@ -10,6 +10,7 @@ import SwiftUI
 import UIKit
 
 typealias RGBA = (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)
+typealias HSBA = (hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat)
 
 extension Color: RawRepresentable {
     public init?(rawValue: String) {
@@ -36,11 +37,30 @@ extension Color: RawRepresentable {
         }
     }
     
+    init?(hex: String) {
+        guard let argb = StringUtils.argbFromHex(hex) else { return nil }
+        self.init(argb: argb)
+    }
+    
+    init(argb: Int) {
+        self.init(
+            .sRGB,
+            red: Double((argb >> 16) & 0xFF) / 255,
+            green: Double((argb >> 08) & 0xFF) / 255,
+            blue: Double((argb >> 00) & 0xFF) / 255
+        )
+    }
+    
     var uiColor: UIColor { .init(self) }
     
     var rgba: RGBA? {
         var (r, g, b, a): RGBA = (0, 0, 0, 0)
         return uiColor.getRed(&r, green: &g, blue: &b, alpha: &a) ? (r, g, b, a) : nil
+    }
+    
+    var hsba: HSBA? {
+        var (h, s, b, a): RGBA = (0, 0, 0, 0)
+        return uiColor.getHue(&h, saturation: &s, brightness: &b, alpha: &a) ? (h, s, b, a) : nil
     }
     
     var hexRGB: String {
@@ -51,7 +71,7 @@ extension Color: RawRepresentable {
                       Int(blue * 255))
     }
     
-    var hexaRGBA: String {
+    var hexRGBA: String {
         guard let (red, green, blue, alpha) = rgba else { return "" }
         return String(format: "#%02x%02x%02x%02x",
                       Int(red * 255),
@@ -60,9 +80,13 @@ extension Color: RawRepresentable {
                       Int(alpha * 255))
     }
     
-    var hct: Hct? {
+    var rgbInt: Int? {
         guard let rgba else { return nil }
-        let argb = ColorUtils.argbFromRgb(Int(rgba.red * 255), Int(rgba.green * 255), Int(rgba.blue * 255))
-        return Hct(argb)
+        return ColorUtils.argbFromRgb(Int(rgba.red * 255), Int(rgba.green * 255), Int(rgba.blue * 255))
+    }
+    
+    var hct: Hct? {
+        guard let rgbInt else { return nil }
+        return Hct(rgbInt)
     }
 }
