@@ -35,7 +35,6 @@
 		269C3B932BF151DC002329C1 /* ColorBlending.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269C3B922BF151DC002329C1 /* ColorBlending.swift */; };
 		269C3B952BF15200002329C1 /* CrossplatformColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269C3B942BF15200002329C1 /* CrossplatformColor.swift */; };
 		269C3B972BF17D3E002329C1 /* ColorAdjustment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269C3B962BF17D3E002329C1 /* ColorAdjustment.swift */; };
-		269C3BA32BF194DE002329C1 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 269C3BA22BF194DE002329C1 /* Colors.xcassets */; };
 		26BF533B2BD75C82001CAFBC /* MaterialColorsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BF533A2BD75C82001CAFBC /* MaterialColorsApp.swift */; };
 		26BF533D2BD75C82001CAFBC /* ColorsForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BF533C2BD75C82001CAFBC /* ColorsForm.swift */; };
 		26BF533F2BD75C84001CAFBC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26BF533E2BD75C84001CAFBC /* Assets.xcassets */; };
@@ -107,7 +106,6 @@
 		269C3B922BF151DC002329C1 /* ColorBlending.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorBlending.swift; sourceTree = "<group>"; };
 		269C3B942BF15200002329C1 /* CrossplatformColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossplatformColor.swift; sourceTree = "<group>"; };
 		269C3B962BF17D3E002329C1 /* ColorAdjustment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorAdjustment.swift; sourceTree = "<group>"; };
-		269C3BA22BF194DE002329C1 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		26BF53372BD75C82001CAFBC /* MaterialColors.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MaterialColors.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BF533A2BD75C82001CAFBC /* MaterialColorsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialColorsApp.swift; sourceTree = "<group>"; };
 		26BF533C2BD75C82001CAFBC /* ColorsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsForm.swift; sourceTree = "<group>"; };
@@ -166,7 +164,6 @@
 			isa = PBXGroup;
 			children = (
 				26BF533E2BD75C84001CAFBC /* Assets.xcassets */,
-				269C3BA22BF194DE002329C1 /* Colors.xcassets */,
 				2675338E2BDD7473007C1F51 /* Contents.json */,
 				2675338C2BDD7400007C1F51 /* ColorContentsTemplate.json */,
 			);
@@ -466,7 +463,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				269C3BA32BF194DE002329C1 /* Colors.xcassets in Resources */,
 				26BF53422BD75C84001CAFBC /* Preview Assets.xcassets in Resources */,
 				26BF533F2BD75C84001CAFBC /* Assets.xcassets in Resources */,
 				2675338D2BDD7400007C1F51 /* ColorContentsTemplate.json in Resources */,

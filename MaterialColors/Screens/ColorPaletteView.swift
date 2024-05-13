@@ -85,6 +85,7 @@ struct ColorPaletteView: View {
     }
     
     private func saveFile(for group: ColorGroup) {
+        saveEmptyFiles(groupPath: group.groupName)
         shades(for: group).enumerated().forEach { index, tuple in
             let lightCode: String
             if isMaterial {
@@ -170,7 +171,7 @@ struct ColorPaletteView: View {
             let light = group.reversed ? !config.light : config.light
             let overlay = ColorPalette.overlay(for: config.index, light: light)
             let blend = Color.blend(color1: baseColor, intensity1: opacity, color2: overlay, intensity2: 1 - opacity)
-            color = config.light ? blend : blend.adjust(saturation: 0.05, brightness: -0.025)
+            color = config.light ? blend : blend.adjust(hue: 0.01, saturation: 0.05, brightness: -0.1)
             argb = color.rgbInt ?? 0
         }
         return (color: color, argb: argb)
@@ -193,6 +194,13 @@ struct ColorPaletteView: View {
         ]
         let fileContent = String(forResource: "ColorContentsTemplate", ofType: "json", parameters: parameters)
         fileContent?.write(to: "Colors.xcassets/Colors/\(groupPath)/\(colorName).colorset/Contents.json")
+    }
+    
+    private func saveEmptyFiles(groupPath: String) {
+        let emptyContent = String(forResource: "Contents", ofType: "json")
+        emptyContent?.write(to: "Colors.xcassets/Colors/\(groupPath)/Contents.json")
+        emptyContent?.write(to: "Colors.xcassets/Colors/Contents.json")
+        emptyContent?.write(to: "Colors.xcassets/Contents.json")
     }
 }
 
