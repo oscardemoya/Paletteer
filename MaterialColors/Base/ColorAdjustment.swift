@@ -20,9 +20,9 @@ extension Color {
                            alpha: &currentOpacity) else {
             return self
         }
-        return Color(hue: currentHue + hue,
-                     saturation: currentSaturation + saturation,
-                     brightness: currentBrigthness + brightness,
-                     opacity: currentOpacity + opacity)
+        return Color(hue: max(min(currentHue + hue, 1), 0),
+                     saturation: max(min(currentSaturation + saturation, 1), 0),
+                     brightness: max(min(currentBrigthness + brightness, 1), 0),
+                     opacity: max(min(currentOpacity + opacity, 1), 0))
     }
 }

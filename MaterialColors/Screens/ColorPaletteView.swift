@@ -171,7 +171,7 @@ struct ColorPaletteView: View {
             let light = group.reversed ? !config.light : config.light
             let overlay = ColorPalette.overlay(for: config.index, light: light)
             let blend = Color.blend(color1: baseColor, intensity1: opacity, color2: overlay, intensity2: 1 - opacity)
-            color = config.light ? blend : blend.adjust(hue: 0.01, saturation: 0.05, brightness: -0.1)
+            color = config.light ? blend : blend.adjust(hue: 0.03, saturation: -0.02, brightness: -0.05)
             argb = color.rgbInt ?? 0
         }
         return (color: color, argb: argb)
