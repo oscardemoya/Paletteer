@@ -46,8 +46,8 @@ struct ColorPaletteView: View {
                 .listRowInsets(EdgeInsets())
                 Spacer(minLength: 0)
                 Divider()
-                if let backupFileURL {
-                    ShareLink(item: backupFileURL) {
+                if let fileURL {
+                    ShareLink(item: fileURL) {
                         Text("Export")
                             .font(.headline)
                             .fontWeight(.medium)
@@ -69,11 +69,34 @@ struct ColorPaletteView: View {
         .onAppear {
             if let existingFileURL = fileURL {
                 FileManager.default.removeDirectory(atURL: existingFileURL)
-                backupFileURL = fileURL
             }
         }
         .onChange(of: theme) { _, newValue in
             ColorSchemeSwitcher.shared.selectedAppearance = newValue
+        }
+        .onChange(of: isMaterial) { _, _ in
+            if let existingFileURL = fileURL, FileManager.default.fileExists(atPath: existingFileURL.path) {
+                FileManager.default.removeDirectory(atURL: existingFileURL)
+            }
+            colorList.forEach { group in
+                saveFile(for: group)
+            }
+        }
+    }
+    
+    private func saveFile(for group: ColorGroup) {
+        shades(for: group).enumerated().forEach { index, tuple in
+            let lightCode: String
+            if isMaterial {
+                let lightTone = ColorPalette.tones(light: false)[index]
+                lightCode = String(format: "%03d", lightTone * 10)
+            } else {
+                let overlayTone = ColorPalette.overlayTones[index]
+                lightCode = String(format: "%03d", overlayTone * 10)
+            }
+            let colorName = "\(group.colorName)-\(lightCode)"
+            saveFile(groupPath: "\(group.groupName)/\(group.colorName)", colorName: colorName,
+                     lightArgb: tuple.light.rgbInt ?? 0, darkArgb: tuple.dark.rgbInt ?? 0)
         }
     }
     
@@ -127,21 +150,11 @@ struct ColorPaletteView: View {
             let darkConfig = ColorConversion(color: color, index: index, light: false)
             let lightColor = generateColor(for: group, using: lightConfig)
             let darkColor = generateColor(for: group, using: darkConfig)
-            let lightCode: String
-            if isMaterial {
-                let lightTone = ColorPalette.tones(light: false)[index]
-                lightCode = String(format: "%03d", lightTone * 10)
-            } else {
-                lightCode = String(format: "%03d", index * 10)
-            }
-            let colorName = "\(group.colorName)-\(lightCode)"
-            saveFile(groupPath: "\(group.groupName)/\(group.colorName)", colorName: colorName,
-                     lightArgb: lightColor.argb, darkArgb: darkColor.argb)
             return (light: lightColor.color, dark: darkColor.color)
         }
     }
     
-    private func generateColor(for group: ColorGroup, using config: ColorConversion) -> (color: Color, argb: Int)  {
+    private func generateColor(for group: ColorGroup, using config: ColorConversion) -> (color: Color, argb: Int) {
         var color: Color
         var argb: Int
         switch config.color {
@@ -156,7 +169,8 @@ struct ColorPaletteView: View {
             let opacity = Double(ColorPalette.overlayOpacities[config.index]) / 100.0
             let light = group.reversed ? !config.light : config.light
             let overlay = ColorPalette.overlay(for: config.index, light: light)
-            color = Color.blend(color1: baseColor, intensity1: opacity, color2: overlay, intensity2: 1 - opacity)
+            let blend = Color.blend(color1: baseColor, intensity1: opacity, color2: overlay, intensity2: 1 - opacity)
+            color = config.light ? blend : blend.adjust(saturation: 0.05, brightness: -0.025)
             argb = color.rgbInt ?? 0
         }
         return (color: color, argb: argb)

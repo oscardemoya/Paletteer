@@ -18,9 +18,18 @@ struct ColorPalette {
     
     // RGB Conversion
     static var lightestColor: Color = .white
-    static var darkestColor: Color = Color(hex: "#121212") ?? .black
+    static var darkestColor: Color = Color(hex: "#080808") ?? .black
     static var overlaysCount: Int { overlayOpacities.count }
-    static var overlayOpacities: [Int] = { [05, 10, 20, 30, 50, 70, 90] + [100] + [90, 70, 50, 40, 30, 20, 10] }()
+    static var opacityValues: [Int] = [02, 10, 20, 30, 40, 60, 80]
+    
+    static var overlayOpacities: [Int] = {
+        opacityValues + [100] + opacityValues.dropFirst().reversed().map { $0 }
+    }()
+    
+    static var overlayTones: [Int] = {
+        [01, 05, 10, 15, 20, 30, 40, 50, 60, 70, 80, 85, 90, 95]
+    }()
+    
     static func overlay(for index: Int, light: Bool) -> Color {
         let rate = Double(index) / Double(overlaysCount - 1)
         if rate < 0.5 {
