@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct ColorGroup: Identifiable, Hashable {
-    var id: String { "\(hexColor)\(reversed)" }
+    var id: String { "\(hexColor)\(colorName)\(groupName)\(reversed)\(narrow)" }
     var color: Color
     var groupName: String
     var colorName: String
     var reversed: Bool = false
+    var narrow: Bool = false
     
     var hexColor: String { color.hexRGB }
     
@@ -22,5 +23,6 @@ struct ColorGroup: Identifiable, Hashable {
         hasher.combine(groupName)
         hasher.combine(colorName)
         hasher.combine(reversed)
+        hasher.combine(narrow)
     }
 }

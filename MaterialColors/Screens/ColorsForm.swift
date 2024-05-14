@@ -26,7 +26,7 @@ struct ColorsForm: View {
         ColorGroup(color: successColor, groupName: "Semantic", colorName: "Success"),
         ColorGroup(color: warningColor, groupName: "Semantic", colorName: "Warning"),
         ColorGroup(color: destructiveColor, groupName: "Semantic", colorName: "Destructive"),
-        ColorGroup(color: backgroundColor, groupName: "Neutral", colorName: "Background"),
+        ColorGroup(color: backgroundColor, groupName: "Neutral", colorName: "Background", narrow: true),
         ColorGroup(color: foregroundColor, groupName: "Neutral", colorName: "Foreground", reversed: true)
     ]}
     

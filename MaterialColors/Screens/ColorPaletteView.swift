@@ -18,6 +18,9 @@ struct ColorPaletteView: View {
     @State private var backupFileURL: URL?
     @State private var isShowingShareView: Bool = false
     @State private var isLoading = false
+    @State private var showAlert = false
+    @State private var alertTitle: String = ""
+    @State private var alertMessage: String = ""
 
     var body: some View {
         ZStack(alignment: .center) {
@@ -67,7 +70,7 @@ struct ColorPaletteView: View {
             }
         }
         .onAppear {
-            if let existingFileURL = fileURL {
+            if let existingFileURL = fileURL, FileManager.default.fileExists(atPath: existingFileURL.path) {
                 FileManager.default.removeDirectory(atURL: existingFileURL)
             }
         }
@@ -136,10 +139,20 @@ struct ColorPaletteView: View {
             .frame(maxWidth: .infinity)
             .aspectRatio(1, contentMode: .fill)
             .cornerRadius(8)
+            .onTapGesture {
+                let hexColor = theme.color(for: colorPair).hexRGB.uppercased()
+                UIPasteboard.general.string = hexColor
+                alertTitle = hexColor
+                alertMessage = "Copied to the clipboard."
+                showAlert = true
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertTitle), message: Text(alertMessage))
+            }
     }
     
     private func shades(for group: ColorGroup) -> [ColorPair] {
-        return (0..<ColorPalette.shadesCount(isMaterial: isMaterial)).compactMap { index in
+        (0..<ColorPalette.shadesCount(isMaterial: isMaterial)).compactMap { index in
             if isMaterial {
                 guard let hctColor = group.color.hct else { return nil }
                 return .hct(hctColor)
@@ -166,12 +179,22 @@ struct ColorPaletteView: View {
             hctColor.chroma = hctColor.chroma * (config.light ? 1 : 0.75)
             color = Color(hctColor: hctColor)
             argb = hctColor.toInt()
-        case .rgb(let baseColor):
-            let opacity = Double(ColorPalette.overlayOpacities[config.index]) / 100.0
+        case .rgb(let originalColor):
             let light = group.reversed ? !config.light : config.light
-            let overlay = ColorPalette.overlay(for: config.index, light: light)
-            let blend = Color.blend(color1: baseColor, intensity1: opacity, color2: overlay, intensity2: 1 - opacity)
-            color = config.light ? blend : blend.adjust(hue: 0.03, saturation: -0.02, brightness: -0.05)
+            let adjustedColor = originalColor.adjust(saturation: 0.01, brightness: -0.015)
+            let baseColor = group.narrow && config.light ? adjustedColor : originalColor
+            let adjustedVariance = group.narrow && !light ? 0.65 : 1.0
+            let opacities = ColorPalette.overlayOpacities(narrow: group.narrow)
+            let sortedOpacities = group.narrow && light ? opacities.reversed() : opacities
+            let opacity = Double(sortedOpacities[config.index]) / (100.0 / adjustedVariance)
+            let overlay = ColorPalette.overlay(for: config.index, light: light, narrow: group.narrow)
+            if opacity == 1 {
+                color = config.light ? baseColor : baseColor.adjust(hue: 0.03, saturation: -0.02, brightness: -0.05)
+            } else {
+                let blend = Color.blend(color1: baseColor, intensity1: opacity,
+                                        color2: overlay, intensity2: (1 / adjustedVariance) - opacity)
+                color = config.light ? blend : blend.adjust(hue: 0.03, saturation: -0.02, brightness: -0.05)
+            }
             argb = color.rgbInt ?? 0
         }
         return (color: color, argb: argb)
