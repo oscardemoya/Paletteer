@@ -181,9 +181,9 @@ struct ColorPaletteView: View {
             argb = hctColor.toInt()
         case .rgb(let originalColor):
             let light = group.reversed ? !config.light : config.light
-            let adjustedColor = originalColor.adjust(saturation: 0.01, brightness: -0.015)
+            let adjustedColor = originalColor.adjust(saturation: 0.01, brightness: 0.035)
             let baseColor = group.narrow && config.light ? adjustedColor : originalColor
-            let adjustedVariance = group.narrow && !light ? 0.65 : 1.0
+            let adjustedVariance = group.narrow && !light ? 0.5 : 1.0
             let opacities = ColorPalette.overlayOpacities(narrow: group.narrow)
             let sortedOpacities = group.narrow && light ? opacities.reversed() : opacities
             let opacity = Double(sortedOpacities[config.index]) / (100.0 / adjustedVariance)
