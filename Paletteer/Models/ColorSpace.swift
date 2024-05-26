@@ -9,6 +9,7 @@ import SwiftUI
 
 enum ColorSpace: String, CaseIterable, Identifiable {
     case hct
+    case hsb
     case rgb
     
     var id: Self { self }

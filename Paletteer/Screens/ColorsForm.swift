@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ColorsForm: View {
     @State var path = NavigationPath()
-    @State var clipboardColor: Color = .clear
     
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
     @AppStorage(key(.primaryColor)) var primaryColor: Color = .blue
@@ -37,14 +36,14 @@ struct ColorsForm: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack {
-                        HCTColorPicker(title: "Primary", selectedColor: $primaryColor, clipboardColor: $clipboardColor)
-                        HCTColorPicker(title: "Secondary", selectedColor: $secondaryColor, clipboardColor: $clipboardColor)
-                        HCTColorPicker(title: "Tertiary", selectedColor: $tertiaryColor, clipboardColor: $clipboardColor)
-                        HCTColorPicker(title: "Success", selectedColor: $successColor, clipboardColor: $clipboardColor)
-                        HCTColorPicker(title: "Warning", selectedColor: $warningColor, clipboardColor: $clipboardColor)
-                        HCTColorPicker(title: "Destructive", selectedColor: $destructiveColor, clipboardColor: $clipboardColor)
-                        HCTColorPicker(title: "Background", selectedColor: $backgroundColor, clipboardColor: $clipboardColor)
-                        HCTColorPicker(title: "Foreground", selectedColor: $foregroundColor, clipboardColor: $clipboardColor)
+                        HCTColorPicker(title: "Primary", selectedColor: $primaryColor)
+                        HCTColorPicker(title: "Secondary", selectedColor: $secondaryColor)
+                        HCTColorPicker(title: "Tertiary", selectedColor: $tertiaryColor)
+                        HCTColorPicker(title: "Success", selectedColor: $successColor)
+                        HCTColorPicker(title: "Warning", selectedColor: $warningColor)
+                        HCTColorPicker(title: "Destructive", selectedColor: $destructiveColor)
+                        HCTColorPicker(title: "Background", selectedColor: $backgroundColor)
+                        HCTColorPicker(title: "Foreground", selectedColor: $foregroundColor)
                     }
                     .padding()
                     .frame(maxWidth: .infinity)

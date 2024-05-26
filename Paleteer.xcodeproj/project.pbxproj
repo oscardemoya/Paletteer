@@ -34,7 +34,6 @@
 		267533D82BDEFC8C007C1F51 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D72BDEFC8C007C1F51 /* Binding.swift */; };
 		267533DA2BDF3728007C1F51 /* IntRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D92BDF3728007C1F51 /* IntRange.swift */; };
 		267533DC2BDF409C007C1F51 /* ColorSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533DB2BDF409C007C1F51 /* ColorSpace.swift */; };
-		267534312BE3E3DE007C1F51 /* HSBColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267534302BE3E3DD007C1F51 /* HSBColorPicker.swift */; };
 		269C3B932BF151DC002329C1 /* ColorBlending.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269C3B922BF151DC002329C1 /* ColorBlending.swift */; };
 		269C3B952BF15200002329C1 /* CrossplatformColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269C3B942BF15200002329C1 /* CrossplatformColor.swift */; };
 		269C3B972BF17D3E002329C1 /* ColorAdjustment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269C3B962BF17D3E002329C1 /* ColorAdjustment.swift */; };
@@ -109,7 +108,6 @@
 		267533D72BDEFC8C007C1F51 /* Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binding.swift; sourceTree = "<group>"; };
 		267533D92BDF3728007C1F51 /* IntRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntRange.swift; sourceTree = "<group>"; };
 		267533DB2BDF409C007C1F51 /* ColorSpace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorSpace.swift; sourceTree = "<group>"; };
-		267534302BE3E3DD007C1F51 /* HSBColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HSBColorPicker.swift; sourceTree = "<group>"; };
 		269C3B922BF151DC002329C1 /* ColorBlending.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorBlending.swift; sourceTree = "<group>"; };
 		269C3B942BF15200002329C1 /* CrossplatformColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossplatformColor.swift; sourceTree = "<group>"; };
 		269C3B962BF17D3E002329C1 /* ColorAdjustment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorAdjustment.swift; sourceTree = "<group>"; };
@@ -182,7 +180,6 @@
 			children = (
 				267533CF2BDEE62B007C1F51 /* CircularCloseButton.swift */,
 				267533CB2BDEE408007C1F51 /* HCTColorPicker.swift */,
-				267534302BE3E3DD007C1F51 /* HSBColorPicker.swift */,
 				267533A32BDDD7EE007C1F51 /* TextFieldStyle.swift */,
 				26227E262C0289C300E44707 /* ButtonStyle.swift */,
 				267533B12BDE8981007C1F51 /* Triangle.swift */,
@@ -536,7 +533,6 @@
 				26BF53E92BD75EFD001CAFBC /* SchemeNeutral.swift in Sources */,
 				26BF53EE2BD75EFD001CAFBC /* TemperatureCache.swift in Sources */,
 				26BF53D12BD75EFD001CAFBC /* ContrastCurve.swift in Sources */,
-				267534312BE3E3DE007C1F51 /* HSBColorPicker.swift in Sources */,
 				26BF53D42BD75EFD001CAFBC /* MaterialDynamicColors.swift in Sources */,
 				26BF53D92BD75EFD001CAFBC /* HctSolver.swift in Sources */,
 				26BF53CE2BD75EFD001CAFBC /* Blend.swift in Sources */,

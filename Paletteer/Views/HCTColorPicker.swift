@@ -10,19 +10,18 @@ import SwiftUI
 struct HCTColorPicker: View {
     @State var title: String = ""
     @Binding var selectedColor: Color
-    @Binding var clipboardColor: Color
     @State private var showingSheet = false
     @State private var sheetHeight: CGFloat = .zero
     @State private var colorSpace: ColorSpace = .hct
     @State private var squareHeight: CGFloat = .zero
     @State private var hueSliderValue = Self.hueRange.median
-    @State private var chromaSliderValue = Self.chromaRange.median
-    @State private var toneSliderValue = Self.toneRange.median
+    @State private var chromaOrSaturationSliderValue = Self.chromaOrSaturationRange.median
+    @State private var toneOrBrightnessSliderValue = Self.toneOrBrightnessRange.median
     @State private var showCopyIcons: Bool = true
     
     static let hueRange: ClosedRange<Double> = 0...360
-    static let chromaRange: ClosedRange<Double> = 0...120
-    static let toneRange: ClosedRange<Double> = 0...100
+    static let chromaOrSaturationRange: ClosedRange<Double> = 0...120
+    static let toneOrBrightnessRange: ClosedRange<Double> = 0...100
     
     let gridRows = [GridItem(.fixed(44))]
     
@@ -53,29 +52,28 @@ struct HCTColorPicker: View {
         VStack(spacing: 0) {
             VStack(spacing: 16) {
                 HStack(alignment: .center) {
-                    pasteColorButton(color: clipboardColor)
                     if let colorFromClipboard {
                         pasteColorButton(color: colorFromClipboard)
                     }
                     Spacer()
-                    Text(title)
-                        .font(.headline)
+                    Picker("", selection: $colorSpace) {
+                        ForEach(ColorSpace.allCases) {
+                            Text($0.title)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .fixedSize()
                     Spacer()
                     CircularCloseButton(size: .large) {
                         showingSheet = false
                     }
                     .frame(width: 32, height: 32)
                 }
-                Picker("Color Space", selection: $colorSpace) {
-                    ForEach(ColorSpace.allCases) {
-                        Text($0.title)
-                    }
-                }
-                .pickerStyle(.segmented)
             }
             .padding()
+            Divider()
             switch colorSpace {
-            case .hct:
+            case .hct, .hsb:
                 hctColorPicker
             case .rgb:
                 ColorPicker(title, selection: $selectedColor, supportsOpacity: false)
@@ -91,31 +89,29 @@ struct HCTColorPicker: View {
         .presentationDragIndicator(.hidden)
         .onChange(of: showingSheet) {
             if showingSheet {
-                setHCTValues()
+                setColorValues()
             }
         }
-        .onChange(of: colorSpace, setHCTValues)
+        .onChange(of: colorSpace, setColorValues)
         .onChange(of: hueSliderValue, updateColor)
-        .onChange(of: chromaSliderValue, updateColor)
-        .onChange(of: toneSliderValue, updateColor)
+        .onChange(of: chromaOrSaturationSliderValue, updateColor)
+        .onChange(of: toneOrBrightnessSliderValue, updateColor)
     }
     
     @ViewBuilder
     func pasteColorButton(color: Color) -> some View {
-        Button {
-            selectedColor = color
-            setHCTValues()
-        } label: {
-            ZStack {
-                rectangle(color: color)
-                Image(systemName: "doc.on.clipboard")
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundColor(color.contrastingColor)
-                    .padding(8)
-            }
-            .aspectRatio(1, contentMode: .fill)
+        ZStack {
+            rectangle(color: color)
+            Image(systemName: "doc.on.clipboard")
+                .symbolRenderingMode(.hierarchical)
+                .foregroundColor(color.contrastingColor)
+                .padding(8)
         }
         .frame(width: 36, height: 36)
+        .onTapGesture {
+            selectedColor = color
+            setColorValues()
+        }
     }
     
     var colorFromClipboard: Color? {
@@ -145,6 +141,17 @@ struct HCTColorPicker: View {
         }.first
     }
     
+    func setColorValues() {
+        switch colorSpace {
+        case .hct:
+            setHCTValues()
+        case .hsb:
+            setHSBValues()
+        case .rgb:
+            break
+        }
+    }
+    
     func setHCTValues() {
         guard let hct = selectedColor.hct else {
             print("Error converting color to HCT.")
@@ -152,19 +159,46 @@ struct HCTColorPicker: View {
         }
         withAnimation {
             hueSliderValue = hct.hue
-            chromaSliderValue = hct.chroma
-            toneSliderValue = hct.tone
+            chromaOrSaturationSliderValue = hct.chroma
+            toneOrBrightnessSliderValue = hct.tone
+        }
+    }
+    
+    func setHSBValues() {
+        guard let hsba = selectedColor.hsba else {
+            print("Error converting color to HSB.")
+            return
+        }
+        withAnimation {
+            hueSliderValue = hsba.hue * 360
+            chromaOrSaturationSliderValue = hsba.saturation * 100
+            toneOrBrightnessSliderValue = hsba.brightness * 100
         }
     }
     
     func updateColor() {
-        let hctColor = Hct.from(hueSliderValue, chromaSliderValue, toneSliderValue)
-        selectedColor = Color(hctColor: hctColor)
+        switch colorSpace {
+        case .hct:
+            let hctColor = Hct.from(hueSliderValue, chromaOrSaturationSliderValue, toneOrBrightnessSliderValue)
+            selectedColor = Color(hctColor: hctColor)
+        case .hsb:
+            let hue = hueSliderValue / 360
+            let saturation = chromaOrSaturationSliderValue / 100
+            let brightness = toneOrBrightnessSliderValue / 100
+            selectedColor = Color(hue: hue, saturation: saturation, brightness: brightness)
+        case .rgb:
+            break
+        }
+        
     }
     
     @ViewBuilder
     var hctColorPicker: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 12) {
+            Text(title)
+                .font(.title3)
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .leading)
             HStack(spacing: 12) {
                 rectangle(color: selectedColor)
                     .frame(width: squareHeight, height: squareHeight)
@@ -180,13 +214,14 @@ struct HCTColorPicker: View {
     var hctSliders: some View {
         Grid(alignment: .leading) {
             hctSlider("Hue", sliderValue: $hueSliderValue, in: Self.hueRange)
-            hctSlider("Chroma", sliderValue: $chromaSliderValue, in: Self.chromaRange)
-            hctSlider("Tone", sliderValue: $toneSliderValue, in: Self.toneRange)
+            hctSlider("Chroma", sliderValue: $chromaOrSaturationSliderValue, in: Self.chromaOrSaturationRange)
+            hctSlider("Tone", sliderValue: $toneOrBrightnessSliderValue, in: Self.toneOrBrightnessRange)
         }
     }
     
     @ViewBuilder
-    func hctSlider(_ titleKey: LocalizedStringKey, sliderValue: Binding<Double>, in range: ClosedRange<Double>) -> some View {
+    func hctSlider(_ titleKey: LocalizedStringKey,
+                   sliderValue: Binding<Double>, in range: ClosedRange<Double>) -> some View {
         GridRow {
             Text(titleKey).frame(alignment: .leading)
             Slider(value: sliderValue, in: range)
@@ -204,20 +239,18 @@ struct HCTColorPicker: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
                 LazyHGrid(rows: gridRows)  {
-                    ForEach(colorWheelColors, id: \.self) { item in
+                    ForEach(colorWheelColors, id: \.self) { color in
                         ZStack {
-                            rectangle(color: item)
+                            rectangle(color: color)
                             if showCopyIcons {
                                 Image(systemName: "square.on.square")
-                                    .foregroundColor(item.contrastingColor)
+                                    .foregroundColor(color.contrastingColor)
                             }
                         }
                         .aspectRatio(1, contentMode: .fill)
-                        .transition(.opacity)
-                        .animation(.easeIn, value: clipboardColor)
                         .onTapGesture {
                             withAnimation {
-                                clipboardColor = item
+                                String.pasteboardString = color.hexRGB.uppercased()
                                 showingSheet = false
                             }
                         }
@@ -288,6 +321,5 @@ struct HCTColorPicker: View {
 
 #Preview {
     @State var color: Color = .blue
-    @State var clipboardColor: Color = .red
-    return HCTColorPicker(title: "Title", selectedColor: $color, clipboardColor: $clipboardColor)
+    return HCTColorPicker(title: "Title", selectedColor: $color)
 }
