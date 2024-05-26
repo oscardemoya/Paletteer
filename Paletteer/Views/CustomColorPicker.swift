@@ -27,7 +27,11 @@ struct CustomColorPicker: View {
     
     var colorWheelColors: [Color] {
         guard let hct = selectedColor.hct else { return [] }
-        return TemperatureCache(hct).analogous(count: 12).map { Color(hctColor: $0) }
+        let colors = TemperatureCache(hct).analogous(count: 12).map { Color(hctColor: $0) }
+        colors.enumerated().forEach { index, color in
+            print("Color #\(index): \(color.hexRGB)")
+        }
+        return colors
     }
     
     var body: some View {
@@ -213,9 +217,12 @@ struct CustomColorPicker: View {
     @ViewBuilder
     var hctSliders: some View {
         Grid(alignment: .leading) {
-            hctSlider("Hue", sliderValue: $hueSliderValue, in: Self.hueRange)
-            hctSlider("Chroma", sliderValue: $chromaOrSaturationSliderValue, in: Self.chromaOrSaturationRange)
-            hctSlider("Tone", sliderValue: $toneOrBrightnessSliderValue, in: Self.toneOrBrightnessRange)
+            hctSlider("Hue",
+                      sliderValue: $hueSliderValue, in: Self.hueRange)
+            hctSlider(colorSpace == .hct ? "Chroma" : "Saturation",
+                      sliderValue: $chromaOrSaturationSliderValue, in: Self.chromaOrSaturationRange)
+            hctSlider(colorSpace == .hct ? "Tone" : "Brightness",
+                      sliderValue: $toneOrBrightnessSliderValue, in: Self.toneOrBrightnessRange)
         }
     }
     
@@ -250,8 +257,10 @@ struct CustomColorPicker: View {
                         .aspectRatio(1, contentMode: .fill)
                         .onTapGesture {
                             withAnimation {
-                                String.pasteboardString = color.hexRGB.uppercased()
-                                showingSheet = false
+                                selectedColor = color
+                                if let hct = selectedColor.hct {
+                                    String.pasteboardString = hct.label
+                                }
                             }
                         }
                     }
