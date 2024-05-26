@@ -1,5 +1,5 @@
 //
-//  HCTColorPicker.swift
+//  CustomColorPicker.swift
 //  Paletteer
 //
 //  Created by Oscar De Moya on 28/04/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HCTColorPicker: View {
+struct CustomColorPicker: View {
     @State var title: String = ""
     @Binding var selectedColor: Color
     @State private var showingSheet = false
@@ -321,5 +321,5 @@ struct HCTColorPicker: View {
 
 #Preview {
     @State var color: Color = .blue
-    return HCTColorPicker(title: "Title", selectedColor: $color)
+    return CustomColorPicker(title: "Title", selectedColor: $color)
 }

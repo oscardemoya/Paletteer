@@ -26,7 +26,7 @@
 		267533C42BDE9C9A007C1F51 /* ColorPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533C32BDE9C9A007C1F51 /* ColorPair.swift */; };
 		267533C62BDE9E2D007C1F51 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533C52BDE9E2D007C1F51 /* UserDefaults.swift */; };
 		267533CA2BDEAAB3007C1F51 /* ColorRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533C92BDEAAB3007C1F51 /* ColorRepresentable.swift */; };
-		267533CC2BDEE408007C1F51 /* HCTColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533CB2BDEE408007C1F51 /* HCTColorPicker.swift */; };
+		267533CC2BDEE408007C1F51 /* CustomColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533CB2BDEE408007C1F51 /* CustomColorPicker.swift */; };
 		267533CE2BDEE5A5007C1F51 /* ViewSizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533CD2BDEE5A5007C1F51 /* ViewSizing.swift */; };
 		267533D02BDEE62B007C1F51 /* CircularCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533CF2BDEE62B007C1F51 /* CircularCloseButton.swift */; };
 		267533D22BDEE64C007C1F51 /* Closures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533D12BDEE64C007C1F51 /* Closures.swift */; };
@@ -100,7 +100,7 @@
 		267533C32BDE9C9A007C1F51 /* ColorPair.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPair.swift; sourceTree = "<group>"; };
 		267533C52BDE9E2D007C1F51 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		267533C92BDEAAB3007C1F51 /* ColorRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorRepresentable.swift; sourceTree = "<group>"; };
-		267533CB2BDEE408007C1F51 /* HCTColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HCTColorPicker.swift; sourceTree = "<group>"; };
+		267533CB2BDEE408007C1F51 /* CustomColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColorPicker.swift; sourceTree = "<group>"; };
 		267533CD2BDEE5A5007C1F51 /* ViewSizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewSizing.swift; sourceTree = "<group>"; };
 		267533CF2BDEE62B007C1F51 /* CircularCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularCloseButton.swift; sourceTree = "<group>"; };
 		267533D12BDEE64C007C1F51 /* Closures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Closures.swift; sourceTree = "<group>"; };
@@ -179,7 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				267533CF2BDEE62B007C1F51 /* CircularCloseButton.swift */,
-				267533CB2BDEE408007C1F51 /* HCTColorPicker.swift */,
+				267533CB2BDEE408007C1F51 /* CustomColorPicker.swift */,
 				267533A32BDDD7EE007C1F51 /* TextFieldStyle.swift */,
 				26227E262C0289C300E44707 /* ButtonStyle.swift */,
 				267533B12BDE8981007C1F51 /* Triangle.swift */,
@@ -520,7 +520,7 @@
 				26227E252C02847400E44707 /* Pasteboard.swift in Sources */,
 				26BF53E12BD75EFD001CAFBC /* QuantizerMap.swift in Sources */,
 				26BF53DF2BD75EFD001CAFBC /* Quantizer.swift in Sources */,
-				267533CC2BDEE408007C1F51 /* HCTColorPicker.swift in Sources */,
+				267533CC2BDEE408007C1F51 /* CustomColorPicker.swift in Sources */,
 				26BF53DA2BD75EFD001CAFBC /* ViewingConditions.swift in Sources */,
 				26BF533B2BD75C82001CAFBC /* PaletteerApp.swift in Sources */,
 				26BF53E62BD75EFD001CAFBC /* SchemeFidelity.swift in Sources */,

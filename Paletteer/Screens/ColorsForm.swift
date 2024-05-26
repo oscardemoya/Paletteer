@@ -36,14 +36,14 @@ struct ColorsForm: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack {
-                        HCTColorPicker(title: "Primary", selectedColor: $primaryColor)
-                        HCTColorPicker(title: "Secondary", selectedColor: $secondaryColor)
-                        HCTColorPicker(title: "Tertiary", selectedColor: $tertiaryColor)
-                        HCTColorPicker(title: "Success", selectedColor: $successColor)
-                        HCTColorPicker(title: "Warning", selectedColor: $warningColor)
-                        HCTColorPicker(title: "Destructive", selectedColor: $destructiveColor)
-                        HCTColorPicker(title: "Background", selectedColor: $backgroundColor)
-                        HCTColorPicker(title: "Foreground", selectedColor: $foregroundColor)
+                        CustomColorPicker(title: "Primary", selectedColor: $primaryColor)
+                        CustomColorPicker(title: "Secondary", selectedColor: $secondaryColor)
+                        CustomColorPicker(title: "Tertiary", selectedColor: $tertiaryColor)
+                        CustomColorPicker(title: "Success", selectedColor: $successColor)
+                        CustomColorPicker(title: "Warning", selectedColor: $warningColor)
+                        CustomColorPicker(title: "Destructive", selectedColor: $destructiveColor)
+                        CustomColorPicker(title: "Background", selectedColor: $backgroundColor)
+                        CustomColorPicker(title: "Foreground", selectedColor: $foregroundColor)
                     }
                     .padding()
                     .frame(maxWidth: .infinity)
