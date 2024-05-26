@@ -38,6 +38,7 @@ struct ColorPaletteView: View {
                 .listRowInsets(EdgeInsets())
                 Spacer(minLength: 0)
             }
+            .background(.primaryBackground)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Picker("Color Space", selection: $colorSpace) {
@@ -78,6 +79,9 @@ struct ColorPaletteView: View {
                     .padding()
             }
         }
+#if os(macOS)
+        .aspectRatio(14/8, contentMode: .fit)
+#endif
         .onAppear {
             ColorSchemeSwitcher.shared.overrideDisplayMode()
         }
@@ -217,7 +221,7 @@ struct ColorPaletteView: View {
             let light = group.reversed ? !config.light : config.light
             let adjustedColor = originalColor.adjust(saturation: 0.01, brightness: 0.035)
             let baseColor = group.narrow && config.light ? adjustedColor : originalColor
-            let adjustedVariance = group.narrow && !light ? 0.75 : 1.0
+            let adjustedVariance = group.narrow && !light ? 0.65 : 1.0
             let opacities: [(light: Bool?, opacity: Int)] = ColorPalette.overlayOpacities(light: light, narrow: group.narrow)
             let opacity = Double(opacities[config.index].opacity) / (100.0 / adjustedVariance)
             let overlay = ColorPalette.overlay(light: opacities[config.index].light)

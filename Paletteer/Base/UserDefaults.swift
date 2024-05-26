@@ -12,6 +12,7 @@ func key(_ key: UserDefaults.Key) -> String { key.rawValue }
 extension UserDefaults {
     enum Key: String, CaseIterable {
         case colorScheme
+        case clipboardColor
         case primaryColor
         case secondaryColor
         case tertiaryColor

@@ -9,12 +9,15 @@ import SwiftUI
 
 struct CustomButtonStyle: ButtonStyle {
     var backgroundColor: Color
+    var foregroundColor: Color
     var cornerRadius: CGFloat
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding()
+            .padding(12)
+            .font(.body)
             .background(backgroundColor)
+            .foregroundColor(foregroundColor)
             .cornerRadius(cornerRadius, antialiased: true)
             .padding(.vertical, 2)
             .scaleEffect(configuration.isPressed ? 0.99 : 1.0)
@@ -23,8 +26,10 @@ struct CustomButtonStyle: ButtonStyle {
 }
 
 extension ButtonStyle where Self == CustomButtonStyle {
-    static func custom(backgroundColor: Color = Color.gray.opacity(0.2), cornerRadius: CGFloat = 16) -> CustomButtonStyle {
-        .init(backgroundColor: backgroundColor, cornerRadius: cornerRadius)
+    static func custom(backgroundColor: Color = .blue,
+                       foregroundColor: Color = .white,
+                       cornerRadius: CGFloat = 12) -> CustomButtonStyle {
+        .init(backgroundColor: backgroundColor, foregroundColor: foregroundColor, cornerRadius: cornerRadius)
     }
 }
 

@@ -54,14 +54,12 @@ struct ColorsForm: View {
                     path.append(colorList)
                 } label: {
                     Text("Generate")
-                        .font(.headline)
+                        .font(.title3)
                         .fontWeight(.medium)
                         .frame(maxWidth: .infinity)
+                        .foregroundColor(.primaryActionForeground)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .tint(.blue)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .buttonStyle(.custom(backgroundColor: .primaryActionBackground, cornerRadius: 16))
                 .padding()
             }
             .navigationTitle("Paletteer")
@@ -71,6 +69,7 @@ struct ColorsForm: View {
             .navigationDestination(for: [ColorGroup].self) { colorList in
                 ColorPaletteView(colorList: colorList)
             }
+            .background(.primaryBackground)
             .toolbar {
                 ToolbarItem {
                     Button {

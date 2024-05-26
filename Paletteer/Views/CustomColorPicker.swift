@@ -10,6 +10,7 @@ import SwiftUI
 struct CustomColorPicker: View {
     @State var title: String = ""
     @Binding var selectedColor: Color
+    @AppStorage(key(.clipboardColor)) var clipboardColor: Color = .clear
     @State private var showingSheet = false
     @State private var sheetHeight: CGFloat = .zero
     @State private var colorSpace: ColorSpace = .hct
@@ -45,7 +46,18 @@ struct CustomColorPicker: View {
                     .frame(width: 30, height: 30)
             }
         }
-        .buttonStyle(.custom())
+        .buttonStyle(.custom(backgroundColor: .secondaryActionBackground,
+                             foregroundColor: .secondaryActionForeground))
+        .onChange(of: clipboardColor) { _, newValue in
+            switch colorSpace {
+            case .hct:
+                if let hct = clipboardColor.hct {
+                    String.pasteboardString = hct.label
+                }
+            case .hsb, .rgb:
+                String.pasteboardString = clipboardColor.hexRGB.uppercased()
+            }
+        }
         .sheet(isPresented: $showingSheet) {
             colorCreator
         }
@@ -58,6 +70,8 @@ struct CustomColorPicker: View {
                 HStack(alignment: .center) {
                     if let colorFromClipboard {
                         pasteColorButton(color: colorFromClipboard)
+                    } else {
+                        Spacer().frame(width: 32, height: 32)
                     }
                     Spacer()
                     Picker("", selection: $colorSpace) {
@@ -74,22 +88,29 @@ struct CustomColorPicker: View {
                     .frame(width: 32, height: 32)
                 }
             }
-            .padding()
+            .padding(12)
             Divider()
-            switch colorSpace {
-            case .hct, .hsb:
-                hctColorPicker
-            case .rgb:
-                ColorPicker(title, selection: $selectedColor, supportsOpacity: false)
-                    .rounded()
-                    .padding()
+            Group {
+                switch colorSpace {
+                case .hct, .hsb:
+                    hctColorPicker
+                case .rgb:
+                    ColorPicker(title, selection: $selectedColor, supportsOpacity: false)
+                        .frame(maxWidth: .infinity)
+                        .rounded()
+                }
             }
+            .padding()
             colorWheel
         }
+#if os(macOS)
+        .fixedSize()
+#else
         .readSize { size in
             sheetHeight = size.height
         }
         .presentationDetents([.height(sheetHeight)])
+#endif
         .presentationDragIndicator(.hidden)
         .onChange(of: showingSheet) {
             if showingSheet {
@@ -111,7 +132,7 @@ struct CustomColorPicker: View {
                 .foregroundColor(color.contrastingColor)
                 .padding(8)
         }
-        .frame(width: 36, height: 36)
+        .frame(width: 32, height: 32)
         .onTapGesture {
             selectedColor = color
             setColorValues()
@@ -119,6 +140,7 @@ struct CustomColorPicker: View {
     }
     
     var colorFromClipboard: Color? {
+        if clipboardColor != .clear { return clipboardColor }
         guard let pasteboard = String.pasteboardString else { return nil }
         print("Text in clipboard: \(pasteboard)")
         if let color = color(fromHTCString: pasteboard) { return color }
@@ -211,7 +233,6 @@ struct CustomColorPicker: View {
             }
             hctSliders
         }
-        .padding()
     }
     
     @ViewBuilder
@@ -257,10 +278,7 @@ struct CustomColorPicker: View {
                         .aspectRatio(1, contentMode: .fill)
                         .onTapGesture {
                             withAnimation {
-                                selectedColor = color
-                                if let hct = selectedColor.hct {
-                                    String.pasteboardString = hct.label
-                                }
+                                clipboardColor = color
                             }
                         }
                     }
@@ -291,7 +309,7 @@ struct CustomColorPicker: View {
                 Text("RGB")
                     .fontWeight(.bold)
                 Button {
-                    String.pasteboardString = selectedColor.hexRGB.uppercased()
+                    clipboardColor = selectedColor
                 } label: {
                     HStack {
                         Text(selectedColor.hexRGB.uppercased())
@@ -306,9 +324,7 @@ struct CustomColorPicker: View {
                 Text("HTC")
                     .fontWeight(.bold)
                 Button {
-                    if let hct = selectedColor.hct {
-                        String.pasteboardString = hct.label
-                    }
+                    clipboardColor = selectedColor
                 } label: {
                     HStack {
                         if let hct = selectedColor.hct {

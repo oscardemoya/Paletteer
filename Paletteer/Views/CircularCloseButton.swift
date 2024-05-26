@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CircularCloseButton: View {
+struct CircularCloseButtonStyle: ButtonStyle {
     enum Size {
         case compact
         case regular
@@ -43,25 +43,44 @@ struct CircularCloseButton: View {
     }
     
     var size: Size = .regular
-    var action: Action
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: size.fontSize))
+            .symbolRenderingMode(.hierarchical)
+            .padding(.horizontal, size.horizontalPadding)
+            .padding(.vertical, size.verticalPadding)
+            .foregroundColor(.gray.opacity(0.75))
+    }
+}
 
+extension ButtonStyle where Self == CircularCloseButtonStyle {
+    static func circular(size: CircularCloseButtonStyle.Size = .regular) -> CircularCloseButtonStyle {
+        .init(size: size)
+    }
+}
+
+struct CircularCloseButton: View {
+    var size: CircularCloseButtonStyle.Size = .regular
+    var action: Action
+    
     var body: some View {
         Button {
             action()
         } label: {
             Image(systemName: "xmark.circle.fill")
-                .font(.system(size: size.fontSize))
-                .symbolRenderingMode(.hierarchical)
-                .padding(.horizontal, size.horizontalPadding)
-                .padding(.vertical, size.verticalPadding)
         }
-        .foregroundColor(.gray.opacity(0.75))
+        .buttonStyle(.circular(size: size))
     }
 }
+        
 
-struct CircularCloseButton_Previews: PreviewProvider {
-    static var previews: some View {
-        CircularCloseButton() {}
+#Preview {
+    VStack {
+        Button {} label: {
+            Image(systemName: "xmark.circle.fill")
+        }
+        .buttonStyle(.circular(size: .large))
     }
+    .padding()
 }
-

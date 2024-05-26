@@ -89,7 +89,7 @@ extension Color: RawRepresentable {
     var isLight: Bool { luminance > 0.5 }
     
     var contrastingColor: Color {
-        return adjust(saturation: isLight ? 0.3 : -0.3, brightness: isLight ? -0.3 : 0.3)
+        return adjust(saturation: isLight ? 0.1 : -0.1, brightness: isLight ? -0.3 : 0.3)
     }
 }
 

@@ -10,6 +10,7 @@
 		26227E232C02740E00E44707 /* AppColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26227E222C02740E00E44707 /* AppColorScheme.swift */; };
 		26227E252C02847400E44707 /* Pasteboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26227E242C02847400E44707 /* Pasteboard.swift */; };
 		26227E272C0289C300E44707 /* ButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26227E262C0289C300E44707 /* ButtonStyle.swift */; };
+		26227E352C03F89E00E44707 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 26227E342C03F89E00E44707 /* PrivacyInfo.xcprivacy */; };
 		2675338D2BDD7400007C1F51 /* ColorContentsTemplate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2675338C2BDD7400007C1F51 /* ColorContentsTemplate.json */; };
 		2675338F2BDD7473007C1F51 /* Contents.json in Resources */ = {isa = PBXBuildFile; fileRef = 2675338E2BDD7473007C1F51 /* Contents.json */; };
 		267533952BDD7532007C1F51 /* StringFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533942BDD7532007C1F51 /* StringFile.swift */; };
@@ -84,6 +85,8 @@
 		26227E242C02847400E44707 /* Pasteboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pasteboard.swift; sourceTree = "<group>"; };
 		26227E262C0289C300E44707 /* ButtonStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonStyle.swift; sourceTree = "<group>"; };
 		26227E282C02926000E44707 /* Paleteer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Paleteer.entitlements; sourceTree = "<group>"; };
+		26227E312C03F3F200E44707 /* Paleteer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Paleteer-Info.plist"; sourceTree = "<group>"; };
+		26227E342C03F89E00E44707 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		2675338C2BDD7400007C1F51 /* ColorContentsTemplate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorContentsTemplate.json; sourceTree = "<group>"; };
 		2675338E2BDD7473007C1F51 /* Contents.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Contents.json; sourceTree = "<group>"; };
 		267533942BDD7532007C1F51 /* StringFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFile.swift; sourceTree = "<group>"; };
@@ -244,6 +247,8 @@
 		26BF532E2BD75C82001CAFBC = {
 			isa = PBXGroup;
 			children = (
+				26227E342C03F89E00E44707 /* PrivacyInfo.xcprivacy */,
+				26227E312C03F3F200E44707 /* Paleteer-Info.plist */,
 				26227E282C02926000E44707 /* Paleteer.entitlements */,
 				26BF53392BD75C82001CAFBC /* Paletteer */,
 				26BF53382BD75C82001CAFBC /* Products */,
@@ -471,6 +476,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26227E352C03F89E00E44707 /* PrivacyInfo.xcprivacy in Resources */,
 				26BF53422BD75C84001CAFBC /* Preview Assets.xcassets in Resources */,
 				26BF533F2BD75C84001CAFBC /* Assets.xcassets in Resources */,
 				2675338D2BDD7400007C1F51 /* ColorContentsTemplate.json in Resources */,
@@ -688,9 +694,9 @@
 				DEVELOPMENT_TEAM = J7RK447Q9K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Paleteer-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -721,9 +727,9 @@
 				DEVELOPMENT_TEAM = J7RK447Q9K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Paleteer-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
