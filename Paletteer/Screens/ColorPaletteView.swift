@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct ColorPaletteView: View {
+    static var fileName = "Colors.xcassets"
     var colorList: [ColorGroup]
-    var fileURL = FileManager.default.fileURL(fileName: "Colors.xcassets")
+    var fileURL = FileManager.default.fileURL(fileName: Self.fileName)
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
     @State private var colorSpace: ColorSpace = .hct
     @State private var backupFileURL: URL?
+    @State private var assetsFileURL: URL?
     @State private var isShowingShareView: Bool = false
     @State private var isLoading = false
     @State private var showAlert = false
@@ -46,7 +48,7 @@ struct ColorPaletteView: View {
                     .pickerStyle(.segmented)
                     .fixedSize()
                 }
-                ToolbarItem {
+                ToolbarItem(placement: .primaryAction) {
                     Button {
                         selectedAppearance.toggle()
                         ColorSchemeSwitcher.shared.overrideDisplayMode()
@@ -55,10 +57,18 @@ struct ColorPaletteView: View {
                     }
                 }
                 if let fileURL {
-                    ToolbarItem {
+                    ToolbarItem(placement: .primaryAction) {
+#if os(macOS)
+                        Button {
+                            exportFile(at: fileURL)
+                        } label: {
+                            Image(systemName: "square.and.arrow.down")
+                        }
+#else
                         ShareLink(item: fileURL) {
                             Image(systemName: "square.and.arrow.up")
                         }
+#endif
                     }
                 }
             }
@@ -85,6 +95,31 @@ struct ColorPaletteView: View {
             }
         }
     }
+    
+#if os(macOS)
+    func exportFile(at fileURL: URL) {
+        if let assetsFileURL = showSavePanel() {
+            do {
+                try FileManager.default.copyItem(at: fileURL, to: assetsFileURL)
+            } catch {
+                print("ERROR: \(error)")
+            }
+        }
+    }
+    
+    func showSavePanel() -> URL? {
+        let savePanel = NSSavePanel()
+        savePanel.title = "Save Assets File"
+        savePanel.nameFieldStringValue = Self.fileName
+        savePanel.canCreateDirectories = true
+        savePanel.isExtensionHidden = false
+        savePanel.title = "Save your file"
+        savePanel.message = "Choose a folder and a name to store the file."
+        savePanel.nameFieldLabel = "Assets file name:"
+        let response = savePanel.runModal()
+        return response == .OK ? savePanel.url : nil
+    }
+#endif
     
     private func saveFile(for group: ColorGroup) {
         saveEmptyFiles(groupPath: group.groupName)
@@ -140,7 +175,7 @@ struct ColorPaletteView: View {
             .cornerRadius(8)
             .onTapGesture {
                 let hexColor = selectedAppearance.color(for: colorPair).hexRGB.uppercased()
-                UIPasteboard.general.string = hexColor
+                String.pasteboardString = hexColor
                 alertTitle = hexColor
                 alertMessage = "Copied to the clipboard."
                 showAlert = true

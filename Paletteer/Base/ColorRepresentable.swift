@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import UIKit
 
 typealias RGBA = (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)
 typealias HSBA = (hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat)
@@ -18,7 +17,7 @@ extension Color: RawRepresentable {
             return nil
         }
         do {
-            guard let color = try NSKeyedUnarchiver.unarchivedObject(ofClass: UIColor.self, from: data) else {
+            guard let color = try NSKeyedUnarchiver.unarchivedObject(ofClass: CrossPlatformColor.self, from: data) else {
                 return nil
             }
             self = Color(color)
@@ -30,7 +29,7 @@ extension Color: RawRepresentable {
 
     public var rawValue: String {
         do {
-            let data = try NSKeyedArchiver.archivedData(withRootObject: UIColor(self), requiringSecureCoding: false) as Data
+            let data = try NSKeyedArchiver.archivedData(withRootObject: CrossPlatformColor(self), requiringSecureCoding: false) as Data
             return data.base64EncodedString()
         } catch {
             return ""
@@ -51,17 +50,9 @@ extension Color: RawRepresentable {
         )
     }
     
-    var uiColor: UIColor { .init(self) }
-    
-    var rgba: RGBA? {
-        var (r, g, b, a): RGBA = (0, 0, 0, 0)
-        return uiColor.getRed(&r, green: &g, blue: &b, alpha: &a) ? (r, g, b, a) : nil
-    }
-    
-    var hsba: HSBA? {
-        var (h, s, b, a): RGBA = (0, 0, 0, 0)
-        return uiColor.getHue(&h, saturation: &s, brightness: &b, alpha: &a) ? (h, s, b, a) : nil
-    }
+    var uiColor: CrossPlatformColor { .init(self) }
+    var rgba: RGBA? { uiColor.rgba }
+    var hsba: HSBA? { uiColor.hsba }
     
     var hexRGB: String {
         guard let (red, green, blue, _) = rgba else { return "" }
@@ -88,5 +79,40 @@ extension Color: RawRepresentable {
     var hct: Hct? {
         guard let rgbInt else { return nil }
         return Hct(rgbInt)
+    }
+    
+    var luminance: Double {
+        guard let color = rgba else { return 0 }
+        return 0.2126 * Double(color.red) + 0.7152 * Double(color.green) + 0.0722 * Double(color.blue)
+    }
+    
+    var isLight: Bool { luminance > 0.5 }
+    
+    var contrastingColor: Color {
+        return adjust(saturation: isLight ? 0.3 : -0.3, brightness: isLight ? -0.3 : 0.3)
+    }
+}
+
+extension CrossPlatformColor {
+    var rgba: RGBA? {
+        var (r, g, b, a): RGBA = (0, 0, 0, 0)
+#if os(macOS)
+        guard let rgbColor = self.usingColorSpace(NSColorSpace.deviceRGB) else { return nil }
+#else
+        let rgbColor = self
+#endif
+        rgbColor.getRed(&r, green: &g, blue: &b, alpha: &a)
+        return (r, g, b, a)
+    }
+    
+    var hsba: HSBA? {
+        var (h, s, b, a): RGBA = (0, 0, 0, 0)
+#if os(macOS)
+        guard let rgbColor = self.usingColorSpace(NSColorSpace.deviceRGB) else { return nil }
+#else
+        let rgbColor = self
+#endif
+        rgbColor.getHue(&h, saturation: &s, brightness: &b, alpha: &a)
+        return (h, s, b, a)
     }
 }

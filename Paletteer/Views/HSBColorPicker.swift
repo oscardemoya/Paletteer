@@ -162,7 +162,7 @@ struct HSBColorPicker: View {
                 Text("RGB")
                     .fontWeight(.bold)
                 Button {
-                    UIPasteboard.general.string = color.hexRGB.uppercased()
+                    String.pasteboardString = color.hexRGB.uppercased()
                 } label: {
                     HStack {
                         Text(color.hexRGB.uppercased())
@@ -176,7 +176,7 @@ struct HSBColorPicker: View {
                     .fontWeight(.bold)
                 Button {
                     if let hct = color.hct {
-                        UIPasteboard.general.string = hct.label
+                        String.pasteboardString = hct.label
                     }
                 } label: {
                     HStack {
@@ -197,5 +197,6 @@ struct HSBColorPicker: View {
 
 #Preview {
     @State var color: Color = .blue
-    return HCTColorPicker(title: "Title", color: $color)
+    @State var clipboardColor: Color = .red
+    return HCTColorPicker(title: "Title", selectedColor: $color, clipboardColor: $clipboardColor)
 }

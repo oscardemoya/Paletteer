@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ColorsForm: View {
     @State var path = NavigationPath()
+    @State var clipboardColor: Color = .clear
     
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
     @AppStorage(key(.primaryColor)) var primaryColor: Color = .blue
@@ -36,14 +37,14 @@ struct ColorsForm: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack {
-                        HCTColorPicker(title: "Primary", color: $primaryColor).rounded()
-                        HCTColorPicker(title: "Secondary", color: $secondaryColor).rounded()
-                        HCTColorPicker(title: "Tertiary", color: $tertiaryColor).rounded()
-                        HCTColorPicker(title: "Success", color: $successColor).rounded()
-                        HCTColorPicker(title: "Warning", color: $warningColor).rounded()
-                        HCTColorPicker(title: "Destructive", color: $destructiveColor).rounded()
-                        HCTColorPicker(title: "Background", color: $backgroundColor).rounded()
-                        HCTColorPicker(title: "Foreground", color: $foregroundColor).rounded()
+                        HCTColorPicker(title: "Primary", selectedColor: $primaryColor, clipboardColor: $clipboardColor)
+                        HCTColorPicker(title: "Secondary", selectedColor: $secondaryColor, clipboardColor: $clipboardColor)
+                        HCTColorPicker(title: "Tertiary", selectedColor: $tertiaryColor, clipboardColor: $clipboardColor)
+                        HCTColorPicker(title: "Success", selectedColor: $successColor, clipboardColor: $clipboardColor)
+                        HCTColorPicker(title: "Warning", selectedColor: $warningColor, clipboardColor: $clipboardColor)
+                        HCTColorPicker(title: "Destructive", selectedColor: $destructiveColor, clipboardColor: $clipboardColor)
+                        HCTColorPicker(title: "Background", selectedColor: $backgroundColor, clipboardColor: $clipboardColor)
+                        HCTColorPicker(title: "Foreground", selectedColor: $foregroundColor, clipboardColor: $clipboardColor)
                     }
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -65,7 +66,9 @@ struct ColorsForm: View {
                 .padding()
             }
             .navigationTitle("Paletteer")
+#if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
             .navigationDestination(for: [ColorGroup].self) { colorList in
                 ColorPaletteView(colorList: colorList)
             }

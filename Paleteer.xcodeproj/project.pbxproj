@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		26227E232C02740E00E44707 /* AppColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26227E222C02740E00E44707 /* AppColorScheme.swift */; };
+		26227E252C02847400E44707 /* Pasteboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26227E242C02847400E44707 /* Pasteboard.swift */; };
+		26227E272C0289C300E44707 /* ButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26227E262C0289C300E44707 /* ButtonStyle.swift */; };
 		2675338D2BDD7400007C1F51 /* ColorContentsTemplate.json in Resources */ = {isa = PBXBuildFile; fileRef = 2675338C2BDD7400007C1F51 /* ColorContentsTemplate.json */; };
 		2675338F2BDD7473007C1F51 /* Contents.json in Resources */ = {isa = PBXBuildFile; fileRef = 2675338E2BDD7473007C1F51 /* Contents.json */; };
 		267533952BDD7532007C1F51 /* StringFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267533942BDD7532007C1F51 /* StringFile.swift */; };
@@ -80,6 +82,9 @@
 
 /* Begin PBXFileReference section */
 		26227E222C02740E00E44707 /* AppColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColorScheme.swift; sourceTree = "<group>"; };
+		26227E242C02847400E44707 /* Pasteboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pasteboard.swift; sourceTree = "<group>"; };
+		26227E262C0289C300E44707 /* ButtonStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonStyle.swift; sourceTree = "<group>"; };
+		26227E282C02926000E44707 /* Paleteer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Paleteer.entitlements; sourceTree = "<group>"; };
 		2675338C2BDD7400007C1F51 /* ColorContentsTemplate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorContentsTemplate.json; sourceTree = "<group>"; };
 		2675338E2BDD7473007C1F51 /* Contents.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Contents.json; sourceTree = "<group>"; };
 		267533942BDD7532007C1F51 /* StringFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringFile.swift; sourceTree = "<group>"; };
@@ -179,6 +184,7 @@
 				267533CB2BDEE408007C1F51 /* HCTColorPicker.swift */,
 				267534302BE3E3DD007C1F51 /* HSBColorPicker.swift */,
 				267533A32BDDD7EE007C1F51 /* TextFieldStyle.swift */,
+				26227E262C0289C300E44707 /* ButtonStyle.swift */,
 				267533B12BDE8981007C1F51 /* Triangle.swift */,
 			);
 			path = Views;
@@ -209,6 +215,7 @@
 				267533942BDD7532007C1F51 /* StringFile.swift */,
 				267533C52BDE9E2D007C1F51 /* UserDefaults.swift */,
 				267533CD2BDEE5A5007C1F51 /* ViewSizing.swift */,
+				26227E242C02847400E44707 /* Pasteboard.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -240,6 +247,7 @@
 		26BF532E2BD75C82001CAFBC = {
 			isa = PBXGroup;
 			children = (
+				26227E282C02926000E44707 /* Paleteer.entitlements */,
 				26BF53392BD75C82001CAFBC /* Paletteer */,
 				26BF53382BD75C82001CAFBC /* Products */,
 			);
@@ -512,6 +520,7 @@
 				267533A62BDDDBB2007C1F51 /* ColorPaletteView.swift in Sources */,
 				269C3B952BF15200002329C1 /* CrossplatformColor.swift in Sources */,
 				267533BF2BDE982E007C1F51 /* Theme.swift in Sources */,
+				26227E252C02847400E44707 /* Pasteboard.swift in Sources */,
 				26BF53E12BD75EFD001CAFBC /* QuantizerMap.swift in Sources */,
 				26BF53DF2BD75EFD001CAFBC /* Quantizer.swift in Sources */,
 				267533CC2BDEE408007C1F51 /* HCTColorPicker.swift in Sources */,
@@ -542,6 +551,7 @@
 				26BF53F12BD75EFD001CAFBC /* StringUtils.swift in Sources */,
 				26BF53D62BD75EFD001CAFBC /* Variant.swift in Sources */,
 				26BF53D72BD75EFD001CAFBC /* Cam16.swift in Sources */,
+				26227E272C0289C300E44707 /* ButtonStyle.swift in Sources */,
 				26BF53E42BD75EFD001CAFBC /* SchemeContent.swift in Sources */,
 				267533D82BDEFC8C007C1F51 /* Binding.swift in Sources */,
 				26BF53EA2BD75EFD001CAFBC /* SchemeRainbow.swift in Sources */,
@@ -675,6 +685,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Paleteer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Paletteer/Preview Content\"";
@@ -693,6 +704,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kafeteer.Paletteer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -704,6 +718,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Paleteer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Paletteer/Preview Content\"";
@@ -722,6 +737,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kafeteer.Paletteer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

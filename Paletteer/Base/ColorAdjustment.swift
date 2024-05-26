@@ -9,20 +9,13 @@ import SwiftUI
 
 extension Color {
     func adjust(hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, opacity: CGFloat = 1) -> Color {
-        let color = UIColor(self)
-        var currentHue: CGFloat = 0
-        var currentSaturation: CGFloat = 0
-        var currentBrigthness: CGFloat = 0
-        var currentOpacity: CGFloat = 0
-        guard color.getHue(&currentHue,
-                           saturation: &currentSaturation,
-                           brightness: &currentBrigthness,
-                           alpha: &currentOpacity) else {
+        let color = CrossPlatformColor(self)
+        guard let hsba = color.hsba else {
             return self
         }
-        return Color(hue: max(min(currentHue + hue, 1), 0),
-                     saturation: max(min(currentSaturation + saturation, 1), 0),
-                     brightness: max(min(currentBrigthness + brightness, 1), 0),
-                     opacity: max(min(currentOpacity + opacity, 1), 0))
+        return Color(hue: max(min(hsba.hue + hue, 1), 0),
+                     saturation: max(min(hsba.saturation + saturation, 1), 0),
+                     brightness: max(min(hsba.brightness + brightness, 1), 0),
+                     opacity: max(min(hsba.alpha + opacity, 1), 0))
     }
 }
