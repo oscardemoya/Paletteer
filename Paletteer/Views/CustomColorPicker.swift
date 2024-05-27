@@ -26,15 +26,14 @@ struct CustomColorPicker: View {
     static let chromaOrSaturationRange: ClosedRange<Double> = 0...120
     static let toneOrBrightnessRange: ClosedRange<Double> = 0...100
     
-    let gridItems = [GridItem(.fixed(44))]
+    let gridItems = [GridItem(.fixed(40))]
     
     var colorWheelColors: [Color] {
         guard let hct = selectedColor.hct else { return [] }
-        let colors = TemperatureCache(hct).analogous(count: 12).map { Color(hctColor: $0) }
-        colors.enumerated().forEach { index, color in
-            print("Color #\(index): \(color.hexRGB)")
-        }
-        return colors
+        return TemperatureCache(hct)
+            .analogous(count: 12)
+            .sorted(by: { $0.hue < $1.hue })
+            .map { Color(hctColor: $0) }
     }
     
     var body: some View {
@@ -61,11 +60,7 @@ struct CustomColorPicker: View {
             VStack(alignment: .leading, spacing: 0) {
                 VStack(spacing: 16) {
                     HStack(alignment: .center) {
-                        if let color = textClipboard?.color {
-                            pasteColorButton(color: color)
-                        } else {
-                            Spacer().frame(width: 32, height: 32)
-                        }
+                        Spacer().frame(width: 32, height: 32)
                         Spacer()
                         Picker("", selection: $colorSpace) {
                             ForEach(ColorSpace.allCases) {
@@ -97,7 +92,9 @@ struct CustomColorPicker: View {
                 .padding(12)
                 Divider()
                 colorWheel
-                colorClipoardGrid
+                if !colorClipboard.colors.isEmpty {
+                    colorClipoardGrid
+                }
             }
 #if os(macOS)
             .fixedSize()
@@ -112,6 +109,7 @@ struct CustomColorPicker: View {
         .onChange(of: showingSheet) {
             if showingSheet {
                 setColorValues()
+                updateTextClipboard()
             }
         }
         .onChange(of: colorSpace, setColorValues)
@@ -125,11 +123,32 @@ struct CustomColorPicker: View {
         String.pasteboardString = textClipboard
     }
     
+    func updateTextClipboard() {
+        textClipboard = String.pasteboardString
+    }
+    
+    @ViewBuilder
+    var pasteboardLookupButton: some View {
+        pasteboardColor(color: .foreground900, icon: Image(systemName: "square.on.square.dashed"))
+            .onTapGesture {
+                updateTextClipboard()
+            }
+    }
+    
     @ViewBuilder
     func pasteColorButton(color: Color, size: CGFloat = 32) -> some View {
+        pasteboardColor(color: color, size: size)
+            .onTapGesture {
+                selectedColor = color
+                setColorValues()
+            }
+    }
+    
+    @ViewBuilder
+    func pasteboardColor(color: Color, icon: Image = Image(systemName: "doc.on.clipboard"), size: CGFloat = 32) -> some View {
         ZStack {
             rectangle(color: color)
-            Image(systemName: "doc.on.clipboard")
+            icon
                 .resizable()
                 .scaledToFit()
                 .padding(size / 4)
@@ -138,10 +157,6 @@ struct CustomColorPicker: View {
                 
         }
         .frame(width: size, height: size)
-        .onTapGesture {
-            selectedColor = color
-            setColorValues()
-        }
     }
     
     func setColorValues() {
@@ -197,18 +212,57 @@ struct CustomColorPicker: View {
     
     @ViewBuilder
     var selectedColorView: some View {
-        VStack(spacing: 8) {
-            Text(title)
-                .font(.title3)
+        HStack {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(title)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(spacing: 12) {
+                    rectangle(color: selectedColor)
+                        .frame(width: squareHeight, height: squareHeight)
+                    colorValues
+                }
+            }
+            Spacer()
+            colorFromTextClipboardView
+        }
+    }
+    
+    @ViewBuilder
+    var colorFromTextClipboardView: some View {
+        VStack(spacing: 0) {
+            Group {
+                if let textClipboard, let color = textClipboard.color {
+                    pasteColorButton(color: color)
+                } else {
+                    pasteboardLookupButton
+                }
+            }
+            .padding(.bottom, 4)
+            Text("Clipboard")
+                .textCase(.uppercase)
+                .font(.caption)
                 .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            HStack(spacing: 12) {
-                rectangle(color: selectedColor)
-                    .frame(width: squareHeight, height: squareHeight)
-                colorValues
-                Spacer()
+                .foregroundColor(.foreground500)
+            if let textClipboard, textClipboard.color != nil {
+                Text(textClipboard)
+                    .font(.caption2)
+                    .foregroundColor(.foreground700)
             }
         }
+        .padding(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .strokeBorder(
+                    style: .init(
+                        lineWidth: 2,
+                        dash: [5, 3]
+                    )
+                )
+                .foregroundColor(.foreground700)
+        )
+        .frame(maxHeight: .infinity)
     }
     
     @ViewBuilder
@@ -248,7 +302,7 @@ struct CustomColorPicker: View {
                     .fontWeight(.bold)
                 Spacer()
                 Button {
-                    colorClipboard.add(colorWheelColors.reversed())
+                    colorClipboard.replace(with: colorWheelColors.reversed())
                 } label: {
                     HStack(alignment: .center) {
                         Text("Copy All")
@@ -265,12 +319,13 @@ struct CustomColorPicker: View {
             .padding([.top, .horizontal], 12)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
-                    LazyHGrid(rows: gridItems)  {
+                    LazyHGrid(rows: gridItems, spacing: 4)  {
                         ForEach(colorWheelColors, id: \.self) { color in
                             ZStack {
                                 rectangle(color: color)
                                 if showCopyIcons {
                                     Image(systemName: "square.on.square")
+                                        .symbolRenderingMode(.hierarchical)
                                         .foregroundColor(color.contrastingColor)
                                 }
                             }
@@ -338,16 +393,40 @@ struct CustomColorPicker: View {
     @ViewBuilder
     var colorClipoardGrid: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Recent")
-                .textCase(.uppercase)
-                .font(.caption)
-                .fontWeight(.bold)
-                .padding([.top, .horizontal], 12)
+            HStack {
+                Text("Recent")
+                    .textCase(.uppercase)
+                    .font(.caption)
+                    .fontWeight(.bold)
+                Spacer()
+                Button {
+                    withAnimation {
+                        colorClipboard.removeAll()
+                    }
+                } label: {
+                    HStack(alignment: .center) {
+                        Text("Clear")
+                            .textCase(.uppercase)
+                            .font(.caption)
+                        if showCopyIcons {
+                            Image(systemName: "trash")
+                                .symbolRenderingMode(.hierarchical)
+                        }
+                    }
+                    .padding(2)
+                }
+            }
+            .padding([.top, .horizontal], 12)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
-                    LazyHGrid(rows: gridItems) {
+                    LazyHGrid(rows: gridItems, spacing: 4) {
                         ForEach(colorClipboard.colors.reversed(), id: \.self) { color in
-                            pasteColorButton(color: color, size: 44)
+                            pasteColorButton(color: color, size: 40)
+                                .onLongPressGesture {
+                                    withAnimation {
+                                        colorClipboard.remove(color)
+                                    }
+                                }
                         }
                     }
                 }

@@ -21,16 +21,25 @@ class ColorClipboard {
     }
     
     func add(_ color: Color) {
-        if colors.contains(color) {
-            colors.removeAll(where: { $0 == color })
-        } else if colors.count >= Self.maxItems {
+        remove(color)
+        if colors.count >= Self.maxItems {
             colors = colors.suffix(Self.maxItems - 1)
         }
         colors.append(color)
         Defaults.colors = colors
     }
     
-    func add(_ colors: [Color]) {
+    func remove(_ color: Color) {
+        if colors.contains(color) {
+            colors.removeAll(where: { $0 == color })
+        }
+    }
+    
+    func removeAll() {
+        replace(with: [])
+    }
+    
+    func replace(with colors: [Color]) {
         self.colors = colors
         Defaults.colors = colors
     }

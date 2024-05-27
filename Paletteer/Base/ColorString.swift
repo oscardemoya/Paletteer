@@ -27,7 +27,7 @@ extension String {
     }
     
     func color(fromHexString string: String) -> Color? {
-        let bodyRegex = /#?(?<hexString>[a-f0-9]{6})/.ignoresCase().dotMatchesNewlines()
+        let bodyRegex = /#(?<hexString>[a-f0-9]{6})/.ignoresCase().dotMatchesNewlines()
         return string.matches(of: bodyRegex).compactMap { match -> Color? in
             let hexString = String(match.output.hexString)
             return Color(hex: hexString)
