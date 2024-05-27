@@ -225,7 +225,7 @@ struct ColorPaletteView: View {
             var baseColor = originalColor
             if group.narrow, let originalValues = originalColor.hsba {
                 baseColor = originalColor.replace(saturation: config.light ? originalValues.saturation + 0.01 : 0,
-                                                  brightness: config.light ? 0.85 : 0.15)
+                                                  brightness: config.light ? 0.80 : 0.20)
             }
             let opacities: [(light: Bool?, opacity: Int)] = ColorPalette.overlayOpacities(light: light, narrow: group.narrow)
             let opacity = Double(opacities[config.index].opacity) / 100.0
