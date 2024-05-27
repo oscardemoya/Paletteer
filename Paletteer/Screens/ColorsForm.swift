@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ColorsForm: View {
-    @State var path = NavigationPath()
+    @State private var path = NavigationPath()
+    @State private var colorClipboard = ColorClipboard()
     
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
     @AppStorage(key(.primaryColor)) var primaryColor: Color = .blue
@@ -37,14 +38,14 @@ struct ColorsForm: View {
             VStack(spacing: 0) {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 8) {
-                        CustomColorPicker(title: "Primary", selectedColor: $primaryColor)
-                        CustomColorPicker(title: "Secondary", selectedColor: $secondaryColor)
-                        CustomColorPicker(title: "Tertiary", selectedColor: $tertiaryColor)
-                        CustomColorPicker(title: "Success", selectedColor: $successColor)
-                        CustomColorPicker(title: "Warning", selectedColor: $warningColor)
-                        CustomColorPicker(title: "Danger", selectedColor: $destructiveColor)
-                        CustomColorPicker(title: "Background", selectedColor: $backgroundColor)
-                        CustomColorPicker(title: "Foreground", selectedColor: $foregroundColor)
+                        CustomColorPicker(title: "Primary", selectedColor: $primaryColor, colorClipboard: $colorClipboard)
+                        CustomColorPicker(title: "Secondary", selectedColor: $secondaryColor, colorClipboard: $colorClipboard)
+                        CustomColorPicker(title: "Tertiary", selectedColor: $tertiaryColor, colorClipboard: $colorClipboard)
+                        CustomColorPicker(title: "Success", selectedColor: $successColor, colorClipboard: $colorClipboard)
+                        CustomColorPicker(title: "Warning", selectedColor: $warningColor, colorClipboard: $colorClipboard)
+                        CustomColorPicker(title: "Danger", selectedColor: $destructiveColor, colorClipboard: $colorClipboard)
+                        CustomColorPicker(title: "Background", selectedColor: $backgroundColor, colorClipboard: $colorClipboard)
+                        CustomColorPicker(title: "Foreground", selectedColor: $foregroundColor, colorClipboard: $colorClipboard)
                     }
                     .padding()
                     .frame(maxWidth: .infinity)

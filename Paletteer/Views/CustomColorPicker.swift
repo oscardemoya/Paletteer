@@ -10,8 +10,8 @@ import SwiftUI
 struct CustomColorPicker: View {
     @State var title: String = ""
     @Binding var selectedColor: Color
+    @Binding var colorClipboard: ColorClipboard
     @State private var textClipboard: String?
-    @State private var colorClipboard = ColorClipboard()
     @State private var recentColors: [Color] = []
     @State private var showingSheet = false
     @State private var sheetHeight: CGFloat = .zero
@@ -439,5 +439,6 @@ struct CustomColorPicker: View {
 
 #Preview {
     @State var color: Color = .blue
-    return CustomColorPicker(title: "Title", selectedColor: $color)
+    @State var colorClipboard = ColorClipboard()
+    return CustomColorPicker(title: "Title", selectedColor: $color, colorClipboard: $colorClipboard)
 }
