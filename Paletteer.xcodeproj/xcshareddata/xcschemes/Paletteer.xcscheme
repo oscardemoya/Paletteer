@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "26BF53362BD75C82001CAFBC"
-               BuildableName = "Paleteer.app"
-               BlueprintName = "Paleteer"
-               ReferencedContainer = "container:Paleteer.xcodeproj">
+               BuildableName = "Paletteer.app"
+               BlueprintName = "Paletteer"
+               ReferencedContainer = "container:Paletteer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "26BF53362BD75C82001CAFBC"
-            BuildableName = "Paleteer.app"
-            BlueprintName = "Paleteer"
-            ReferencedContainer = "container:Paleteer.xcodeproj">
+            BuildableName = "Paletteer.app"
+            BlueprintName = "Paletteer"
+            ReferencedContainer = "container:Paletteer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "26BF53362BD75C82001CAFBC"
-            BuildableName = "Paleteer.app"
-            BlueprintName = "Paleteer"
-            ReferencedContainer = "container:Paleteer.xcodeproj">
+            BuildableName = "Paletteer.app"
+            BlueprintName = "Paletteer"
+            ReferencedContainer = "container:Paletteer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

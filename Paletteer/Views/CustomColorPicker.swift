@@ -295,11 +295,11 @@ struct CustomColorPicker: View {
             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
     
-    func borderedRect(color: Color) -> some View {
+    func borderedRect(color: Color, strokeColor: Color = .clear) -> some View {
         rectangle(color: color)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .strokeBorder(color.contrastingColor, lineWidth: 1)
+                    .strokeBorder(.primaryBackground, lineWidth: 2)
             )
     }
     

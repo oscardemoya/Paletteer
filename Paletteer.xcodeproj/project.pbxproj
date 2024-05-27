@@ -85,7 +85,7 @@
 		26227E242C02847400E44707 /* Pasteboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pasteboard.swift; sourceTree = "<group>"; };
 		26227E262C0289C300E44707 /* ButtonStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonStyle.swift; sourceTree = "<group>"; };
 		26227E282C02926000E44707 /* Paleteer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Paleteer.entitlements; sourceTree = "<group>"; };
-		26227E312C03F3F200E44707 /* Paleteer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Paleteer-Info.plist"; sourceTree = "<group>"; };
+		26227E312C03F3F200E44707 /* Paletteer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Paletteer-Info.plist"; sourceTree = "<group>"; };
 		26227E342C03F89E00E44707 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		2675338C2BDD7400007C1F51 /* ColorContentsTemplate.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ColorContentsTemplate.json; sourceTree = "<group>"; };
 		2675338E2BDD7473007C1F51 /* Contents.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Contents.json; sourceTree = "<group>"; };
@@ -114,7 +114,7 @@
 		269C3B922BF151DC002329C1 /* ColorBlending.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorBlending.swift; sourceTree = "<group>"; };
 		269C3B942BF15200002329C1 /* CrossplatformColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossplatformColor.swift; sourceTree = "<group>"; };
 		269C3B962BF17D3E002329C1 /* ColorAdjustment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorAdjustment.swift; sourceTree = "<group>"; };
-		26BF53372BD75C82001CAFBC /* Paleteer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Paleteer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		26BF53372BD75C82001CAFBC /* Paletteer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Paletteer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BF533A2BD75C82001CAFBC /* PaletteerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteerApp.swift; sourceTree = "<group>"; };
 		26BF533C2BD75C82001CAFBC /* ColorsForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorsForm.swift; sourceTree = "<group>"; };
 		26BF533E2BD75C84001CAFBC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -247,9 +247,6 @@
 		26BF532E2BD75C82001CAFBC = {
 			isa = PBXGroup;
 			children = (
-				26227E342C03F89E00E44707 /* PrivacyInfo.xcprivacy */,
-				26227E312C03F3F200E44707 /* Paleteer-Info.plist */,
-				26227E282C02926000E44707 /* Paleteer.entitlements */,
 				26BF53392BD75C82001CAFBC /* Paletteer */,
 				26BF53382BD75C82001CAFBC /* Products */,
 			);
@@ -258,7 +255,7 @@
 		26BF53382BD75C82001CAFBC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				26BF53372BD75C82001CAFBC /* Paleteer.app */,
+				26BF53372BD75C82001CAFBC /* Paletteer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -268,6 +265,7 @@
 			children = (
 				267533AC2BDE88DF007C1F51 /* App */,
 				267533AD2BDE891D007C1F51 /* Base */,
+				26E2A4EF2C04253600CB40CD /* Config */,
 				267533AE2BDE8954007C1F51 /* Models */,
 				2675338B2BDD73D3007C1F51 /* Resources */,
 				267533B52BDE8A06007C1F51 /* Screens */,
@@ -416,12 +414,22 @@
 			path = MaterialColorUtilities;
 			sourceTree = "<group>";
 		};
+		26E2A4EF2C04253600CB40CD /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				26227E342C03F89E00E44707 /* PrivacyInfo.xcprivacy */,
+				26227E312C03F3F200E44707 /* Paletteer-Info.plist */,
+				26227E282C02926000E44707 /* Paleteer.entitlements */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		26BF53362BD75C82001CAFBC /* Paleteer */ = {
+		26BF53362BD75C82001CAFBC /* Paletteer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 26BF53452BD75C84001CAFBC /* Build configuration list for PBXNativeTarget "Paleteer" */;
+			buildConfigurationList = 26BF53452BD75C84001CAFBC /* Build configuration list for PBXNativeTarget "Paletteer" */;
 			buildPhases = (
 				26BF53332BD75C82001CAFBC /* Sources */,
 				26BF53342BD75C82001CAFBC /* Frameworks */,
@@ -431,9 +439,9 @@
 			);
 			dependencies = (
 			);
-			name = Paleteer;
+			name = Paletteer;
 			productName = MaterialColors;
-			productReference = 26BF53372BD75C82001CAFBC /* Paleteer.app */;
+			productReference = 26BF53372BD75C82001CAFBC /* Paletteer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -451,7 +459,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 26BF53322BD75C82001CAFBC /* Build configuration list for PBXProject "Paleteer" */;
+			buildConfigurationList = 26BF53322BD75C82001CAFBC /* Build configuration list for PBXProject "Paletteer" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -466,7 +474,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				26BF53362BD75C82001CAFBC /* Paleteer */,
+				26BF53362BD75C82001CAFBC /* Paletteer */,
 			);
 		};
 /* End PBXProject section */
@@ -687,14 +695,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Paleteer.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Paletteer/Config/Paleteer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Paletteer/Preview Content\"";
 				DEVELOPMENT_TEAM = J7RK447Q9K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Paleteer-Info.plist";
+				INFOPLIST_FILE = "Paletteer/Config/Paletteer-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -720,14 +728,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Paleteer.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Paletteer/Config/Paleteer.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Paletteer/Preview Content\"";
 				DEVELOPMENT_TEAM = J7RK447Q9K;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Paleteer-Info.plist";
+				INFOPLIST_FILE = "Paletteer/Config/Paletteer-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -751,7 +759,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		26BF53322BD75C82001CAFBC /* Build configuration list for PBXProject "Paleteer" */ = {
+		26BF53322BD75C82001CAFBC /* Build configuration list for PBXProject "Paletteer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				26BF53432BD75C84001CAFBC /* Debug */,
@@ -760,7 +768,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		26BF53452BD75C84001CAFBC /* Build configuration list for PBXNativeTarget "Paleteer" */ = {
+		26BF53452BD75C84001CAFBC /* Build configuration list for PBXNativeTarget "Paletteer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				26BF53462BD75C84001CAFBC /* Debug */,
