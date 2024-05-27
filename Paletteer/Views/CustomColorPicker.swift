@@ -10,7 +10,9 @@ import SwiftUI
 struct CustomColorPicker: View {
     @State var title: String = ""
     @Binding var selectedColor: Color
-    @AppStorage(key(.clipboardColor)) var clipboardColor: Color = .clear
+    @State private var textClipboard: String?
+    @State private var colorClipboard = ColorClipboard()
+    @State private var recentColors: [Color] = []
     @State private var showingSheet = false
     @State private var sheetHeight: CGFloat = .zero
     @State private var colorSpace: ColorSpace = .hct
@@ -24,7 +26,7 @@ struct CustomColorPicker: View {
     static let chromaOrSaturationRange: ClosedRange<Double> = 0...120
     static let toneOrBrightnessRange: ClosedRange<Double> = 0...100
     
-    let gridRows = [GridItem(.fixed(44))]
+    let gridItems = [GridItem(.fixed(44))]
     
     var colorWheelColors: [Color] {
         guard let hct = selectedColor.hct else { return [] }
@@ -48,16 +50,6 @@ struct CustomColorPicker: View {
         }
         .buttonStyle(.custom(backgroundColor: .secondaryActionBackground,
                              foregroundColor: .secondaryActionForeground))
-        .onChange(of: clipboardColor) { _, newValue in
-            switch colorSpace {
-            case .hct:
-                if let hct = clipboardColor.hct {
-                    String.pasteboardString = hct.label
-                }
-            case .hsb, .rgb:
-                String.pasteboardString = clipboardColor.hexRGB.uppercased()
-            }
-        }
         .sheet(isPresented: $showingSheet) {
             colorCreator
         }
@@ -65,52 +57,57 @@ struct CustomColorPicker: View {
     
     @ViewBuilder
     var colorCreator: some View {
-        VStack(spacing: 0) {
-            VStack(spacing: 16) {
-                HStack(alignment: .center) {
-                    if let color = colorFromClipboard(clipboardColor: clipboardColor) {
-                        pasteColorButton(color: color)
-                    } else {
-                        Spacer().frame(width: 32, height: 32)
-                    }
-                    Spacer()
-                    Picker("", selection: $colorSpace) {
-                        ForEach(ColorSpace.allCases) {
-                            Text($0.title)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(spacing: 16) {
+                    HStack(alignment: .center) {
+                        if let color = textClipboard?.color {
+                            pasteColorButton(color: color)
+                        } else {
+                            Spacer().frame(width: 32, height: 32)
                         }
+                        Spacer()
+                        Picker("", selection: $colorSpace) {
+                            ForEach(ColorSpace.allCases) {
+                                Text($0.title)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .fixedSize()
+                        Spacer()
+                        CircularCloseButton {
+                            showingSheet = false
+                        }
+                        .frame(width: 32, height: 32)
                     }
-                    .pickerStyle(.segmented)
-                    .fixedSize()
-                    Spacer()
-                    CircularCloseButton {
-                        showingSheet = false
+                }
+                .padding(12)
+                Divider()
+                VStack(spacing: 16) {
+                    selectedColorView
+                    switch colorSpace {
+                    case .hct, .hsb:
+                        hctSliders
+                    case .rgb:
+                        ColorPicker(title, selection: $selectedColor, supportsOpacity: false)
+                            .frame(maxWidth: .infinity)
+                            .rounded()
                     }
-                    .frame(width: 32, height: 32)
                 }
+                .padding(12)
+                Divider()
+                colorWheel
+                colorClipoardGrid
             }
-            .padding(12)
-            Divider()
-            Group {
-                switch colorSpace {
-                case .hct, .hsb:
-                    hctColorPicker
-                case .rgb:
-                    ColorPicker(title, selection: $selectedColor, supportsOpacity: false)
-                        .frame(maxWidth: .infinity)
-                        .rounded()
-                }
-            }
-            .padding()
-            colorWheel
-        }
 #if os(macOS)
-        .fixedSize()
+            .fixedSize()
 #else
-        .readSize { size in
-            sheetHeight = size.height
-        }
-        .presentationDetents([.height(sheetHeight)])
+            .readSize { size in
+                sheetHeight = size.height
+            }
+            .presentationDetents([.height(sheetHeight)])
 #endif
+        }
         .presentationDragIndicator(.hidden)
         .onChange(of: showingSheet) {
             if showingSheet {
@@ -121,50 +118,30 @@ struct CustomColorPicker: View {
         .onChange(of: hueSliderValue, updateColor)
         .onChange(of: chromaOrSaturationSliderValue, updateColor)
         .onChange(of: toneOrBrightnessSliderValue, updateColor)
+        .onChange(of: textClipboard, copyTextToPasteboard)
+    }
+    
+    func copyTextToPasteboard() {
+        String.pasteboardString = textClipboard
     }
     
     @ViewBuilder
-    func pasteColorButton(color: Color) -> some View {
+    func pasteColorButton(color: Color, size: CGFloat = 32) -> some View {
         ZStack {
             rectangle(color: color)
             Image(systemName: "doc.on.clipboard")
+                .resizable()
+                .scaledToFit()
+                .padding(size / 4)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundColor(color.contrastingColor)
-                .padding(8)
+                
         }
-        .frame(width: 32, height: 32)
+        .frame(width: size, height: size)
         .onTapGesture {
             selectedColor = color
             setColorValues()
         }
-    }
-    
-    func colorFromClipboard(clipboardColor: Color) -> Color? {
-        if clipboardColor != .clear { return clipboardColor }
-        guard let pasteboard = String.pasteboardString else { return nil }
-        print("Text in clipboard: \(pasteboard)")
-        if let color = color(fromHTCString: pasteboard) { return color }
-        if let color = color(fromHexString: pasteboard) { return color }
-        return nil
-    }
-    
-    func color(fromHTCString string: String) -> Color? {
-        let bodyRegex = /H(?<hue>\d+)\s* C(?<chroma>\d+)\s* T(?<tone>\d+)/.ignoresCase().dotMatchesNewlines()
-        return string.matches(of: bodyRegex).compactMap { match -> Color? in
-            guard let hue = Double(match.output.hue) else { return nil }
-            guard let chroma = Double(match.output.chroma) else { return nil }
-            guard let tone = Double(match.output.tone) else { return nil }
-            let hct = Hct.from(hue, chroma, tone)
-            return Color(hctColor: hct)
-        }.first
-    }
-    
-    func color(fromHexString string: String) -> Color? {
-        let bodyRegex = /#(?<hexString>[a-f0-9]{6})/.ignoresCase().dotMatchesNewlines()
-        return string.matches(of: bodyRegex).compactMap { match -> Color? in
-            let hexString = String(match.output.hexString)
-            return Color(hex: hexString)
-        }.first
     }
     
     func setColorValues() {
@@ -219,8 +196,8 @@ struct CustomColorPicker: View {
     }
     
     @ViewBuilder
-    var hctColorPicker: some View {
-        VStack(spacing: 12) {
+    var selectedColorView: some View {
+        VStack(spacing: 8) {
             Text(title)
                 .font(.title3)
                 .fontWeight(.bold)
@@ -231,7 +208,6 @@ struct CustomColorPicker: View {
                 colorValues
                 Spacer()
             }
-            hctSliders
         }
     }
     
@@ -264,29 +240,53 @@ struct CustomColorPicker: View {
     
     @ViewBuilder
     var colorWheel: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        VStack(alignment: .leading, spacing: 0) {
             HStack {
-                LazyHGrid(rows: gridRows)  {
-                    ForEach(colorWheelColors, id: \.self) { color in
-                        ZStack {
-                            rectangle(color: color)
-                            if showCopyIcons {
-                                Image(systemName: "square.on.square")
-                                    .foregroundColor(color.contrastingColor)
-                            }
+                Text("Hues")
+                    .textCase(.uppercase)
+                    .font(.caption)
+                    .fontWeight(.bold)
+                Spacer()
+                Button {
+                    colorClipboard.add(colorWheelColors.reversed())
+                } label: {
+                    HStack(alignment: .center) {
+                        Text("Copy All")
+                            .textCase(.uppercase)
+                            .font(.caption)
+                        if showCopyIcons {
+                            Image(systemName: "square.on.square")
+                                .symbolRenderingMode(.hierarchical)
                         }
-                        .aspectRatio(1, contentMode: .fill)
-                        .onTapGesture {
-                            withAnimation {
-                                clipboardColor = color
+                    }
+                    .padding(2)
+                }
+            }
+            .padding([.top, .horizontal], 12)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    LazyHGrid(rows: gridItems)  {
+                        ForEach(colorWheelColors, id: \.self) { color in
+                            ZStack {
+                                rectangle(color: color)
+                                if showCopyIcons {
+                                    Image(systemName: "square.on.square")
+                                        .foregroundColor(color.contrastingColor)
+                                }
+                            }
+                            .aspectRatio(1, contentMode: .fill)
+                            .onTapGesture {
+                                withAnimation {
+                                    colorClipboard.add(color)
+                                }
                             }
                         }
                     }
                 }
+                .fixedSize(horizontal: false, vertical: true)
             }
-            .fixedSize(horizontal: false, vertical: true)
+            .contentMargins(12)
         }
-        .contentMargins(12)
     }
     
     func rectangle(color: Color) -> some View {
@@ -303,43 +303,57 @@ struct CustomColorPicker: View {
             )
     }
     
+    @ViewBuilder
     var colorValues: some View {
-        return VStack(alignment: .leading) {
-            HStack {
-                Text("RGB")
-                    .fontWeight(.bold)
-                Button {
-                    clipboardColor = selectedColor
-                } label: {
-                    HStack {
-                        Text(selectedColor.hexRGB.uppercased())
-                        if showCopyIcons {
-                            Image(systemName: "square.on.square")
-                        }
-                    }
-                    .padding(2)
-                }
-            }
-            HStack {
-                Text("HTC")
-                    .fontWeight(.bold)
-                Button {
-                    clipboardColor = selectedColor
-                } label: {
-                    HStack {
-                        if let hct = selectedColor.hct {
-                            Text(hct.label)
-                        }
-                        if showCopyIcons {
-                            Image(systemName: "square.on.square")
-                        }
-                    }
-                    .padding(2)
-                }
-            }
+        VStack(alignment: .leading) {
+            colorValue("RGB", value: selectedColor.hexRGB)
+            colorValue("HCT", value: selectedColor.hct?.label ?? "")
         }
         .readSize { size in
             squareHeight = size.height
+        }
+    }
+    
+    @ViewBuilder
+    func colorValue(_ titleKey: LocalizedStringKey, value: String) -> some View {
+        HStack(spacing: 2) {
+            Text(titleKey)
+                .fontWeight(.bold)
+            Button {
+                textClipboard = value.uppercased()
+            } label: {
+                HStack {
+                    Text(value)
+                        .textCase(.uppercase)
+                    if showCopyIcons {
+                        Image(systemName: "square.on.square")
+                            .symbolRenderingMode(.hierarchical)
+                    }
+                }
+                .padding(2)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    var colorClipoardGrid: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Recent")
+                .textCase(.uppercase)
+                .font(.caption)
+                .fontWeight(.bold)
+                .padding([.top, .horizontal], 12)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    LazyHGrid(rows: gridItems) {
+                        ForEach(colorClipboard.colors.reversed(), id: \.self) { color in
+                            pasteColorButton(color: color, size: 44)
+                        }
+                    }
+                }
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            .contentMargins(12)
         }
     }
 }
