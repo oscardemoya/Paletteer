@@ -27,7 +27,7 @@ struct ColorsForm: View {
         ColorGroup(color: tertiaryColor, groupName: "Brand", colorName: "Tertiary"),
         ColorGroup(color: successColor, groupName: "Semantic", colorName: "Success"),
         ColorGroup(color: warningColor, groupName: "Semantic", colorName: "Warning"),
-        ColorGroup(color: destructiveColor, groupName: "Semantic", colorName: "Destructive"),
+        ColorGroup(color: destructiveColor, groupName: "Semantic", colorName: "Danger"),
         ColorGroup(color: backgroundColor, groupName: "Neutral", colorName: "Background", narrow: true),
         ColorGroup(color: foregroundColor, groupName: "Neutral", colorName: "Foreground", reversed: true)
     ]}
@@ -42,7 +42,7 @@ struct ColorsForm: View {
                         CustomColorPicker(title: "Tertiary", selectedColor: $tertiaryColor)
                         CustomColorPicker(title: "Success", selectedColor: $successColor)
                         CustomColorPicker(title: "Warning", selectedColor: $warningColor)
-                        CustomColorPicker(title: "Destructive", selectedColor: $destructiveColor)
+                        CustomColorPicker(title: "Danger", selectedColor: $destructiveColor)
                         CustomColorPicker(title: "Background", selectedColor: $backgroundColor)
                         CustomColorPicker(title: "Foreground", selectedColor: $foregroundColor)
                     }
@@ -72,7 +72,7 @@ struct ColorsForm: View {
             }
             .background(.primaryBackground)
             .toolbar {
-                ToolbarItem {
+                ToolbarItem(placement: .cancellationAction) {
                     Button {
                         selectedAppearance.toggle()
                         ColorSchemeSwitcher.shared.overrideDisplayMode()
@@ -80,6 +80,15 @@ struct ColorsForm: View {
                         Image(systemName: selectedAppearance.iconName)
                     }
                 }
+#if !os(macOS)
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "gear")
+                    }
+                }
+#endif
             }
         }
         .onAppear {

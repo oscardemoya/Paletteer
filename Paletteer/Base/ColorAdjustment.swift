@@ -18,4 +18,17 @@ extension Color {
                      brightness: max(min(hsba.brightness + brightness, 1), 0),
                      opacity: max(min(hsba.alpha + opacity, 1), 0))
     }
+    
+    func replace(hue: CGFloat? = nil, saturation: CGFloat? = nil, brightness: CGFloat? = nil, opacity: CGFloat? = nil) -> Color {
+        let color = CrossPlatformColor(self)
+        guard let hsba = color.hsba else {
+            return self
+        }
+        var new = hsba
+        if let hue { new.hue = hue }
+        if let saturation { new.saturation = saturation }
+        if let brightness { new.brightness = brightness }
+        if let opacity { new.alpha = opacity }
+        return Color(hue: new.hue, saturation: new.saturation, brightness: new.brightness, opacity: new.alpha)
+    }
 }

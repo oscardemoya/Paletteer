@@ -11,6 +11,7 @@ struct ColorPaletteView: View {
     static var fileName = "Colors.xcassets"
     var colorList: [ColorGroup]
     var fileURL = FileManager.default.fileURL(fileName: Self.fileName)
+    let fileManagerDelegate = CopyFileManagerDelegate()
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
@@ -104,7 +105,9 @@ struct ColorPaletteView: View {
     func exportFile(at fileURL: URL) {
         if let assetsFileURL = showSavePanel() {
             do {
-                try FileManager.default.copyItem(at: fileURL, to: assetsFileURL)
+                let fileManager = FileManager.default
+                fileManager.delegate = fileManagerDelegate
+                try fileManager.copyItem(at: fileURL, to: assetsFileURL)
             } catch {
                 print("ERROR: \(error)")
             }
@@ -219,17 +222,19 @@ struct ColorPaletteView: View {
             argb = hctColor.toInt()
         case .rgb(let originalColor):
             let light = group.reversed ? !config.light : config.light
-            let adjustedColor = originalColor.adjust(saturation: 0.01, brightness: 0.035)
-            let baseColor = group.narrow && config.light ? adjustedColor : originalColor
-            let adjustedVariance = group.narrow && !light ? 0.65 : 1.0
+            var baseColor = originalColor
+            if group.narrow, let originalValues = originalColor.hsba {
+                baseColor = originalColor.replace(saturation: config.light ? originalValues.saturation + 0.01 : 0,
+                                                  brightness: config.light ? 0.85 : 0.15)
+            }
             let opacities: [(light: Bool?, opacity: Int)] = ColorPalette.overlayOpacities(light: light, narrow: group.narrow)
-            let opacity = Double(opacities[config.index].opacity) / (100.0 / adjustedVariance)
+            let opacity = Double(opacities[config.index].opacity) / 100.0
             let overlay = ColorPalette.overlay(light: opacities[config.index].light)
             if opacity == 1 {
                 color = config.light ? baseColor : baseColor.adjust(hue: 0.03, saturation: -0.02, brightness: -0.05)
             } else {
                 let blend = Color.blend(color1: baseColor, intensity1: opacity,
-                                        color2: overlay, intensity2: (1 / adjustedVariance) - opacity)
+                                        color2: overlay, intensity2: 1 - opacity)
                 color = config.light ? blend : blend.adjust(hue: 0.045, saturation: 0.01, brightness: -0.05)
             }
             argb = color.rgbInt ?? 0
@@ -261,6 +266,12 @@ struct ColorPaletteView: View {
         emptyContent?.write(to: "Colors.xcassets/Colors/\(groupPath)/Contents.json")
         emptyContent?.write(to: "Colors.xcassets/Colors/Contents.json")
         emptyContent?.write(to: "Colors.xcassets/Contents.json")
+    }
+}
+
+class CopyFileManagerDelegate: NSObject, FileManagerDelegate {
+    func fileManager(_ fileManager: FileManager, shouldProceedAfterError error: any Error, copyingItemAt srcURL: URL, to dstURL: URL) -> Bool {
+        true
     }
 }
 

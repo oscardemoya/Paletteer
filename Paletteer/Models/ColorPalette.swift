@@ -25,7 +25,6 @@ struct ColorPalette {
         if narrow {
             if light {
                 [
-                    
                     (true, 01),
                     (true, 02),
                     (true, 05),

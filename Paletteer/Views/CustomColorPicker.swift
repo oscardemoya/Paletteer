@@ -68,8 +68,8 @@ struct CustomColorPicker: View {
         VStack(spacing: 0) {
             VStack(spacing: 16) {
                 HStack(alignment: .center) {
-                    if let colorFromClipboard {
-                        pasteColorButton(color: colorFromClipboard)
+                    if let color = colorFromClipboard(clipboardColor: clipboardColor) {
+                        pasteColorButton(color: color)
                     } else {
                         Spacer().frame(width: 32, height: 32)
                     }
@@ -82,7 +82,7 @@ struct CustomColorPicker: View {
                     .pickerStyle(.segmented)
                     .fixedSize()
                     Spacer()
-                    CircularCloseButton(size: .large) {
+                    CircularCloseButton {
                         showingSheet = false
                     }
                     .frame(width: 32, height: 32)
@@ -139,7 +139,7 @@ struct CustomColorPicker: View {
         }
     }
     
-    var colorFromClipboard: Color? {
+    func colorFromClipboard(clipboardColor: Color) -> Color? {
         if clipboardColor != .clear { return clipboardColor }
         guard let pasteboard = String.pasteboardString else { return nil }
         print("Text in clipboard: \(pasteboard)")
