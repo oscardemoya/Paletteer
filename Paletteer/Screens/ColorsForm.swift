@@ -19,6 +19,7 @@ struct ColorsForm: View {
     @AppStorage(key(.destructiveColor)) var destructiveColor: Color = .red
     @AppStorage(key(.backgroundColor)) var backgroundColor: Color = .gray
     @AppStorage(key(.foregroundColor)) var foregroundColor: Color = .gray
+    var columns = [GridItem(.adaptive(minimum: 200), spacing: 16)]
     
     var colorList: [ColorGroup] {[
         ColorGroup(color: primaryColor, groupName: "Brand", colorName: "Primary"),
@@ -35,7 +36,7 @@ struct ColorsForm: View {
         NavigationStack(path: $path) {
             VStack(spacing: 0) {
                 ScrollView {
-                    VStack {
+                    LazyVGrid(columns: columns, spacing: 16) {
                         CustomColorPicker(title: "Primary", selectedColor: $primaryColor)
                         CustomColorPicker(title: "Secondary", selectedColor: $secondaryColor)
                         CustomColorPicker(title: "Tertiary", selectedColor: $tertiaryColor)
