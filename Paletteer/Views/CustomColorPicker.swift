@@ -11,12 +11,10 @@ struct CustomColorPicker: View {
     @State var title: String = ""
     @Binding var selectedColor: Color
     @Binding var colorClipboard: ColorClipboard
-    @State private var textClipboard: String?
     @State private var recentColors: [Color] = []
     @State private var showingSheet = false
     @State private var sheetHeight: CGFloat = .zero
     @State private var colorSpace: ColorSpace = .hct
-    @State private var squareHeight: CGFloat = .zero
     @State private var hueSliderValue = Self.hueRange.median
     @State private var chromaOrSaturationSliderValue = Self.chromaOrSaturationRange.median
     @State private var toneOrBrightnessSliderValue = Self.toneOrBrightnessRange.median
@@ -109,29 +107,19 @@ struct CustomColorPicker: View {
         .onChange(of: showingSheet) {
             if showingSheet {
                 setColorValues()
-                updateTextClipboard()
             }
         }
         .onChange(of: colorSpace, setColorValues)
         .onChange(of: hueSliderValue, updateColor)
         .onChange(of: chromaOrSaturationSliderValue, updateColor)
         .onChange(of: toneOrBrightnessSliderValue, updateColor)
-        .onChange(of: textClipboard, copyTextToPasteboard)
-    }
-    
-    func copyTextToPasteboard() {
-        String.pasteboardString = textClipboard
-    }
-    
-    func updateTextClipboard() {
-        textClipboard = String.pasteboardString
     }
     
     @ViewBuilder
     var pasteboardLookupButton: some View {
         pasteboardColor(color: .foreground900, icon: Image(systemName: "square.on.square.dashed"))
             .onTapGesture {
-                updateTextClipboard()
+                colorClipboard.text = String.pasteboardString
             }
     }
     
@@ -212,7 +200,7 @@ struct CustomColorPicker: View {
     
     @ViewBuilder
     var selectedColorView: some View {
-        HStack {
+        HStack(alignment: .bottom) {
             VStack(alignment: .leading, spacing: 8) {
                 Text(title)
                     .font(.title3)
@@ -220,7 +208,7 @@ struct CustomColorPicker: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 HStack(spacing: 12) {
                     rectangle(color: selectedColor)
-                        .frame(width: squareHeight, height: squareHeight)
+                        .frame(width: 60, height: 60)
                     colorValues
                 }
             }
@@ -233,8 +221,11 @@ struct CustomColorPicker: View {
     var colorFromTextClipboardView: some View {
         VStack(spacing: 0) {
             Group {
-                if let textClipboard, let color = textClipboard.color {
+                if let text = colorClipboard.text, let color = text.color {
                     pasteColorButton(color: color)
+                        .onLongPressGesture {
+                            colorClipboard.text = nil
+                        }
                 } else {
                     pasteboardLookupButton
                 }
@@ -245,8 +236,8 @@ struct CustomColorPicker: View {
                 .font(.caption)
                 .fontWeight(.bold)
                 .foregroundColor(.foreground500)
-            if let textClipboard, textClipboard.color != nil {
-                Text(textClipboard)
+            if let text = colorClipboard.text, text.color != nil {
+                Text(text)
                     .font(.caption2)
                     .foregroundColor(.foreground700)
             }
@@ -260,9 +251,8 @@ struct CustomColorPicker: View {
                         dash: [5, 3]
                     )
                 )
-                .foregroundColor(.foreground700)
+                .foregroundColor(.foreground900)
         )
-        .frame(maxHeight: .infinity)
     }
     
     @ViewBuilder
@@ -364,9 +354,6 @@ struct CustomColorPicker: View {
             colorValue("RGB", value: selectedColor.hexRGB)
             colorValue("HCT", value: selectedColor.hct?.label ?? "")
         }
-        .readSize { size in
-            squareHeight = size.height
-        }
     }
     
     @ViewBuilder
@@ -375,7 +362,7 @@ struct CustomColorPicker: View {
             Text(titleKey)
                 .fontWeight(.bold)
             Button {
-                textClipboard = value.uppercased()
+                colorClipboard.text = value.uppercased()
             } label: {
                 HStack {
                     Text(value)

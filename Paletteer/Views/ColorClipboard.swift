@@ -15,6 +15,11 @@ class ColorClipboard {
     
     static let maxItems = 12
     var colors: [Color] = []
+    var text: String? = nil {
+        didSet {
+            String.pasteboardString = text
+        }
+    }
     
     init() {
         self.colors = Defaults.colors

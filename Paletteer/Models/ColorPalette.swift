@@ -18,7 +18,7 @@ struct ColorPalette {
     
     // RGB Conversion
     static var lightestColor: Color = .white
-    static var darkestColor: Color = Color(hex: "#080808") ?? .black
+    static var darkestColor: Color = Color(hex: "#080808")
     static var overlaysCount: Int { overlayOpacities(light: true, narrow: false).count }
     
     static func overlayOpacities(light: Bool, narrow: Bool) -> [(Bool?, Int)] {
