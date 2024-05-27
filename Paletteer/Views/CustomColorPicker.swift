@@ -358,7 +358,7 @@ struct CustomColorPicker: View {
     
     @ViewBuilder
     func colorValue(_ titleKey: LocalizedStringKey, value: String) -> some View {
-        HStack(spacing: 2) {
+        HStack(spacing: 4) {
             Text(titleKey)
                 .fontWeight(.bold)
             Button {
