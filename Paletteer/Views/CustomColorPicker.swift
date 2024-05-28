@@ -54,65 +54,76 @@ struct CustomColorPicker: View {
     
     @ViewBuilder
     var colorCreator: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                VStack(spacing: 16) {
-                    HStack(alignment: .center) {
-                        Spacer().frame(width: 32, height: 32)
-                        Spacer()
-                        Picker("", selection: $colorSpace) {
-                            ForEach(ColorSpace.allCases) {
-                                Text($0.title)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        .fixedSize()
-                        Spacer()
-                        CircularCloseButton {
-                            showingSheet = false
-                        }
-                        .frame(width: 32, height: 32)
-                    }
-                }
-                .padding(12)
-                Divider()
-                VStack(spacing: 16) {
-                    selectedColorView
-                    switch colorSpace {
-                    case .hct, .hsb:
-                        hctSliders
-                    case .rgb:
-                        ColorPicker(title, selection: $selectedColor, supportsOpacity: false)
-                            .frame(maxWidth: .infinity)
-                            .rounded()
-                    }
-                }
-                .padding(12)
-                Divider()
-                colorWheel
-                if !colorClipboard.colors.isEmpty {
-                    colorClipoardGrid
+        wrappedColorCreator
+            .onChange(of: showingSheet) {
+                if showingSheet {
+                    setColorValues()
                 }
             }
+            .onChange(of: colorSpace, setColorValues)
+            .onChange(of: hueSliderValue, updateColor)
+            .onChange(of: chromaOrSaturationSliderValue, updateColor)
+            .onChange(of: toneOrBrightnessSliderValue, updateColor)
+    }
+    
+    @ViewBuilder
+    var wrappedColorCreator: some View {
 #if os(macOS)
+        colorCreatorContent
             .fixedSize()
 #else
-            .readSize { size in
-                sheetHeight = size.height
-            }
-            .presentationDetents([.height(sheetHeight)])
+        ScrollView {
+            colorCreatorContent
+                .readSize { size in
+                    sheetHeight = size.height
+                }
+                .presentationDetents([.height(sheetHeight)])
+                .presentationDragIndicator(.hidden)
+        }
 #endif
-        }
-        .presentationDragIndicator(.hidden)
-        .onChange(of: showingSheet) {
-            if showingSheet {
-                setColorValues()
+    }
+    
+    @ViewBuilder
+    var colorCreatorContent: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(spacing: 16) {
+                HStack(alignment: .center) {
+                    Spacer().frame(width: 32, height: 32)
+                    Spacer()
+                    Picker("", selection: $colorSpace) {
+                        ForEach(ColorSpace.allCases) {
+                            Text($0.title)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .fixedSize()
+                    Spacer()
+                    CircularCloseButton {
+                        showingSheet = false
+                    }
+                    .frame(width: 32, height: 32)
+                }
+            }
+            .padding(12)
+            Divider()
+            VStack(spacing: 16) {
+                selectedColorView
+                switch colorSpace {
+                case .hct, .hsb:
+                    hctSliders
+                case .rgb:
+                    ColorPicker(title, selection: $selectedColor, supportsOpacity: false)
+                        .frame(maxWidth: .infinity)
+                        .rounded()
+                }
+            }
+            .padding(12)
+            Divider()
+            colorWheel
+            if !colorClipboard.colors.isEmpty {
+                colorClipoardGrid
             }
         }
-        .onChange(of: colorSpace, setColorValues)
-        .onChange(of: hueSliderValue, updateColor)
-        .onChange(of: chromaOrSaturationSliderValue, updateColor)
-        .onChange(of: toneOrBrightnessSliderValue, updateColor)
     }
     
     @ViewBuilder
