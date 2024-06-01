@@ -8,17 +8,22 @@
 import SwiftUI
 
 struct CustomColorPicker: View {
-    @State var title: String = ""
-    @Binding var selectedColor: Color
+    @Environment(\.dismiss) private var dismiss
+    @AppStorage(key(.colorPalette)) var colorPalette = [ColorConfig]()
+    @Binding var colorConfig: ColorConfig
     @Binding var colorClipboard: ColorClipboard
+    var onDelete: Action?
+    var onEdit: Action?
     @State private var recentColors: [Color] = []
-    @State private var showingSheet = false
+    @State private var isEditingColor = false
     @State private var sheetHeight: CGFloat = .zero
     @State private var colorSpace: ColorSpace = .hct
     @State private var hueSliderValue = Self.hueRange.median
     @State private var chromaOrSaturationSliderValue = Self.chromaOrSaturationRange.median
     @State private var toneOrBrightnessSliderValue = Self.toneOrBrightnessRange.median
     @State private var showCopyIcons: Bool = true
+    @State private var closeButtonSize: CGSize = .zero
+    @State private var showDeleteConfirmation: Bool = false
     
     static let hueRange: ClosedRange<Double> = 0...360
     static let chromaOrSaturationRange: ClosedRange<Double> = 0...120
@@ -27,7 +32,7 @@ struct CustomColorPicker: View {
     let gridItems = [GridItem(.fixed(40))]
     
     var colorWheelColors: [Color] {
-        guard let hct = selectedColor.hct else { return [] }
+        guard let hct = colorConfig.color.hct else { return [] }
         return TemperatureCache(hct)
             .analogous(count: 12)
             .sorted(by: { $0.hue < $1.hue })
@@ -35,28 +40,60 @@ struct CustomColorPicker: View {
     }
     
     var body: some View {
-        Button {
-            showingSheet.toggle()
-        } label: {
+        Button {} label: {
             HStack {
-                Text(title)
+                VStack(spacing: 0) {
+                    if colorPalette.contains(colorConfig) {
+                        if !colorConfig.groupName.isEmpty {
+                            Text(colorConfig.groupName)
+                                .font(.subheadline)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .foregroundColor(.foreground500)
+                        }
+                        Text(colorConfig.colorName)
+                            .foregroundColor(.foreground300)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    } else {
+                        TextField("Color Name", text: $colorConfig.colorName)
+                            .textFieldStyle(.plain)
+                    }
+                }
                 Spacer()
-                borderedRect(color: selectedColor)
+                if colorConfig.narrow {
+                    Image(systemName: "arrow.down.right.and.arrow.up.left.square.fill")
+                        .font(.title)
+                        .foregroundColor(.foreground800)
+                }
+                if colorConfig.reversed {
+                    Image(systemName: "arrow.counterclockwise.square.fill")
+                        .font(.title)
+                        .foregroundColor(.foreground800)
+                }
+                borderedRect(color: colorConfig.color)
                     .frame(width: 30, height: 30)
+                    .onTapGesture {
+                        isEditingColor = true
+                    }
+            }
+            .onTapGesture {
+                if colorPalette.contains(colorConfig) {
+                    isEditingColor = true
+                }
+            }
+            .onLongPressGesture {
+                onEdit?()
             }
         }
-        .buttonStyle(.custom(backgroundColor: .secondaryActionBackground,
-                             foregroundColor: .secondaryActionForeground))
-        .sheet(isPresented: $showingSheet) {
-            colorCreator
+        .sheet(isPresented: $isEditingColor) {
+            colorPicker
         }
     }
     
     @ViewBuilder
-    var colorCreator: some View {
-        wrappedColorCreator
-            .onChange(of: showingSheet) {
-                if showingSheet {
+    var colorPicker: some View {
+        wrappedColorPicker
+            .onChange(of: isEditingColor) {
+                if isEditingColor {
                     setColorValues()
                 }
             }
@@ -67,13 +104,13 @@ struct CustomColorPicker: View {
     }
     
     @ViewBuilder
-    var wrappedColorCreator: some View {
+    var wrappedColorPicker: some View {
 #if os(macOS)
-        colorCreatorContent
+        colorPickerContent
             .fixedSize()
 #else
         ScrollView {
-            colorCreatorContent
+            colorPickerContent
                 .readSize { size in
                     sheetHeight = size.height
                 }
@@ -84,27 +121,33 @@ struct CustomColorPicker: View {
     }
     
     @ViewBuilder
-    var colorCreatorContent: some View {
+    var colorPickerContent: some View {
         VStack(alignment: .leading, spacing: 0) {
-            VStack(spacing: 16) {
-                HStack(alignment: .center) {
-                    Spacer().frame(width: 32, height: 32)
-                    Spacer()
-                    Picker("", selection: $colorSpace) {
-                        ForEach(ColorSpace.allCases) {
-                            Text($0.title)
-                        }
+            HStack(alignment: .center) {
+                if onDelete != nil {
+                    CircularButton(size: .large, systemName: "trash.circle.fill") {
+                        showDeleteConfirmation = true
                     }
-                    .pickerStyle(.segmented)
-                    .fixedSize()
+                } else {
                     Spacer()
-                    CircularCloseButton {
-                        showingSheet = false
+                        .frame(width: closeButtonSize.width, height: closeButtonSize.height)
+                }
+                Spacer()
+                Picker("", selection: $colorSpace) {
+                    ForEach(ColorSpace.allCases) {
+                        Text($0.title)
                     }
-                    .frame(width: 32, height: 32)
+                }
+                .pickerStyle(.segmented)
+                .fixedSize()
+                Spacer()
+                CircularButton(size: .large) {
+                    isEditingColor = false
+                }
+                .readSize { size in
+                    closeButtonSize = size
                 }
             }
-            .padding(12)
             Divider()
             VStack(spacing: 16) {
                 selectedColorView
@@ -112,7 +155,7 @@ struct CustomColorPicker: View {
                 case .hct, .hsb:
                     hctSliders
                 case .rgb:
-                    ColorPicker(title, selection: $selectedColor, supportsOpacity: false)
+                    ColorPicker(colorConfig.colorName, selection: $colorConfig.color, supportsOpacity: false)
                         .frame(maxWidth: .infinity)
                         .rounded()
                 }
@@ -123,6 +166,15 @@ struct CustomColorPicker: View {
             if !colorClipboard.colors.isEmpty {
                 colorClipoardGrid
             }
+        }
+        .confirmationDialog("Delete Color?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                dismiss()
+                onDelete?()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This action cannot be undone.")
         }
     }
     
@@ -138,7 +190,7 @@ struct CustomColorPicker: View {
     func pasteColorButton(color: Color, size: CGFloat = 32) -> some View {
         pasteboardColor(color: color, size: size)
             .onTapGesture {
-                selectedColor = color
+                colorConfig.color = color
                 setColorValues()
             }
     }
@@ -170,7 +222,7 @@ struct CustomColorPicker: View {
     }
     
     func setHCTValues() {
-        guard let hct = selectedColor.hct else {
+        guard let hct = colorConfig.color.hct else {
             print("Error converting color to HCT.")
             return
         }
@@ -182,7 +234,7 @@ struct CustomColorPicker: View {
     }
     
     func setHSBValues() {
-        guard let hsba = selectedColor.hsba else {
+        guard let hsba = colorConfig.color.hsba else {
             print("Error converting color to HSB.")
             return
         }
@@ -197,12 +249,12 @@ struct CustomColorPicker: View {
         switch colorSpace {
         case .hct:
             let hctColor = Hct.from(hueSliderValue, chromaOrSaturationSliderValue, toneOrBrightnessSliderValue)
-            selectedColor = Color(hctColor: hctColor)
+            colorConfig.color = Color(hctColor: hctColor)
         case .hsb:
             let hue = hueSliderValue / 360
             let saturation = chromaOrSaturationSliderValue / 100
             let brightness = toneOrBrightnessSliderValue / 100
-            selectedColor = Color(hue: hue, saturation: saturation, brightness: brightness)
+            colorConfig.color = Color(hue: hue, saturation: saturation, brightness: brightness)
         case .rgb:
             break
         }
@@ -213,12 +265,21 @@ struct CustomColorPicker: View {
     var selectedColorView: some View {
         HStack(alignment: .bottom) {
             VStack(alignment: .leading, spacing: 8) {
-                Text(title)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(spacing: 0) {
+                    if !colorConfig.groupName.isEmpty {
+                        Text(colorConfig.groupName)
+                            .font(.subheadline)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .foregroundColor(.foreground500)
+                    }
+                    Text(colorConfig.colorName)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.foreground300)
+                }
                 HStack(spacing: 12) {
-                    rectangle(color: selectedColor)
+                    rectangle(color: colorConfig.color)
                         .frame(width: 60, height: 60)
                     colorValues
                 }
@@ -362,8 +423,8 @@ struct CustomColorPicker: View {
     @ViewBuilder
     var colorValues: some View {
         VStack(alignment: .leading) {
-            colorValue("RGB", value: selectedColor.hexRGB)
-            colorValue("HCT", value: selectedColor.hct?.label ?? "")
+            colorValue("RGB", value: colorConfig.color.hexRGB)
+            colorValue("HCT", value: colorConfig.color.hct?.label ?? "")
         }
     }
     
@@ -436,7 +497,7 @@ struct CustomColorPicker: View {
 }
 
 #Preview {
-    @State var color: Color = .blue
+    @State var colorConfig = ColorConfig(color: .blue, groupName: "Brand", colorName: "Primary")
     @State var colorClipboard = ColorClipboard()
-    return CustomColorPicker(title: "Title", selectedColor: $color, colorClipboard: $colorClipboard)
+    return CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard) {} onEdit: {}
 }

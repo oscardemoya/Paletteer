@@ -11,7 +11,7 @@ import SwiftUI
 struct PaletteerApp: App {
     var body: some Scene {
         WindowGroup {
-            ColorsForm()
+            ColorPaletteSettingsView()
         }
     }
 }

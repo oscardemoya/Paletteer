@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ColorPaletteView: View {
     static var fileName = "Colors.xcassets"
-    var colorList: [ColorGroup]
+    var colorList: [ColorConfig]
     var fileURL = FileManager.default.fileURL(fileName: Self.fileName)
     let fileManagerDelegate = CopyFileManagerDelegate()
     
@@ -29,8 +29,8 @@ struct ColorPaletteView: View {
         ZStack(alignment: .center) {
             VStack(spacing: 0) {
                 ScrollView {
-                    ForEach(colorList) { colorGroup in
-                        rectangleStack(colorPairs: shades(for: colorGroup))
+                    ForEach(colorList) { colorConfig in
+                        rectangleStack(colorPairs: shades(for: colorConfig))
                     }
                     .scrollTargetLayout()
                 }
@@ -128,9 +128,11 @@ struct ColorPaletteView: View {
     }
 #endif
     
-    private func saveFile(for group: ColorGroup) {
-        saveEmptyFiles(groupPath: group.groupName)
-        shades(for: group).enumerated().forEach { index, tuple in
+    private func saveFile(for config: ColorConfig) {
+        if !config.groupName.isEmpty {
+            saveEmptyFiles(to: config.groupName)
+        }
+        shades(for: config).enumerated().forEach { index, tuple in
             let lightCode: String
             if colorSpace == .hct {
                 let lightTone = ColorPalette.tones(light: false)[index]
@@ -139,9 +141,16 @@ struct ColorPaletteView: View {
                 let overlayTone = ColorPalette.overlayTones[index]
                 lightCode = String(format: "%03d", overlayTone * 10)
             }
-            let colorName = "\(group.colorName)-\(lightCode)"
-            saveFile(groupPath: "\(group.groupName)/\(group.colorName)", colorName: colorName,
-                     lightArgb: tuple.light.rgbInt ?? 0, darkArgb: tuple.dark.rgbInt ?? 0)
+            let colorName = "\(config.colorName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))-\(lightCode)"
+            var pathComponents = [String]()
+            if !config.groupName.isEmpty {
+                pathComponents.append(config.groupName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
+            }
+            pathComponents.append(config.colorName)
+            let path = pathComponents.joined(separator: "/")
+            let lightArgb = tuple.light.rgbInt ?? 0
+            let darkArgb = tuple.dark.rgbInt ?? 0
+            saveFile(to: path, colorName: colorName, lightArgb: lightArgb, darkArgb: darkArgb)
         }
     }
     
@@ -192,7 +201,7 @@ struct ColorPaletteView: View {
             }
     }
     
-    private func shades(for group: ColorGroup) -> [ColorPair] {
+    private func shades(for group: ColorConfig) -> [ColorPair] {
         (0..<ColorPalette.shadesCount(isMaterial: colorSpace == .hct)).compactMap { index in
             if colorSpace == .hct {
                 guard let hctColor = group.color.hct else { return nil }
@@ -209,7 +218,7 @@ struct ColorPaletteView: View {
         }
     }
     
-    private func generateColor(for group: ColorGroup, using config: ColorConversion) -> (color: Color, argb: Int) {
+    private func generateColor(for group: ColorConfig, using config: ColorConversion) -> (color: Color, argb: Int) {
         var color: Color
         var argb: Int
         switch config.color {
@@ -242,7 +251,7 @@ struct ColorPaletteView: View {
         return (color: color, argb: argb)
     }
     
-    private func saveFile(groupPath: String, colorName: String, lightArgb: Int, darkArgb: Int) {
+    private func saveFile(to filePath: String, colorName: String, lightArgb: Int, darkArgb: Int) {
         let lightRed = ColorUtils.redFromArgb(lightArgb)
         let lightGreen = ColorUtils.greenFromArgb(lightArgb)
         let lightBlue = ColorUtils.blueFromArgb(lightArgb)
@@ -258,12 +267,12 @@ struct ColorPaletteView: View {
             "{{db}}" : darkBlue.hexStringWithPrefix,
         ]
         let fileContent = String(forResource: "ColorContentsTemplate", ofType: "json", parameters: parameters)
-        fileContent?.write(to: "Colors.xcassets/Colors/\(groupPath)/\(colorName).colorset/Contents.json")
+        fileContent?.write(to: "Colors.xcassets/Colors/\(filePath)/\(colorName).colorset/Contents.json")
     }
     
-    private func saveEmptyFiles(groupPath: String) {
+    private func saveEmptyFiles(to filePath: String) {
         let emptyContent = String(forResource: "Contents", ofType: "json")
-        emptyContent?.write(to: "Colors.xcassets/Colors/\(groupPath)/Contents.json")
+        emptyContent?.write(to: "Colors.xcassets/Colors/\(filePath)/Contents.json")
         emptyContent?.write(to: "Colors.xcassets/Colors/Contents.json")
         emptyContent?.write(to: "Colors.xcassets/Contents.json")
     }

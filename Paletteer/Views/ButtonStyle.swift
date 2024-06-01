@@ -14,7 +14,8 @@ struct CustomButtonStyle: ButtonStyle {
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding(12)
+            .padding(.leading, 16)
+            .padding([.vertical, .trailing], 12)
             .font(.body)
             .background(backgroundColor)
             .foregroundColor(foregroundColor)
@@ -28,7 +29,7 @@ struct CustomButtonStyle: ButtonStyle {
 extension ButtonStyle where Self == CustomButtonStyle {
     static func custom(backgroundColor: Color = .blue,
                        foregroundColor: Color = .white,
-                       cornerRadius: CGFloat = 12) -> CustomButtonStyle {
+                       cornerRadius: CGFloat = 16) -> CustomButtonStyle {
         .init(backgroundColor: backgroundColor, foregroundColor: foregroundColor, cornerRadius: cornerRadius)
     }
 }
