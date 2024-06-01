@@ -7,11 +7,35 @@
 
 import SwiftUI
 
+enum ColorScale: String, Codable, CaseIterable, Identifiable, Hashable {
+    case lightening
+    case darkening
+    
+    var id: Self { self }
+    var isDarkening: Bool { self == .darkening }
+    var isLightening: Bool { self == .lightening }
+
+    var name: String {
+        switch self {
+        case .darkening: String(localized: "Darkening")
+        case .lightening: String(localized: "Lightening")
+        }
+    }
+    
+    var iconName: String {
+        switch self {
+        case .darkening: return "square.2.layers.3d.top.filled" // 􀯮
+        case .lightening: return "square.2.layers.3d.bottom.filled" // 􀯯
+        }
+    }
+}
+
 struct ColorConfig: Codable, Identifiable, Hashable {
     var id: String = UUID().uuidString
     var color: Color
     var groupName: String = ""
     var colorName: String
+    var darkColorScale: ColorScale = .darkening
     var reversed: Bool = false
     var narrow: Bool = false
     
@@ -19,9 +43,11 @@ struct ColorConfig: Codable, Identifiable, Hashable {
     
     func hash(into hasher: inout Hasher) {
         var hasher = hasher
-        hasher.combine(hexColor)
+        hasher.combine(id)
+        hasher.combine(color)
         hasher.combine(groupName)
         hasher.combine(colorName)
+        hasher.combine(darkColorScale)
         hasher.combine(reversed)
         hasher.combine(narrow)
     }
@@ -49,6 +75,7 @@ extension ColorConfig: RawRepresentable {
         case color
         case groupName
         case colorName
+        case darkColorScale
         case reversed
         case narrow
     }
@@ -59,6 +86,7 @@ extension ColorConfig: RawRepresentable {
         color = try container.decode(Color.self, forKey: .color)
         groupName = try container.decode(String.self, forKey: .groupName)
         colorName = try container.decode(String.self, forKey: .colorName)
+        darkColorScale = try container.decode(ColorScale.self, forKey: .darkColorScale)
         reversed = try container.decode(Bool.self, forKey: .reversed)
         narrow = try container.decode(Bool.self, forKey: .narrow)
     }
@@ -69,6 +97,7 @@ extension ColorConfig: RawRepresentable {
         try container.encode(color, forKey: .color)
         try container.encode(groupName, forKey: .groupName)
         try container.encode(colorName, forKey: .colorName)
+        try container.encode(darkColorScale, forKey: .darkColorScale)
         try container.encode(reversed, forKey: .reversed)
         try container.encode(narrow, forKey: .narrow)
     }

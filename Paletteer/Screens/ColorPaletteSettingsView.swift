@@ -25,7 +25,7 @@ struct ColorPaletteSettingsView: View {
         ColorConfig(color: .green, groupName: "Semantic", colorName: "Success"),
         ColorConfig(color: .yellow, groupName: "Semantic", colorName: "Warning"),
         ColorConfig(color: .red, groupName: "Semantic", colorName: "Error"),
-        ColorConfig(color: .gray, groupName: "Neutral", colorName: "Background", narrow: true),
+        ColorConfig(color: .gray, groupName: "Neutral", colorName: "Background", darkColorScale: .lightening, narrow: true),
         ColorConfig(color: .black, groupName: "Neutral", colorName: "Foreground", reversed: true)
     ]}
     
@@ -47,10 +47,10 @@ struct ColorPaletteSettingsView: View {
                 ColorPaletteView(colorList: colorList)
             }
             .sheet(isPresented: $isAdding) {
-                ColorConfigForm(colorConfig: $newColor, colorClipboard: $colorClipboard)
+                ColorConfigForm(colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: true)
             }
             .sheet(isPresented: $isEditing) {
-                ColorConfigForm(colorConfig: $exisitingColor, colorClipboard: $colorClipboard)
+                ColorConfigForm(colorConfig: $exisitingColor, colorClipboard: $colorClipboard, isEditing: true)
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -80,10 +80,8 @@ struct ColorPaletteSettingsView: View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 8) {
                 ForEach($colorPalette) { $colorConfig in
-                    CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard) {
-                        colorPalette.removeAll { config in
-                            colorConfig.id == config.id
-                        }
+                    CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {
+                        colorPalette.removeAll { colorConfig.id == $0.id }
                     } onEdit: {
                         exisitingColor = colorConfig
                         isEditing = true

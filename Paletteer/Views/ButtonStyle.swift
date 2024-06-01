@@ -14,13 +14,12 @@ struct CustomButtonStyle: ButtonStyle {
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding(.leading, 16)
-            .padding([.vertical, .trailing], 12)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
             .font(.body)
             .background(backgroundColor)
             .foregroundColor(foregroundColor)
             .cornerRadius(cornerRadius, antialiased: true)
-            .padding(.vertical, 2)
             .scaleEffect(configuration.isPressed ? 0.99 : 1.0)
             .transition(.opacity)
     }

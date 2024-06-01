@@ -12,6 +12,7 @@ struct ColorConfigForm: View {
     @AppStorage(key(.colorPalette)) var colorPalette = [ColorConfig]()
     @Binding var colorConfig: ColorConfig
     @Binding var colorClipboard: ColorClipboard
+    var isEditing: Bool
     @State private var sheetHeight: CGFloat = .zero
     @State private var closeButtonSize: CGSize = .zero
     
@@ -44,8 +45,8 @@ struct ColorConfigForm: View {
                 Spacer()
                     .frame(width: closeButtonSize.width, height: closeButtonSize.height)
                 Spacer()
-                Text("New Color")
-                    .font(.title2)
+                Text(isEditing ? colorConfig.colorName : "New Color")
+                    .font(.title3)
                     .fontWeight(.bold)
                     .fontDesign(.rounded)
                 Spacer()
@@ -61,22 +62,39 @@ struct ColorConfigForm: View {
                 TextField("Group Name (Optional)", text: $colorConfig.groupName)
                     .textFieldStyle(.plain)
                     .rounded(backgroundColor: .secondaryInputBackground)
-                CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard)
+                CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: isEditing)
                     .buttonStyle(.custom(backgroundColor: .secondaryInputBackground,
                                          foregroundColor: .secondaryActionForeground))
-                HStack(spacing: 12) {
-                    Toggle("Narrow", isOn: $colorConfig.narrow)
-                        .padding(.horizontal, 4)
-                    Toggle("Reversed", isOn: $colorConfig.reversed)
-                        .padding(.horizontal, 4)
+                Group {
+                    HStack {
+                        Text("Dark Color Scale")
+                            .padding(.horizontal, 4)
+                        Spacer()
+                        Picker("", selection: $colorConfig.darkColorScale) {
+                            ForEach(ColorScale.allCases, id: \.self) { item in
+                                Text(item.name).tag(item)
+                            }
+                        }
+                    }
+                    .frame(height: 30)
+                    HStack(spacing: 12) {
+                        Toggle("Narrow", isOn: $colorConfig.narrow)
+                            .padding(.horizontal, 4)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Toggle("Reversed", isOn: $colorConfig.reversed)
+                            .padding(.horizontal, 4)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .frame(height: 30)
                 }
+                .frame(maxWidth: .infinity)
                 .foregroundColor(.foreground300)
                 .rounded(backgroundColor: .secondaryInputBackground, padding: 12)
                 Button {
                     dismiss()
                     colorPalette.append(colorConfig)
                 } label: {
-                    Text("Add Color")
+                    Text(isEditing ? "Save Changes" : "Add Color")
                         .font(.title3)
                         .fontWeight(.medium)
                         .fontDesign(.rounded)
@@ -95,5 +113,5 @@ struct ColorConfigForm: View {
 #Preview {
     @State var newColor = ColorConfig(color: .blue, colorName: "")
     @State var colorClipboard = ColorClipboard()
-    return ColorConfigForm(colorConfig: $newColor, colorClipboard: $colorClipboard)
+    return ColorConfigForm(colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: false)
 }

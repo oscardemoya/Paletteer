@@ -12,6 +12,7 @@ struct CustomColorPicker: View {
     @AppStorage(key(.colorPalette)) var colorPalette = [ColorConfig]()
     @Binding var colorConfig: ColorConfig
     @Binding var colorClipboard: ColorClipboard
+    var isEditing: Bool
     var onDelete: Action?
     var onEdit: Action?
     @State private var recentColors: [Color] = []
@@ -31,19 +32,14 @@ struct CustomColorPicker: View {
     
     let gridItems = [GridItem(.fixed(40))]
     
-    var colorWheelColors: [Color] {
-        guard let hct = colorConfig.color.hct else { return [] }
-        return TemperatureCache(hct)
-            .analogous(count: 12)
-            .sorted(by: { $0.hue < $1.hue })
-            .map { Color(hctColor: $0) }
-    }
-    
     var body: some View {
-        Button {} label: {
+        Button { if !isEditingColor { isEditingColor = true } } label: {
             HStack {
                 VStack(spacing: 0) {
-                    if colorPalette.contains(colorConfig) {
+                    if isEditing {
+                        TextField("Color Name", text: $colorConfig.colorName)
+                            .textFieldStyle(.plain)
+                    } else {
                         if !colorConfig.groupName.isEmpty {
                             Text(colorConfig.groupName)
                                 .font(.subheadline)
@@ -53,12 +49,9 @@ struct CustomColorPicker: View {
                         Text(colorConfig.colorName)
                             .foregroundColor(.foreground300)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                    } else {
-                        TextField("Color Name", text: $colorConfig.colorName)
-                            .textFieldStyle(.plain)
                     }
                 }
-                Spacer()
+                .frame(maxWidth: .infinity)
                 if colorConfig.narrow {
                     Image(systemName: "arrow.down.right.and.arrow.up.left.square.fill")
                         .font(.title)
@@ -69,16 +62,21 @@ struct CustomColorPicker: View {
                         .font(.title)
                         .foregroundColor(.foreground800)
                 }
-                borderedRect(color: colorConfig.color)
-                    .frame(width: 30, height: 30)
-                    .onTapGesture {
-                        isEditingColor = true
+                ZStack {
+                    borderedRect(color: colorConfig.color)
+                        .frame(width: 30, height: 30)
+                        .onTapGesture {
+                            isEditingColor = true
+                        }
+                    if colorConfig.darkColorScale.isLightening {
+                        Image(systemName: "square.2.layers.3d.bottom.filled")
+                            .foregroundColor(colorConfig.color.contrastingColor)
+                            .padding(2)
                     }
+                }
             }
             .onTapGesture {
-                if colorPalette.contains(colorConfig) {
-                    isEditingColor = true
-                }
+                isEditingColor = true
             }
             .onLongPressGesture {
                 onEdit?()
@@ -169,8 +167,10 @@ struct CustomColorPicker: View {
         }
         .confirmationDialog("Delete Color?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
-                dismiss()
-                onDelete?()
+                DispatchQueue.main.async {
+                    dismiss()
+                    onDelete?()
+                }
             }
             Button("Cancel", role: .cancel) {}
         } message: {
@@ -208,6 +208,14 @@ struct CustomColorPicker: View {
                 
         }
         .frame(width: size, height: size)
+    }
+    
+    var colorWheelColors: [Color] {
+        guard let hct = colorConfig.color.hct else { return [] }
+        return TemperatureCache(hct)
+            .analogous(count: 12)
+            .sorted(by: { $0.hue < $1.hue })
+            .map { Color(hctColor: $0) }
     }
     
     func setColorValues() {
@@ -499,5 +507,5 @@ struct CustomColorPicker: View {
 #Preview {
     @State var colorConfig = ColorConfig(color: .blue, groupName: "Brand", colorName: "Primary")
     @State var colorClipboard = ColorClipboard()
-    return CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard) {} onEdit: {}
+    return CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {} onEdit: {}
 }

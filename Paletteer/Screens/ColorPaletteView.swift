@@ -202,7 +202,8 @@ struct ColorPaletteView: View {
     }
     
     private func shades(for group: ColorConfig) -> [ColorPair] {
-        (0..<ColorPalette.shadesCount(isMaterial: colorSpace == .hct)).compactMap { index in
+        let colorCount = ColorPalette.shadesCount(isMaterial: colorSpace == .hct)
+        return (0..<colorCount).compactMap { index in
             if colorSpace == .hct {
                 guard let hctColor = group.color.hct else { return nil }
                 return .hct(hctColor)
@@ -211,7 +212,8 @@ struct ColorPaletteView: View {
             }
         }.enumerated().map { (index: Int, color: ColorMode) in
             let lightConfig = ColorConversion(color: color, index: index, light: true)
-            let darkConfig = ColorConversion(color: color, index: index, light: false)
+            let darkIndex = group.darkColorScale.isDarkening ? index : colorCount - index + 1
+            let darkConfig = ColorConversion(color: color, index: darkIndex, light: false)
             let lightColor = generateColor(for: group, using: lightConfig)
             let darkColor = generateColor(for: group, using: darkConfig)
             return (light: lightColor.color, dark: darkColor.color)
