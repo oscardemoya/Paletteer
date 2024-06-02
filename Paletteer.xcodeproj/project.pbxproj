@@ -16,6 +16,9 @@
 		262EFCAF2C0ACD5B0048EA62 /* ViewStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCAE2C0ACD5B0048EA62 /* ViewStyles.swift */; };
 		262EFCB32C0AE2690048EA62 /* ColorConfigForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCB22C0AE2690048EA62 /* ColorConfigForm.swift */; };
 		262EFCB52C0C2B590048EA62 /* SettingsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCB42C0C2B590048EA62 /* SettingsPane.swift */; };
+		262EFCB92C0C95D30048EA62 /* ColorScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCB82C0C95D30048EA62 /* ColorScale.swift */; };
+		262EFCBB2C0C95EC0048EA62 /* ColorVariance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCBA2C0C95EC0048EA62 /* ColorVariance.swift */; };
+		262EFCBD2C0C9C010048EA62 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCBC2C0C9C010048EA62 /* CircularProgressView.swift */; };
 		2656F3A82C04F979007BB5E9 /* CodableColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3A72C04F979007BB5E9 /* CodableColor.swift */; };
 		2656F3AA2C04FA06007BB5E9 /* ColorClipboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */; };
 		2656F3AC2C051235007BB5E9 /* ColorString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3AB2C051235007BB5E9 /* ColorString.swift */; };
@@ -98,6 +101,9 @@
 		262EFCAE2C0ACD5B0048EA62 /* ViewStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStyles.swift; sourceTree = "<group>"; };
 		262EFCB22C0AE2690048EA62 /* ColorConfigForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConfigForm.swift; sourceTree = "<group>"; };
 		262EFCB42C0C2B590048EA62 /* SettingsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPane.swift; sourceTree = "<group>"; };
+		262EFCB82C0C95D30048EA62 /* ColorScale.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorScale.swift; sourceTree = "<group>"; };
+		262EFCBA2C0C95EC0048EA62 /* ColorVariance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorVariance.swift; sourceTree = "<group>"; };
+		262EFCBC2C0C9C010048EA62 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		2656F3A72C04F979007BB5E9 /* CodableColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableColor.swift; sourceTree = "<group>"; };
 		2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorClipboard.swift; sourceTree = "<group>"; };
 		2656F3AB2C051235007BB5E9 /* ColorString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorString.swift; sourceTree = "<group>"; };
@@ -200,6 +206,7 @@
 				26227E262C0289C300E44707 /* ButtonStyle.swift */,
 				267533B12BDE8981007C1F51 /* Triangle.swift */,
 				262EFCAE2C0ACD5B0048EA62 /* ViewStyles.swift */,
+				262EFCBC2C0C9C010048EA62 /* CircularProgressView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -242,6 +249,8 @@
 			children = (
 				26BF53CD2BD75EFD001CAFBC /* MaterialColorUtilities */,
 				267533B72BDE8A64007C1F51 /* ColorConfig.swift */,
+				262EFCB82C0C95D30048EA62 /* ColorScale.swift */,
+				262EFCBA2C0C95EC0048EA62 /* ColorVariance.swift */,
 				267533C32BDE9C9A007C1F51 /* ColorPair.swift */,
 				267533AF2BDE896B007C1F51 /* ColorPalette.swift */,
 				267533DB2BDF409C007C1F51 /* ColorSpace.swift */,
@@ -555,6 +564,7 @@
 				26227E252C02847400E44707 /* Pasteboard.swift in Sources */,
 				26BF53E12BD75EFD001CAFBC /* QuantizerMap.swift in Sources */,
 				26BF53DF2BD75EFD001CAFBC /* Quantizer.swift in Sources */,
+				262EFCBB2C0C95EC0048EA62 /* ColorVariance.swift in Sources */,
 				267533CC2BDEE408007C1F51 /* CustomColorPicker.swift in Sources */,
 				26BF53DA2BD75EFD001CAFBC /* ViewingConditions.swift in Sources */,
 				26BF533B2BD75C82001CAFBC /* PaletteerApp.swift in Sources */,
@@ -582,12 +592,14 @@
 				26BF53D22BD75EFD001CAFBC /* DynamicColor.swift in Sources */,
 				26BF53F12BD75EFD001CAFBC /* StringUtils.swift in Sources */,
 				26BF53D62BD75EFD001CAFBC /* Variant.swift in Sources */,
+				262EFCB92C0C95D30048EA62 /* ColorScale.swift in Sources */,
 				26BF53D72BD75EFD001CAFBC /* Cam16.swift in Sources */,
 				262EFCB52C0C2B590048EA62 /* SettingsPane.swift in Sources */,
 				26227E272C0289C300E44707 /* ButtonStyle.swift in Sources */,
 				26BF53E42BD75EFD001CAFBC /* SchemeContent.swift in Sources */,
 				2656F3A82C04F979007BB5E9 /* CodableColor.swift in Sources */,
 				267533D82BDEFC8C007C1F51 /* Binding.swift in Sources */,
+				262EFCBD2C0C9C010048EA62 /* CircularProgressView.swift in Sources */,
 				26BF53EA2BD75EFD001CAFBC /* SchemeRainbow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

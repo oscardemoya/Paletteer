@@ -89,9 +89,16 @@ struct ColorConfigForm: View {
                         }
                     }
                     .frame(height: 30)
-                    Toggle("Narrow", isOn: $colorConfig.narrow)
-                        .padding(.horizontal, 4)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    HStack {
+                        Text("Color Range Width")
+                            .padding(.horizontal, 4)
+                        Spacer()
+                        Picker("", selection: $colorConfig.rangeWidth) {
+                            ForEach(ColorRangeWidth.allCases, id: \.self) { item in
+                                Text(item.name).tag(item)
+                            }
+                        }
+                    }
                     .frame(height: 30)
                 }
                 .frame(maxWidth: .infinity)
@@ -101,6 +108,10 @@ struct ColorConfigForm: View {
                     dismiss()
                     if !isEditing {
                         colorPalette.append(colorConfig)
+                    } else {
+                        if let index = colorPalette.firstIndex(where: { $0.id == colorConfig.id }) {
+                            colorPalette[index] = colorConfig
+                        }
                     }
                 } label: {
                     Text(isEditing ? "Save Changes" : "Add Color")

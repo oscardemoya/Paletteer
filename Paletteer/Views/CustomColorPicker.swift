@@ -34,7 +34,7 @@ struct CustomColorPicker: View {
     
     var body: some View {
         Button { if !colorConfig.colorName.isEmpty { isEditingColor = true } } label: {
-            HStack {
+            HStack(spacing: 4) {
                 VStack(spacing: 0) {
                     if isEditing {
                         TextField("Color Name", text: $colorConfig.colorName)
@@ -52,34 +52,33 @@ struct CustomColorPicker: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
-                HStack(spacing: 8) {
-                    Group {
-                        if colorConfig.lightColorScale.isLightening {
-                            Image(systemName: "square.2.layers.3d.fill")
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle(.foreground950, .foreground850)
-                                .rounded(backgroundColor: .foreground800, padding: 6, cornerRadius: 8)
-                        }
-                        if colorConfig.darkColorScale.isDarkening {
-                            Image(systemName: "square.2.layers.3d.fill")
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle(.foreground200, .foreground400)
-                                .rounded(backgroundColor: .foreground500, padding: 6, cornerRadius: 8)
-                        }
-                        if colorConfig.narrow {
-                            Image(systemName: "arrow.down.right.and.arrow.up.left")
-                                .foregroundColor(.primaryInputBackground)
-                                .rounded(backgroundColor: .foreground700, padding: 6, cornerRadius: 8)
-                        }
+                Group {
+                    if colorConfig.lightColorScale.isLightening {
+                        Image(systemName: "square.2.layers.3d.top.filled")
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(.background950, .background850)
+                            .rounded(backgroundColor: .background700, padding: 4, cornerRadius: 8)
                     }
-                    .font(.body)
+                    if colorConfig.darkColorScale.isDarkening {
+                        Image(systemName: "square.2.layers.3d.top.filled")
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(.background010, .background100)
+                            .rounded(backgroundColor: .background300, padding: 4, cornerRadius: 8)
+                    }
                 }
+                .font(.body)
                 ZStack {
                     borderedRect(color: colorConfig.color)
-                        .frame(width: 36, height: 36)
+                        .frame(width: 32, height: 32)
                         .onTapGesture {
                             isEditingColor = true
                         }
+                    if !colorConfig.rangeWidth.isFull {
+                        CircularProgressView(progress: colorConfig.rangeWidth.progress,
+                                             color: colorConfig.color.contrastingColor,
+                                             lineWidth: 4)
+                            .frame(width: 16, height: 16)
+                    }
                 }
             }
             .onTapGesture {
@@ -515,7 +514,8 @@ struct CustomColorPicker: View {
 }
 
 #Preview {
-    @State var colorConfig = ColorConfig(color: .blue, groupName: "Brand", colorName: "Primary")
+    @State var colorConfig = ColorConfig(color: .blue.muted, groupName: "Brand", colorName: "Primary",
+                                         lightColorScale: .lightening, darkColorScale: .darkening, rangeWidth: .half)
     @State var colorClipboard = ColorClipboard()
     return CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {} onEdit: {}
 }

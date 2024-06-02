@@ -19,25 +19,61 @@ struct ColorPalette {
     // RGB Conversion
     static var lightestColor: Color = .white
     static var darkestColor: Color = Color(hex: "#080808")
-    static var overlaysCount: Int { overlayOpacities(light: true, narrow: false).count }
+    static var overlaysCount: Int { overlayOpacities(light: true, full: true).count }
     
-    static func overlayOpacities(light: Bool, narrow: Bool) -> [(Bool?, Int)] {
-        if narrow {
+    static func overlayOpacities(light: Bool, full: Bool) -> [(light: Bool?, opacity: Int)] {
+        if full {
             if light {
                 [
+                    (true, 01),
                     (true, 10),
-                    (true, 15),
                     (true, 20),
-                    (true, 25),
                     (true, 30),
-                    (true, 35),
+                    (true, 40),
+                    (true, 60),
+                    (true, 80),
+                    (nil, 100),
+                    (false, 80),
+                    (false, 60),
+                    (false, 40),
+                    (false, 20),
+                    (false, 10),
+                    (false, 01)
+                ]
+            } else {
+                [
+                    (false, 01),
+                    (false, 05),
+                    (false, 10),
+                    (false, 20),
+                    (false, 30),
+                    (false, 40),
+                    (false, 60),
+                    (false, 80),
+                    (nil, 100),
+                    (true, 80),
+                    (true, 60),
+                    (true, 40),
+                    (true, 20),
+                    (true, 01)
+                ]
+            }
+        } else {
+            if light {
+                [
+                    (true, 01),
+                    (true, 10),
+                    (true, 20),
+                    (true, 30),
                     (true, 40),
                     (true, 50),
                     (true, 60),
                     (true, 70),
                     (true, 80),
+                    (true, 85),
                     (true, 90),
                     (true, 95),
+                    (true, 98),
                     (true, 100)
                 ]
             } else {
@@ -56,42 +92,6 @@ struct ColorPalette {
                     (false, 95),
                     (false, 98),
                     (false, 100)
-                ]
-            }
-        } else {
-            if light {
-                [
-                    (true, 02),
-                    (true, 10),
-                    (true, 20),
-                    (true, 30),
-                    (true, 40),
-                    (true, 60),
-                    (true, 80),
-                    (nil, 100),
-                    (false, 80),
-                    (false, 60),
-                    (false, 40),
-                    (false, 20),
-                    (false, 10),
-                    (false, 02)
-                ]
-            } else {
-                [
-                    (false, 02),
-                    (false, 05),
-                    (false, 10),
-                    (false, 20),
-                    (false, 30),
-                    (false, 40),
-                    (false, 60),
-                    (false, 80),
-                    (nil, 100),
-                    (true, 80),
-                    (true, 60),
-                    (true, 40),
-                    (true, 20),
-                    (true, 10)
                 ]
             }
         }

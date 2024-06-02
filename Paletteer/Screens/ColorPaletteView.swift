@@ -228,21 +228,37 @@ struct ColorPaletteView: View {
         case .hct(let hctColor):
             let tones = ColorPalette.tones(light: config.light)
             let tone = Double(tones[config.index])
-            if group.narrow {
-                hctColor.tone = (config.light ? 75 : 0) + (tone / 4.0)
-            } else {
+            switch group.rangeWidth {
+            case .full:
                 hctColor.tone = tone
+            case .wide:
+                hctColor.tone = (config.light ? 25 : 0) + (tone * 3.0 / 4.0)
+            case .half:
+                hctColor.tone = (config.light ? 50 : 0) + (tone / 2.0)
+            case .narrow:
+                hctColor.tone = (config.light ? 75 : 0) + (tone / 4.0)
             }
             hctColor.chroma = hctColor.chroma * (config.light ? 1 : 0.75)
             color = Color(hctColor: hctColor)
             argb = hctColor.toInt()
         case .rgb(let originalColor):
             var baseColor = originalColor
-            if group.narrow, let originalValues = originalColor.hsba {
+            if !group.rangeWidth.isFull, let originalValues = originalColor.hsba {
+                let brightness: CGFloat
+                switch group.rangeWidth {
+                case .full:
+                    brightness = 1.0
+                case .wide:
+                    brightness = config.light ? 0.25 : 0.75
+                case .half:
+                    brightness = 0.5
+                case .narrow:
+                    brightness = config.light ? 0.75 : 0.25
+                }
                 baseColor = originalColor.replace(saturation: config.light ? originalValues.saturation + 0.01 : 0,
-                                                  brightness: config.light ? 0.80 : 0.20)
+                                                  brightness: brightness)
             }
-            let opacities: [(light: Bool?, opacity: Int)] = ColorPalette.overlayOpacities(light: config.light, narrow: group.narrow)
+            let opacities = ColorPalette.overlayOpacities(light: config.light, full: group.rangeWidth.isFull)
             let opacity = Double(opacities[config.index].opacity) / 100.0
             let overlay = ColorPalette.overlay(light: opacities[config.index].light)
             if opacity == 1 {

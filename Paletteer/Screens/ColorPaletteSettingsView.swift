@@ -17,7 +17,7 @@ struct ColorPaletteSettingsView: View {
     @State private var isEditing = false
     @State private var exisitingColor = ColorConfig(color: .blue, colorName: "")
     @State private var isConfiguring = false
-    var columns = [GridItem(.adaptive(minimum: 240), spacing: 12)]
+    var columns = [GridItem(.adaptive(minimum: 200), spacing: 12)]
     
     var defaultColorPalette: [ColorConfig] {[
         ColorConfig(color: .blue.muted, groupName: "Brand", colorName: "Primary"),
@@ -27,7 +27,7 @@ struct ColorPaletteSettingsView: View {
         ColorConfig(color: .yellow.muted, groupName: "Semantic", colorName: "Warning"),
         ColorConfig(color: .red.muted, groupName: "Semantic", colorName: "Error"),
         ColorConfig(color: .gray.replace(brightness: 0.9), groupName: "Neutral", colorName: "Background",
-                    lightColorScale: .lightening, narrow: true),
+                    lightColorScale: .lightening, rangeWidth: .wide),
         ColorConfig(color: .black.replace(brightness: 0.25), groupName: "Neutral", colorName: "Foreground",
                     lightColorScale: .lightening, darkColorScale: .darkening)
     ]}

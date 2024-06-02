@@ -26,7 +26,7 @@ struct SettingsPane: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.custom(backgroundColor: .destructiveBackground,
-                                     foregroundColor: .primaryActionForeground,
+                                     foregroundColor: .foreground950,
                                      cornerRadius: 16))
             }
             .navigationTitle("Settings")
