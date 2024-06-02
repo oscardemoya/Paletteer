@@ -1,5 +1,5 @@
 //
-//  ColorConfig.swift
+//  ColorRangeWidth.swift
 //  Paletteer
 //
 //  Created by Oscar De Moya on 28/04/24.

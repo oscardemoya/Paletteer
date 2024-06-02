@@ -210,7 +210,7 @@ struct ColorPaletteView: View {
             } else {
                 return .rgb(group.color)
             }
-        }.enumerated().map { (index: Int, color: ColorMode) in
+        }.enumerated().map { (index: Int, color: ColorModel) in
             let lightIndex = group.lightColorScale.isDarkening ? index : colorCount - index - 1
             let lightConfig = ColorConversion(color: color, index: lightIndex, light: true)
             let darkIndex = group.darkColorScale.isLightening ? index : colorCount - index - 1

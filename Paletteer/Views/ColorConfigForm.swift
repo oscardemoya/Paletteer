@@ -132,7 +132,7 @@ struct ColorConfigForm: View {
 }
 
 #Preview {
-    @State var newColor = ColorConfig(color: .blue, colorName: "")
+    @State var newColor = ColorConfig(colorModel: .rgb(.blue.muted), colorName: "")
     @State var colorClipboard = ColorClipboard()
     return ColorConfigForm(colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: true)
 }

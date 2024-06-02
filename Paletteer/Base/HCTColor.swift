@@ -13,7 +13,7 @@ extension Color {
     }
 }
 
-extension Hct {
+extension Hct: Codable {
     var label: String {
         return "H\(Int(hue)) C\(Int(chroma)) T\(Int(tone))"
     }

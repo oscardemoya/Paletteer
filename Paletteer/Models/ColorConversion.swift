@@ -8,12 +8,7 @@
 import SwiftUI
 
 struct ColorConversion {
-    var color: ColorMode
+    var color: ColorModel
     var index: Int
     var light: Bool
-}
-
-enum ColorMode {
-    case hct(_ value: Hct)
-    case rgb(_ value: Color)
 }

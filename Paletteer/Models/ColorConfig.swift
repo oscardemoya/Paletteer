@@ -7,21 +7,23 @@
 
 import SwiftUI
 
-struct ColorConfig: Codable, Identifiable, Hashable {
+struct ColorConfig: Identifiable, Hashable {
     var id: String = UUID().uuidString
-    var color: Color
+    var colorModel: ColorModel
     var groupName: String = ""
     var colorName: String
     var lightColorScale: ColorScale = .darkening
     var darkColorScale: ColorScale = .lightening
     var rangeWidth: ColorRangeWidth = .full
     
-    var hexColor: String { color.hexRGB }
+    var color: Color { colorModel.color }
+    var hexColor: String { colorModel.color.hexRGB }
+    var hctColor: Hct? { colorModel.hctColor }
     
     func hash(into hasher: inout Hasher) {
         var hasher = hasher
         hasher.combine(id)
-        hasher.combine(color)
+        hasher.combine(colorModel)
         hasher.combine(groupName)
         hasher.combine(colorName)
         hasher.combine(lightColorScale)
@@ -46,10 +48,12 @@ extension ColorConfig: RawRepresentable {
         }
         self = result
     }
-    
+}
+
+extension ColorConfig: Codable {
     enum CodingKeys: String, CodingKey {
         case id
-        case color
+        case colorModel
         case groupName
         case colorName
         case lightColorScale
@@ -60,7 +64,7 @@ extension ColorConfig: RawRepresentable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
-        color = try container.decode(Color.self, forKey: .color)
+        colorModel = try container.decode(ColorModel.self, forKey: .colorModel)
         groupName = try container.decode(String.self, forKey: .groupName)
         colorName = try container.decode(String.self, forKey: .colorName)
         lightColorScale = try container.decode(ColorScale.self, forKey: .lightColorScale)
@@ -71,7 +75,7 @@ extension ColorConfig: RawRepresentable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
-        try container.encode(color, forKey: .color)
+        try container.encode(colorModel, forKey: .colorModel)
         try container.encode(groupName, forKey: .groupName)
         try container.encode(colorName, forKey: .colorName)
         try container.encode(lightColorScale, forKey: .lightColorScale)

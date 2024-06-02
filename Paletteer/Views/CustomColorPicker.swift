@@ -16,6 +16,7 @@ struct CustomColorPicker: View {
     var isEditing: Bool
     var onDelete: Action?
     var onEdit: Action?
+    @State private var selectedColor: Color = .blue
     @State private var recentColors: [Color] = []
     @State private var isEditingColor = false
     @State private var sheetHeight: CGFloat = .zero
@@ -90,6 +91,9 @@ struct CustomColorPicker: View {
                 onEdit?()
             }
         }
+        .onAppear {
+            selectedColor = colorConfig.color
+        }
         .sheet(isPresented: $isEditingColor) {
             colorPicker
         }
@@ -162,9 +166,12 @@ struct CustomColorPicker: View {
                 case .hct, .hsb:
                     hctSliders
                 case .rgb:
-                    ColorPicker(colorConfig.colorName, selection: $colorConfig.color, supportsOpacity: false)
+                    ColorPicker(colorConfig.colorName, selection: $selectedColor, supportsOpacity: false)
                         .frame(maxWidth: .infinity)
                         .rounded()
+                        .onChange(of: selectedColor) { _, newValue in
+                            colorConfig.colorModel = .rgb(newValue)
+                        }
                 }
             }
             .padding(12)
@@ -199,7 +206,7 @@ struct CustomColorPicker: View {
     func pasteColorButton(color: Color, size: CGFloat = 32) -> some View {
         pasteboardColor(color: color, size: size)
             .onTapGesture {
-                colorConfig.color = color
+                colorConfig.colorModel = .rgb(color)
                 setColorValues()
             }
     }
@@ -220,7 +227,7 @@ struct CustomColorPicker: View {
     }
     
     var colorWheelColors: [Color] {
-        guard let hct = colorConfig.color.hct else { return [] }
+        guard let hct = colorConfig.hctColor else { return [] }
         return TemperatureCache(hct)
             .analogous(count: 12)
             .sorted(by: { $0.hue < $1.hue })
@@ -239,7 +246,7 @@ struct CustomColorPicker: View {
     }
     
     func setHCTValues() {
-        guard let hct = colorConfig.color.hct else {
+        guard let hct = colorConfig.hctColor else {
             print("Error converting color to HCT.")
             return
         }
@@ -266,12 +273,12 @@ struct CustomColorPicker: View {
         switch colorSpace {
         case .hct:
             let hctColor = Hct.from(hueSliderValue, chromaOrSaturationSliderValue, toneOrBrightnessSliderValue)
-            colorConfig.color = Color(hctColor: hctColor)
+            colorConfig.colorModel = .hct(hctColor)
         case .hsb:
             let hue = hueSliderValue / 360
             let saturation = chromaOrSaturationSliderValue / 100
             let brightness = toneOrBrightnessSliderValue / 100
-            colorConfig.color = Color(hue: hue, saturation: saturation, brightness: brightness)
+            colorConfig.colorModel = .rgb(Color(hue: hue, saturation: saturation, brightness: brightness))
         case .rgb:
             break
         }
@@ -514,7 +521,7 @@ struct CustomColorPicker: View {
 }
 
 #Preview {
-    @State var colorConfig = ColorConfig(color: .blue.muted, groupName: "Brand", colorName: "Primary",
+    @State var colorConfig = ColorConfig(colorModel: .rgb(.blue.muted), groupName: "Brand", colorName: "Primary",
                                          lightColorScale: .lightening, darkColorScale: .darkening, rangeWidth: .half)
     @State var colorClipboard = ColorClipboard()
     return CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {} onEdit: {}

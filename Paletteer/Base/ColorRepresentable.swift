@@ -12,6 +12,15 @@ typealias RGBA = (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)
 typealias HSBA = (hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat)
 
 extension Color: RawRepresentable {
+    public var rawValue: String {
+        do {
+            let data = try NSKeyedArchiver.archivedData(withRootObject: CrossPlatformColor(self), requiringSecureCoding: false) as Data
+            return data.base64EncodedString()
+        } catch {
+            return ""
+        }
+    }
+    
     public init?(rawValue: String) {
         guard let data = Data(base64Encoded: rawValue) else {
             return nil
@@ -27,15 +36,6 @@ extension Color: RawRepresentable {
         }
     }
 
-    public var rawValue: String {
-        do {
-            let data = try NSKeyedArchiver.archivedData(withRootObject: CrossPlatformColor(self), requiringSecureCoding: false) as Data
-            return data.base64EncodedString()
-        } catch {
-            return ""
-        }
-    }
-    
     init(hex: String) {
         let rgba = hex.rgba
         self.init(.sRGB,

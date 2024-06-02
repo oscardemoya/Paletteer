@@ -13,22 +13,22 @@ struct ColorPaletteSettingsView: View {
     @State private var path = NavigationPath()
     @State private var colorClipboard = ColorClipboard()
     @State private var isAdding = false
-    @State private var newColor = ColorConfig(color: .blue, colorName: "")
+    @State private var newColor = ColorConfig(colorModel: .rgb(.blue), colorName: "")
     @State private var isEditing = false
-    @State private var exisitingColor = ColorConfig(color: .blue, colorName: "")
+    @State private var exisitingColor = ColorConfig(colorModel: .rgb(.blue), colorName: "")
     @State private var isConfiguring = false
     var columns = [GridItem(.adaptive(minimum: 200), spacing: 12)]
     
     var defaultColorPalette: [ColorConfig] {[
-        ColorConfig(color: .blue.muted, groupName: "Brand", colorName: "Primary"),
-        ColorConfig(color: .purple.muted, groupName: "Brand", colorName: "Secondary"),
-        ColorConfig(color: .orange.muted, groupName: "Brand", colorName: "Tertiary"),
-        ColorConfig(color: .mint.muted, groupName: "Semantic", colorName: "Success"),
-        ColorConfig(color: .yellow.muted, groupName: "Semantic", colorName: "Warning"),
-        ColorConfig(color: .red.muted, groupName: "Semantic", colorName: "Error"),
-        ColorConfig(color: .gray.replace(brightness: 0.9), groupName: "Neutral", colorName: "Background",
+        ColorConfig(colorModel: .rgb(.blue.muted), groupName: "Brand", colorName: "Primary"),
+        ColorConfig(colorModel: .rgb(.purple.muted), groupName: "Brand", colorName: "Secondary"),
+        ColorConfig(colorModel: .rgb(.orange.muted), groupName: "Brand", colorName: "Tertiary"),
+        ColorConfig(colorModel: .rgb(.mint.muted), groupName: "Semantic", colorName: "Success"),
+        ColorConfig(colorModel: .rgb(.yellow.muted), groupName: "Semantic", colorName: "Warning"),
+        ColorConfig(colorModel: .rgb(.red.muted), groupName: "Semantic", colorName: "Error"),
+        ColorConfig(colorModel: .rgb(.gray.replace(brightness: 0.9)), groupName: "Neutral", colorName: "Background",
                     lightColorScale: .lightening, rangeWidth: .wide),
-        ColorConfig(color: .black.replace(brightness: 0.25), groupName: "Neutral", colorName: "Foreground",
+        ColorConfig(colorModel: .rgb(.black.replace(brightness: 0.25)), groupName: "Neutral", colorName: "Foreground",
                     lightColorScale: .lightening, darkColorScale: .darkening)
     ]}
     
@@ -75,7 +75,7 @@ struct ColorPaletteSettingsView: View {
 #endif
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        newColor = ColorConfig(color: colorPalette.last?.color ?? .blue.muted, colorName: "")
+                        newColor = ColorConfig(colorModel: .rgb(colorPalette.last?.color ?? .blue.muted), colorName: "")
                         isAdding = true
                     } label: {
                         Image(systemName: "plus")

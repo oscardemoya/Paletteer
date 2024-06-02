@@ -17,11 +17,14 @@ import Foundation
 /// HCT, hue, chroma, and tone. A color system that provides a perceptually
 /// accurate color measurement system that can also accurately render what
 /// colors will appear as in different lighting environments.
-public class Hct: Equatable, Hashable {
+public class Hct: Equatable, Hashable, RawRepresentable {
   private var _hue: Double
   private var _chroma: Double
   private var _tone: Double
   private var _argb: Int
+    
+  public var rawValue: Int { toInt() }
+  public required convenience init?(rawValue: Int) { self.init(rawValue) }
 
   /// A number, in degrees, representing ex. red, orange, yellow, etc.
   /// Ranges from 0 <= [hue] < 360
