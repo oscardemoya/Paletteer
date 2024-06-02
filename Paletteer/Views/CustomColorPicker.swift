@@ -99,6 +99,7 @@ struct CustomColorPicker: View {
     @ViewBuilder
     var colorPicker: some View {
         wrappedColorPicker
+            .onAppear(perform: setColorValues)
             .onChange(of: isEditingColor) {
                 if isEditingColor {
                     setColorValues()
