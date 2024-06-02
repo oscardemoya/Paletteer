@@ -45,10 +45,11 @@ struct ColorConfigForm: View {
                 Spacer()
                     .frame(width: closeButtonSize.width, height: closeButtonSize.height)
                 Spacer()
-                Text(isEditing ? colorConfig.colorName : "New Color")
+                Text(colorConfig.colorName.isEmpty ? "Color Name" : colorConfig.colorName)
                     .font(.title3)
                     .fontWeight(.bold)
                     .fontDesign(.rounded)
+                    .foregroundStyle(colorConfig.colorName.isEmpty ? .foreground700 : .foreground300)
                 Spacer()
                 CircularButton(size: .large) {
                     dismiss()
@@ -62,10 +63,21 @@ struct ColorConfigForm: View {
                 TextField("Group Name (Optional)", text: $colorConfig.groupName)
                     .textFieldStyle(.plain)
                     .rounded(backgroundColor: .secondaryInputBackground)
-                CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: isEditing)
+                CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: true)
                     .buttonStyle(.custom(backgroundColor: .secondaryInputBackground,
                                          foregroundColor: .secondaryActionForeground))
                 Group {
+                    HStack {
+                        Text("Light Color Scale")
+                            .padding(.horizontal, 4)
+                        Spacer()
+                        Picker("", selection: $colorConfig.lightColorScale) {
+                            ForEach(ColorScale.allCases, id: \.self) { item in
+                                Text(item.name).tag(item)
+                            }
+                        }
+                    }
+                    .frame(height: 30)
                     HStack {
                         Text("Dark Color Scale")
                             .padding(.horizontal, 4)
@@ -77,14 +89,9 @@ struct ColorConfigForm: View {
                         }
                     }
                     .frame(height: 30)
-                    HStack(spacing: 12) {
-                        Toggle("Narrow", isOn: $colorConfig.narrow)
-                            .padding(.horizontal, 4)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Toggle("Reversed", isOn: $colorConfig.reversed)
-                            .padding(.horizontal, 4)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
+                    Toggle("Narrow", isOn: $colorConfig.narrow)
+                        .padding(.horizontal, 4)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     .frame(height: 30)
                 }
                 .frame(maxWidth: .infinity)
@@ -92,7 +99,9 @@ struct ColorConfigForm: View {
                 .rounded(backgroundColor: .secondaryInputBackground, padding: 12)
                 Button {
                     dismiss()
-                    colorPalette.append(colorConfig)
+                    if !isEditing {
+                        colorPalette.append(colorConfig)
+                    }
                 } label: {
                     Text(isEditing ? "Save Changes" : "Add Color")
                         .font(.title3)
@@ -100,7 +109,8 @@ struct ColorConfigForm: View {
                         .fontDesign(.rounded)
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.custom(backgroundColor: .primaryActionBackground,
+                .disabled(colorConfig.colorName.isEmpty)
+                .buttonStyle(.custom(backgroundColor: .primaryActionBackground.opacity(colorConfig.colorName.isEmpty ? 0.25 : 1),
                                      foregroundColor: .primaryActionForeground,
                                      cornerRadius: 16))
             }
@@ -113,5 +123,5 @@ struct ColorConfigForm: View {
 #Preview {
     @State var newColor = ColorConfig(color: .blue, colorName: "")
     @State var colorClipboard = ColorClipboard()
-    return ColorConfigForm(colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: false)
+    return ColorConfigForm(colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: true)
 }

@@ -14,14 +14,7 @@ extension UserDefaults {
         case colorScheme
         case clipboardColors
         case colorPalette
-        case primaryColor
-        case secondaryColor
-        case tertiaryColor
-        case successColor
-        case warningColor
-        case destructiveColor
-        case backgroundColor
-        case foregroundColor
+        case showCopyIcons
     }
 }
 

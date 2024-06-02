@@ -35,8 +35,8 @@ struct ColorConfig: Codable, Identifiable, Hashable {
     var color: Color
     var groupName: String = ""
     var colorName: String
-    var darkColorScale: ColorScale = .darkening
-    var reversed: Bool = false
+    var lightColorScale: ColorScale = .darkening
+    var darkColorScale: ColorScale = .lightening
     var narrow: Bool = false
     
     var hexColor: String { color.hexRGB }
@@ -47,8 +47,8 @@ struct ColorConfig: Codable, Identifiable, Hashable {
         hasher.combine(color)
         hasher.combine(groupName)
         hasher.combine(colorName)
+        hasher.combine(lightColorScale)
         hasher.combine(darkColorScale)
-        hasher.combine(reversed)
         hasher.combine(narrow)
     }
 }
@@ -75,8 +75,8 @@ extension ColorConfig: RawRepresentable {
         case color
         case groupName
         case colorName
+        case lightColorScale
         case darkColorScale
-        case reversed
         case narrow
     }
     
@@ -86,8 +86,8 @@ extension ColorConfig: RawRepresentable {
         color = try container.decode(Color.self, forKey: .color)
         groupName = try container.decode(String.self, forKey: .groupName)
         colorName = try container.decode(String.self, forKey: .colorName)
+        lightColorScale = try container.decode(ColorScale.self, forKey: .lightColorScale)
         darkColorScale = try container.decode(ColorScale.self, forKey: .darkColorScale)
-        reversed = try container.decode(Bool.self, forKey: .reversed)
         narrow = try container.decode(Bool.self, forKey: .narrow)
     }
     
@@ -97,8 +97,8 @@ extension ColorConfig: RawRepresentable {
         try container.encode(color, forKey: .color)
         try container.encode(groupName, forKey: .groupName)
         try container.encode(colorName, forKey: .colorName)
+        try container.encode(lightColorScale, forKey: .lightColorScale)
         try container.encode(darkColorScale, forKey: .darkColorScale)
-        try container.encode(reversed, forKey: .reversed)
         try container.encode(narrow, forKey: .narrow)
     }
 }

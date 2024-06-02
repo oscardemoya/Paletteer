@@ -8,10 +8,16 @@
 import SwiftUI
 
 @main
-struct PaletteerApp: App {
+struct PaletteerApp: App {    
     var body: some Scene {
         WindowGroup {
             ColorPaletteSettingsView()
         }
+        
+#if os(macOS)
+        Settings {
+            SettingsPane()
+        }
+#endif
     }
 }

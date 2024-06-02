@@ -211,8 +211,9 @@ struct ColorPaletteView: View {
                 return .rgb(group.color)
             }
         }.enumerated().map { (index: Int, color: ColorMode) in
-            let lightConfig = ColorConversion(color: color, index: index, light: true)
-            let darkIndex = group.darkColorScale.isDarkening ? index : colorCount - index + 1
+            let lightIndex = group.lightColorScale.isDarkening ? index : colorCount - index - 1
+            let lightConfig = ColorConversion(color: color, index: lightIndex, light: true)
+            let darkIndex = group.darkColorScale.isLightening ? index : colorCount - index - 1
             let darkConfig = ColorConversion(color: color, index: darkIndex, light: false)
             let lightColor = generateColor(for: group, using: lightConfig)
             let darkColor = generateColor(for: group, using: darkConfig)
@@ -226,19 +227,22 @@ struct ColorPaletteView: View {
         switch config.color {
         case .hct(let hctColor):
             let tones = ColorPalette.tones(light: config.light)
-            let orderedTones = group.reversed ? tones.reversed() : tones
-            hctColor.tone = Double(orderedTones[config.index])
+            let tone = Double(tones[config.index])
+            if group.narrow {
+                hctColor.tone = (config.light ? 75 : 0) + (tone / 4.0)
+            } else {
+                hctColor.tone = tone
+            }
             hctColor.chroma = hctColor.chroma * (config.light ? 1 : 0.75)
             color = Color(hctColor: hctColor)
             argb = hctColor.toInt()
         case .rgb(let originalColor):
-            let light = group.reversed ? !config.light : config.light
             var baseColor = originalColor
             if group.narrow, let originalValues = originalColor.hsba {
                 baseColor = originalColor.replace(saturation: config.light ? originalValues.saturation + 0.01 : 0,
                                                   brightness: config.light ? 0.80 : 0.20)
             }
-            let opacities: [(light: Bool?, opacity: Int)] = ColorPalette.overlayOpacities(light: light, narrow: group.narrow)
+            let opacities: [(light: Bool?, opacity: Int)] = ColorPalette.overlayOpacities(light: config.light, narrow: group.narrow)
             let opacity = Double(opacities[config.index].opacity) / 100.0
             let overlay = ColorPalette.overlay(light: opacities[config.index].light)
             if opacity == 1 {

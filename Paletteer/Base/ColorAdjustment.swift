@@ -31,4 +31,8 @@ extension Color {
         if let opacity { new.alpha = opacity }
         return Color(hue: new.hue, saturation: new.saturation, brightness: new.brightness, opacity: new.alpha)
     }
+    
+    var muted: Color {
+        self.replace(saturation: 0.5, brightness: 0.8)
+    }
 }

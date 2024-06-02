@@ -10,6 +10,7 @@ import SwiftUI
 struct CustomColorPicker: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(key(.colorPalette)) var colorPalette = [ColorConfig]()
+    @AppStorage(key(.showCopyIcons)) var showCopyIcons: Bool = true
     @Binding var colorConfig: ColorConfig
     @Binding var colorClipboard: ColorClipboard
     var isEditing: Bool
@@ -22,7 +23,6 @@ struct CustomColorPicker: View {
     @State private var hueSliderValue = Self.hueRange.median
     @State private var chromaOrSaturationSliderValue = Self.chromaOrSaturationRange.median
     @State private var toneOrBrightnessSliderValue = Self.toneOrBrightnessRange.median
-    @State private var showCopyIcons: Bool = true
     @State private var closeButtonSize: CGSize = .zero
     @State private var showDeleteConfirmation: Bool = false
     
@@ -33,7 +33,7 @@ struct CustomColorPicker: View {
     let gridItems = [GridItem(.fixed(40))]
     
     var body: some View {
-        Button { if !isEditingColor { isEditingColor = true } } label: {
+        Button { if !colorConfig.colorName.isEmpty { isEditingColor = true } } label: {
             HStack {
                 VStack(spacing: 0) {
                     if isEditing {
@@ -52,31 +52,40 @@ struct CustomColorPicker: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
-                if colorConfig.narrow {
-                    Image(systemName: "arrow.down.right.and.arrow.up.left.square.fill")
-                        .font(.title)
-                        .foregroundColor(.foreground800)
-                }
-                if colorConfig.reversed {
-                    Image(systemName: "arrow.counterclockwise.square.fill")
-                        .font(.title)
-                        .foregroundColor(.foreground800)
+                HStack(spacing: 8) {
+                    Group {
+                        if colorConfig.lightColorScale.isLightening {
+                            Image(systemName: "square.2.layers.3d.fill")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.foreground950, .foreground850)
+                                .rounded(backgroundColor: .foreground800, padding: 6, cornerRadius: 8)
+                        }
+                        if colorConfig.darkColorScale.isDarkening {
+                            Image(systemName: "square.2.layers.3d.fill")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.foreground200, .foreground400)
+                                .rounded(backgroundColor: .foreground500, padding: 6, cornerRadius: 8)
+                        }
+                        if colorConfig.narrow {
+                            Image(systemName: "arrow.down.right.and.arrow.up.left")
+                                .foregroundColor(.primaryInputBackground)
+                                .rounded(backgroundColor: .foreground700, padding: 6, cornerRadius: 8)
+                        }
+                    }
+                    .font(.body)
                 }
                 ZStack {
                     borderedRect(color: colorConfig.color)
-                        .frame(width: 30, height: 30)
+                        .frame(width: 36, height: 36)
                         .onTapGesture {
                             isEditingColor = true
                         }
-                    if colorConfig.darkColorScale.isLightening {
-                        Image(systemName: "square.2.layers.3d.bottom.filled")
-                            .foregroundColor(colorConfig.color.contrastingColor)
-                            .padding(2)
-                    }
                 }
             }
             .onTapGesture {
-                isEditingColor = true
+                if !colorConfig.colorName.isEmpty {
+                    isEditingColor = true
+                }
             }
             .onLongPressGesture {
                 onEdit?()

@@ -16,17 +16,20 @@ struct ColorPaletteSettingsView: View {
     @State private var newColor = ColorConfig(color: .blue, colorName: "")
     @State private var isEditing = false
     @State private var exisitingColor = ColorConfig(color: .blue, colorName: "")
-    var columns = [GridItem(.adaptive(minimum: 200), spacing: 12)]
+    @State private var isConfiguring = false
+    var columns = [GridItem(.adaptive(minimum: 240), spacing: 12)]
     
     var defaultColorPalette: [ColorConfig] {[
-        ColorConfig(color: .blue, groupName: "Brand", colorName: "Primary"),
-        ColorConfig(color: .purple, groupName: "Brand", colorName: "Secondary"),
-        ColorConfig(color: .orange, groupName: "Brand", colorName: "Tertiary"),
-        ColorConfig(color: .green, groupName: "Semantic", colorName: "Success"),
-        ColorConfig(color: .yellow, groupName: "Semantic", colorName: "Warning"),
-        ColorConfig(color: .red, groupName: "Semantic", colorName: "Error"),
-        ColorConfig(color: .gray, groupName: "Neutral", colorName: "Background", darkColorScale: .lightening, narrow: true),
-        ColorConfig(color: .black, groupName: "Neutral", colorName: "Foreground", reversed: true)
+        ColorConfig(color: .blue.muted, groupName: "Brand", colorName: "Primary"),
+        ColorConfig(color: .purple.muted, groupName: "Brand", colorName: "Secondary"),
+        ColorConfig(color: .orange.muted, groupName: "Brand", colorName: "Tertiary"),
+        ColorConfig(color: .mint.muted, groupName: "Semantic", colorName: "Success"),
+        ColorConfig(color: .yellow.muted, groupName: "Semantic", colorName: "Warning"),
+        ColorConfig(color: .red.muted, groupName: "Semantic", colorName: "Error"),
+        ColorConfig(color: .gray.replace(brightness: 0.9), groupName: "Neutral", colorName: "Background",
+                    lightColorScale: .lightening, narrow: true),
+        ColorConfig(color: .black.replace(brightness: 0.25), groupName: "Neutral", colorName: "Foreground",
+                    lightColorScale: .lightening, darkColorScale: .darkening)
     ]}
     
     var body: some View {
@@ -47,7 +50,7 @@ struct ColorPaletteSettingsView: View {
                 ColorPaletteView(colorList: colorList)
             }
             .sheet(isPresented: $isAdding) {
-                ColorConfigForm(colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: true)
+                ColorConfigForm(colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: false)
             }
             .sheet(isPresented: $isEditing) {
                 ColorConfigForm(colorConfig: $exisitingColor, colorClipboard: $colorClipboard, isEditing: true)
@@ -61,9 +64,18 @@ struct ColorPaletteSettingsView: View {
                         Image(systemName: selectedAppearance.iconName)
                     }
                 }
+#if !os(macOS)
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        newColor = ColorConfig(color: .blue, colorName: "")
+                        isConfiguring = true
+                    } label: {
+                        Image(systemName: "gear")
+                    }
+                }
+#endif
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        newColor = ColorConfig(color: colorPalette.last?.color ?? .blue.muted, colorName: "")
                         isAdding = true
                     } label: {
                         Image(systemName: "plus")
@@ -73,6 +85,9 @@ struct ColorPaletteSettingsView: View {
         }
         .onAppear {
             ColorSchemeSwitcher.shared.overrideDisplayMode()
+        }
+        .sheet(isPresented: $isConfiguring) {
+            SettingsPane()
         }
     }
     

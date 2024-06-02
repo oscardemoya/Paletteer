@@ -15,6 +15,7 @@
 		262EFCAD2C0ABC840048EA62 /* CircularButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCAC2C0ABC840048EA62 /* CircularButton.swift */; };
 		262EFCAF2C0ACD5B0048EA62 /* ViewStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCAE2C0ACD5B0048EA62 /* ViewStyles.swift */; };
 		262EFCB32C0AE2690048EA62 /* ColorConfigForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCB22C0AE2690048EA62 /* ColorConfigForm.swift */; };
+		262EFCB52C0C2B590048EA62 /* SettingsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCB42C0C2B590048EA62 /* SettingsPane.swift */; };
 		2656F3A82C04F979007BB5E9 /* CodableColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3A72C04F979007BB5E9 /* CodableColor.swift */; };
 		2656F3AA2C04FA06007BB5E9 /* ColorClipboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */; };
 		2656F3AC2C051235007BB5E9 /* ColorString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3AB2C051235007BB5E9 /* ColorString.swift */; };
@@ -96,6 +97,7 @@
 		262EFCAC2C0ABC840048EA62 /* CircularButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CircularButton.swift; path = ../../../../../../../../../Applications/CircularButton.swift; sourceTree = "<group>"; };
 		262EFCAE2C0ACD5B0048EA62 /* ViewStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStyles.swift; sourceTree = "<group>"; };
 		262EFCB22C0AE2690048EA62 /* ColorConfigForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConfigForm.swift; sourceTree = "<group>"; };
+		262EFCB42C0C2B590048EA62 /* SettingsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPane.swift; sourceTree = "<group>"; };
 		2656F3A72C04F979007BB5E9 /* CodableColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableColor.swift; sourceTree = "<group>"; };
 		2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorClipboard.swift; sourceTree = "<group>"; };
 		2656F3AB2C051235007BB5E9 /* ColorString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorString.swift; sourceTree = "<group>"; };
@@ -255,6 +257,7 @@
 			children = (
 				26BF533C2BD75C82001CAFBC /* ColorPaletteSettingsView.swift */,
 				267533A52BDDDBB2007C1F51 /* ColorPaletteView.swift */,
+				262EFCB42C0C2B590048EA62 /* SettingsPane.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -580,6 +583,7 @@
 				26BF53F12BD75EFD001CAFBC /* StringUtils.swift in Sources */,
 				26BF53D62BD75EFD001CAFBC /* Variant.swift in Sources */,
 				26BF53D72BD75EFD001CAFBC /* Cam16.swift in Sources */,
+				262EFCB52C0C2B590048EA62 /* SettingsPane.swift in Sources */,
 				26227E272C0289C300E44707 /* ButtonStyle.swift in Sources */,
 				26BF53E42BD75EFD001CAFBC /* SchemeContent.swift in Sources */,
 				2656F3A82C04F979007BB5E9 /* CodableColor.swift in Sources */,
