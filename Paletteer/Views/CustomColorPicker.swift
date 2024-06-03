@@ -229,10 +229,8 @@ struct CustomColorPicker: View {
     
     var colorWheelColors: [ColorModel] {
         guard let hct = colorConfig.hctColor else { return [] }
-        let colors = Array(Set(TemperatureCache(hct).analogous(count: 12)))
-        return colors
-            .sorted(by: { $0.hue < $1.hue })
-            .map { .hct($0) }
+        let colors = TemperatureCache(hct).analogous(count: 12)
+        return Array(Set(colors)).sorted(by: { $0.hue < $1.hue }).map { .hct($0) }
     }
     
     func setColorValues() {
@@ -415,7 +413,7 @@ struct CustomColorPicker: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     LazyHGrid(rows: gridItems, spacing: 4)  {
-                        ForEach(colorWheelColors, id: \.color) { color in
+                        ForEach(colorWheelColors) { color in
                             ZStack {
                                 rectangle(color: color)
                                 if showCopyIcons {
@@ -517,7 +515,7 @@ struct CustomColorPicker: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     LazyHGrid(rows: gridItems, spacing: 4) {
-                        ForEach(colorClipboard.colors.reversed(), id: \.self) { color in
+                        ForEach(colorClipboard.colors.reversed()) { color in
                             pasteColorButton(color: color, size: 40)
                                 .onLongPressGesture {
                                     withAnimation {
