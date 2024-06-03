@@ -9,7 +9,6 @@ import SwiftUI
 
 struct CustomColorPicker: View {
     @Environment(\.dismiss) private var dismiss
-    @AppStorage(key(.colorPalette)) var colorPalette = [ColorConfig]()
     @AppStorage(key(.showCopyIcons)) var showCopyIcons: Bool = true
     @Binding var colorConfig: ColorConfig
     @Binding var colorClipboard: ColorClipboard
@@ -26,6 +25,7 @@ struct CustomColorPicker: View {
     @State private var toneOrBrightnessSliderValue = Self.toneOrBrightnessRange.median
     @State private var closeButtonSize: CGSize = .zero
     @State private var showDeleteConfirmation: Bool = false
+    @State private var colorRangeWidth: ColorRangeWidth = .full
     
     static let hueRange: ClosedRange<Double> = 0...360
     static let chromaOrSaturationRange: ClosedRange<Double> = 0...120
@@ -57,19 +57,19 @@ struct CustomColorPicker: View {
                     if colorConfig.lightColorScale.isLightening {
                         Image(systemName: "square.2.layers.3d.top.filled")
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(.background950, .background850)
+                            .foregroundStyle(.background980, .background950)
                             .rounded(backgroundColor: .background700, padding: 4, cornerRadius: 8)
                     }
                     if colorConfig.darkColorScale.isDarkening {
                         Image(systemName: "square.2.layers.3d.top.filled")
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(.background010, .background100)
+                            .foregroundStyle(.background020, .background100)
                             .rounded(backgroundColor: .background300, padding: 4, cornerRadius: 8)
                     }
                 }
                 .font(.body)
                 ZStack {
-                    borderedRect(color: colorConfig.color)
+                    borderedRect(color: colorConfig.colorModel)
                         .frame(width: 32, height: 32)
                         .onTapGesture {
                             isEditingColor = true
@@ -196,23 +196,24 @@ struct CustomColorPicker: View {
     
     @ViewBuilder
     var pasteboardLookupButton: some View {
-        pasteboardColor(color: .foreground900, icon: Image(systemName: "square.on.square.dashed"))
+        pasteboardColor(color: .rgb(.foreground900), icon: Image(systemName: "square.on.square.dashed"))
             .onTapGesture {
                 colorClipboard.text = String.pasteboardString
             }
     }
     
     @ViewBuilder
-    func pasteColorButton(color: Color, size: CGFloat = 32) -> some View {
+    func pasteColorButton(color: ColorModel, size: CGFloat = 32) -> some View {
         pasteboardColor(color: color, size: size)
             .onTapGesture {
-                colorConfig.colorModel = .rgb(color)
+                colorConfig.colorModel = color
                 setColorValues()
             }
     }
     
     @ViewBuilder
-    func pasteboardColor(color: Color, icon: Image = Image(systemName: "doc.on.clipboard"), size: CGFloat = 32) -> some View {
+    func pasteboardColor(color: ColorModel,
+                         icon: Image = Image(systemName: "doc.on.clipboard"), size: CGFloat = 32) -> some View {
         ZStack {
             rectangle(color: color)
             icon
@@ -220,18 +221,18 @@ struct CustomColorPicker: View {
                 .scaledToFit()
                 .padding(size / 4)
                 .symbolRenderingMode(.hierarchical)
-                .foregroundColor(color.contrastingColor)
+                .foregroundColor(color.color.contrastingColor)
                 
         }
         .frame(width: size, height: size)
     }
     
-    var colorWheelColors: [Color] {
+    var colorWheelColors: [ColorModel] {
         guard let hct = colorConfig.hctColor else { return [] }
-        return TemperatureCache(hct)
-            .analogous(count: 12)
+        let colors = Array(Set(TemperatureCache(hct).analogous(count: 12)))
+        return colors
             .sorted(by: { $0.hue < $1.hue })
-            .map { Color(hctColor: $0) }
+            .map { .hct($0) }
     }
     
     func setColorValues() {
@@ -303,7 +304,7 @@ struct CustomColorPicker: View {
                         .foregroundColor(.foreground300)
                 }
                 HStack(spacing: 12) {
-                    rectangle(color: colorConfig.color)
+                    rectangle(color: colorConfig.colorModel)
                         .frame(width: 60, height: 60)
                     colorValues
                 }
@@ -406,13 +407,13 @@ struct CustomColorPicker: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     LazyHGrid(rows: gridItems, spacing: 4)  {
-                        ForEach(colorWheelColors, id: \.self) { color in
+                        ForEach(colorWheelColors, id: \.color) { color in
                             ZStack {
                                 rectangle(color: color)
                                 if showCopyIcons {
                                     Image(systemName: "square.on.square")
                                         .symbolRenderingMode(.hierarchical)
-                                        .foregroundColor(color.contrastingColor)
+                                        .foregroundColor(color.color.contrastingColor)
                                 }
                             }
                             .aspectRatio(1, contentMode: .fill)
@@ -430,13 +431,13 @@ struct CustomColorPicker: View {
         }
     }
     
-    func rectangle(color: Color) -> some View {
+    func rectangle(color: ColorModel) -> some View {
         Rectangle()
-            .fill(color)
+            .fill(color.color)
             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
     
-    func borderedRect(color: Color, strokeColor: Color = .clear) -> some View {
+    func borderedRect(color: ColorModel, strokeColor: Color = .clear) -> some View {
         rectangle(color: color)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
@@ -448,7 +449,12 @@ struct CustomColorPicker: View {
     var colorValues: some View {
         VStack(alignment: .leading) {
             colorValue("RGB", value: colorConfig.color.hexRGB)
-            colorValue("HCT", value: colorConfig.color.hct?.label ?? "")
+            switch colorConfig.colorModel {
+            case .hct(let color):
+                colorValue("HCT", value: color.label)
+            case .rgb(let color):
+                colorValue("HCT", value: color.hct?.label ?? "")
+            }
         }
     }
     

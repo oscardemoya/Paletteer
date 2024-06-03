@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ColorConfig: Identifiable, Hashable {
+struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
     var id: String = UUID().uuidString
     var colorModel: ColorModel
     var groupName: String = ""
@@ -20,6 +20,33 @@ struct ColorConfig: Identifiable, Hashable {
     var hexColor: String { colorModel.color.hexRGB }
     var hctColor: Hct? { colorModel.hctColor }
     
+    init(
+        id: String = UUID().uuidString,
+        colorModel: ColorModel,
+        groupName: String = "",
+        colorName: String,
+        lightColorScale: ColorScale = .darkening,
+        darkColorScale: ColorScale = .lightening,
+        rangeWidth: ColorRangeWidth = .full
+    ) {
+        self.id = id
+        self.colorModel = colorModel
+        self.groupName = groupName
+        self.colorName = colorName
+        self.lightColorScale = lightColorScale
+        self.darkColorScale = darkColorScale
+        self.rangeWidth = rangeWidth
+    }
+    
+    mutating func update(with other: Self) {
+        self.colorModel = other.colorModel
+        self.groupName = other.groupName
+        self.colorName = other.colorName
+        self.lightColorScale = other.lightColorScale
+        self.darkColorScale = other.darkColorScale
+        self.rangeWidth = other.rangeWidth
+    }
+    
     func hash(into hasher: inout Hasher) {
         var hasher = hasher
         hasher.combine(id)
@@ -30,9 +57,7 @@ struct ColorConfig: Identifiable, Hashable {
         hasher.combine(darkColorScale)
         hasher.combine(rangeWidth)
     }
-}
 
-extension ColorConfig: RawRepresentable {
     var rawValue: String {
         guard let data = try? JSONEncoder().encode(self),
               let result = String(data: data, encoding: .utf8) else {
@@ -46,11 +71,17 @@ extension ColorConfig: RawRepresentable {
               let result = try? JSONDecoder().decode(ColorConfig.self, from: data) else {
             return nil
         }
-        self = result
+        self.init(
+            id: result.id,
+            colorModel: result.colorModel,
+            groupName: result.groupName,
+            colorName: result.colorName,
+            lightColorScale: result.lightColorScale,
+            darkColorScale: result.darkColorScale,
+            rangeWidth: result.rangeWidth
+        )
     }
-}
 
-extension ColorConfig: Codable {
     enum CodingKeys: String, CodingKey {
         case id
         case colorModel

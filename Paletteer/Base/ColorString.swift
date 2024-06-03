@@ -9,20 +9,19 @@ import SwiftUI
 
 extension String {
     
-    var color: Color? {
-        if let color = color(fromHCTString: self) { return color }
-        if let color = color(fromHexString: self) { return color }
+    var color: ColorModel? {
+        if let color = color(fromHCTString: self) { return .hct(color) }
+        if let color = color(fromHexString: self) { return .rgb(color) }
         return nil
     }
     
-    func color(fromHCTString string: String) -> Color? {
+    func color(fromHCTString string: String) -> Hct? {
         let bodyRegex = /H(?<hue>\d+)\s* C(?<chroma>\d+)\s* T(?<tone>\d+)/.ignoresCase().dotMatchesNewlines()
-        return string.matches(of: bodyRegex).compactMap { match -> Color? in
+        return string.matches(of: bodyRegex).compactMap { match -> Hct? in
             guard let hue = Double(match.output.hue) else { return nil }
             guard let chroma = Double(match.output.chroma) else { return nil }
             guard let tone = Double(match.output.tone) else { return nil }
-            let hct = Hct.from(hue, chroma, tone)
-            return Color(hctColor: hct)
+            return Hct.from(hue, chroma, tone)
         }.first
     }
     

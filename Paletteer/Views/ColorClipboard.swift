@@ -10,11 +10,11 @@ import SwiftUI
 @Observable
 class ColorClipboard {
     struct Defaults {
-        @AppStorage(key(.clipboardColors)) static var colors: [Color] = []
+        @AppStorage(key(.clipboardColors)) static var colors: [ColorModel] = []
     }
     
     static let maxItems = 12
-    var colors: [Color] = []
+    var colors: [ColorModel] = []
     var text: String? = nil {
         didSet {
             String.pasteboardString = text
@@ -25,7 +25,7 @@ class ColorClipboard {
         self.colors = Defaults.colors
     }
     
-    func add(_ color: Color) {
+    func add(_ color: ColorModel) {
         remove(color)
         if colors.count >= Self.maxItems {
             colors = colors.suffix(Self.maxItems - 1)
@@ -34,7 +34,7 @@ class ColorClipboard {
         Defaults.colors = colors
     }
     
-    func remove(_ color: Color) {
+    func remove(_ color: ColorModel) {
         if colors.contains(color) {
             colors.removeAll(where: { $0 == color })
         }
@@ -44,7 +44,7 @@ class ColorClipboard {
         replace(with: [])
     }
     
-    func replace(with colors: [Color]) {
+    func replace(with colors: [ColorModel]) {
         self.colors = colors
         Defaults.colors = colors
     }

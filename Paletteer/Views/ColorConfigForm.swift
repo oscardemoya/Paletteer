@@ -108,10 +108,8 @@ struct ColorConfigForm: View {
                     dismiss()
                     if !isEditing {
                         colorPalette.append(colorConfig)
-                    } else {
-                        if let index = colorPalette.firstIndex(where: { $0.id == colorConfig.id }) {
-                            colorPalette[index] = colorConfig
-                        }
+                    } else if let index = colorPalette.firstIndex(where: { $0.id == colorConfig.id }) {
+                        colorPalette[index].update(with: colorConfig)
                     }
                 } label: {
                     Text(isEditing ? "Save Changes" : "Add Color")

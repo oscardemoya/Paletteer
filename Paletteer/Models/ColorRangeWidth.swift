@@ -28,21 +28,21 @@ enum ColorRangeWidth: String, Codable, CaseIterable, Identifiable, Hashable {
         }
     }
     
-    var progress: Double {
-        switch self {
-        case .full: 1.0
-        case .wide: 0.75
-        case .half: 0.5
-        case .narrow: 0.25
-        }
-    }
-    
     var iconName: String {
         switch self {
         case .full: return "circle" // 􀀁
         case .wide: return "field.of.view.ultrawide.fill" // 􁿽
         case .half: return "circle.tophalf.filled" // 􀪗
         case .narrow: return "field.of.view.wide.fill" // 􁿿
+        }
+    }
+    
+    var progress: Double {
+        switch self {
+        case .full: 1.0
+        case .wide: 0.75
+        case .half: 0.5
+        case .narrow: 0.25
         }
     }
 }

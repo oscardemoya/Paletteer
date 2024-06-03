@@ -25,7 +25,6 @@ struct ColorPalette {
         if full {
             if light {
                 [
-                    (true, 01),
                     (true, 10),
                     (true, 20),
                     (true, 30),
@@ -36,14 +35,14 @@ struct ColorPalette {
                     (false, 80),
                     (false, 60),
                     (false, 40),
+                    (false, 30),
                     (false, 20),
                     (false, 10),
-                    (false, 01)
+                    (false, 02)
                 ]
             } else {
                 [
-                    (false, 01),
-                    (false, 05),
+                    (false, 02),
                     (false, 10),
                     (false, 20),
                     (false, 30),
@@ -54,14 +53,14 @@ struct ColorPalette {
                     (true, 80),
                     (true, 60),
                     (true, 40),
+                    (true, 30),
                     (true, 20),
-                    (true, 01)
+                    (true, 10)
                 ]
             }
         } else {
             if light {
                 [
-                    (true, 01),
                     (true, 10),
                     (true, 20),
                     (true, 30),
@@ -74,12 +73,16 @@ struct ColorPalette {
                     (true, 90),
                     (true, 95),
                     (true, 98),
-                    (true, 100)
+                    (true, 99),
+                    (nil, 100)
                 ]
             } else {
                 [
                     (false, 01),
+                    (false, 02),
+                    (false, 05),
                     (false, 10),
+                    (false, 15),
                     (false, 20),
                     (false, 30),
                     (false, 40),
@@ -87,18 +90,15 @@ struct ColorPalette {
                     (false, 60),
                     (false, 70),
                     (false, 80),
-                    (false, 85),
                     (false, 90),
-                    (false, 95),
-                    (false, 98),
-                    (false, 100)
+                    (nil, 100)
                 ]
             }
         }
     }
     
     static var overlayTones: [Int] = {
-        [01, 05, 10, 15, 20, 30, 40, 50, 60, 70, 80, 85, 90, 95]
+        [01, 02, 05, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98, 99]
     }()
     
     static func overlay(light: Bool?) -> Color {

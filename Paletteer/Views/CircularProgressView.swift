@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct CircularProgressView: View {
-    @State var progress: Double
-    @State var color: Color
-    @State var lineWidth: CGFloat
+    var progress: Double
+    var color: Color
+    var lineWidth: CGFloat
     
     var body: some View {
         ZStack {

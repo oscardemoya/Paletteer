@@ -87,17 +87,10 @@ struct ColorPaletteView: View {
             ColorSchemeSwitcher.shared.overrideDisplayMode()
         }
         .onAppear {
-            if let existingFileURL = fileURL, FileManager.default.fileExists(atPath: existingFileURL.path) {
-                FileManager.default.removeDirectory(atURL: existingFileURL)
-            }
+            saveFiles()
         }
-        .onChange(of: colorSpace == .hct) { _, _ in
-            if let existingFileURL = fileURL, FileManager.default.fileExists(atPath: existingFileURL.path) {
-                FileManager.default.removeDirectory(atURL: existingFileURL)
-            }
-            colorList.forEach { group in
-                saveFile(for: group)
-            }
+        .onChange(of: colorSpace) { _, _ in
+            saveFiles()
         }
     }
     
@@ -127,6 +120,15 @@ struct ColorPaletteView: View {
         return response == .OK ? savePanel.url : nil
     }
 #endif
+    
+    private func saveFiles() {
+        if let existingFileURL = fileURL, FileManager.default.fileExists(atPath: existingFileURL.path) {
+            FileManager.default.removeDirectory(atURL: existingFileURL)
+        }
+        colorList.forEach { group in
+            saveFile(for: group)
+        }
+    }
     
     private func saveFile(for config: ColorConfig) {
         if !config.groupName.isEmpty {
