@@ -206,10 +206,14 @@ struct ColorPaletteView: View {
     private func shades(for group: ColorConfig) -> [ColorPair] {
         let colorCount = ColorPalette.shadesCount(isMaterial: colorSpace == .hct)
         return (0..<colorCount).compactMap { index in
-            if colorSpace == .hct {
+            switch colorSpace {
+            case .hct:
                 guard let hctColor = group.color.hct else { return nil }
                 return .hct(hctColor)
-            } else {
+            case .hsb:
+                guard let hsbColor = group.color.hsba else { return nil }
+                return .hsb(hsbColor)
+            case .rgb:
                 return .rgb(group.color)
             }
         }.enumerated().map { (index: Int, color: ColorModel) in
@@ -243,29 +247,47 @@ struct ColorPaletteView: View {
             hctColor.chroma = hctColor.chroma * (config.light ? 1 : 0.75)
             color = Color(hctColor: hctColor)
             argb = hctColor.toInt()
-        case .rgb(let originalColor):
-            var baseColor = originalColor
-            if !group.rangeWidth.isFull, let originalValues = originalColor.hsba {
-                let brightness: CGFloat
-                switch group.rangeWidth {
-                case .full:
-                    brightness = 1.0
-                case .wide:
-                    brightness = config.light ? 0.25 : 0.75
-                case .half:
-                    brightness = 0.5
-                case .narrow:
-                    brightness = config.light ? 0.75 : 0.25
-                }
-                baseColor = originalColor.replace(saturation: config.light ? originalValues.saturation + 0.01 : 0,
-                                                  brightness: brightness)
+        case .hsb(let hsbColor):
+            var baseColor = hsbColor
+            if !group.rangeWidth.isFull {
+                baseColor.saturation = config.light ? hsbColor.saturation + 0.01 : 0
+                baseColor.brightness = baseBrightness(group: group, config: config)
             }
             let opacities = ColorPalette.overlayOpacities(light: config.light, full: group.rangeWidth.isFull)
             let opacity = Double(opacities[config.index].opacity) / 100.0
-            let overlay = ColorPalette.overlay(light: opacities[config.index].light)
+            if opacity == 1 {
+                if !config.light {
+                    baseColor.hue += 0.03
+                    baseColor.saturation += -0.02
+                    baseColor.brightness += -0.05
+                }
+            } else if let light = opacities[config.index].light {
+                if light {
+                    baseColor.brightness = hsbColor.brightness + (((255 - hsbColor.brightness) / 255) * (1 - opacity))
+                } else {
+                    baseColor.brightness = (((hsbColor.brightness / 255) * opacity) * 255)
+                }
+                if !config.light {
+                    baseColor.hue += 0.045
+                    baseColor.saturation += 0.01
+                    baseColor.brightness += -0.05
+                }
+            }
+            color = Color(hsba: baseColor)
+            argb = color.rgbInt ?? 0
+        case .rgb(let rgbColor):
+            var baseColor = rgbColor
+            if !group.rangeWidth.isFull, let originalValues = rgbColor.hsba {
+                let brightness: CGFloat = baseBrightness(group: group, config: config)
+                baseColor = rgbColor.replace(saturation: config.light ? originalValues.saturation + 0.01 : 0,
+                                             brightness: brightness)
+            }
+            let opacities = ColorPalette.overlayOpacities(light: config.light, full: group.rangeWidth.isFull)
+            let opacity = Double(opacities[config.index].opacity) / 100.0
             if opacity == 1 {
                 color = config.light ? baseColor : baseColor.adjust(hue: 0.03, saturation: -0.02, brightness: -0.05)
             } else {
+                let overlay = ColorPalette.overlay(light: opacities[config.index].light)
                 let blend = Color.blend(color1: baseColor, intensity1: opacity,
                                         color2: overlay, intensity2: 1 - opacity)
                 color = config.light ? blend : blend.adjust(hue: 0.045, saturation: 0.01, brightness: -0.05)
@@ -273,6 +295,15 @@ struct ColorPaletteView: View {
             argb = color.rgbInt ?? 0
         }
         return (color: color, argb: argb)
+    }
+    
+    private func baseBrightness(group: ColorConfig, config: ColorConversion) -> CGFloat {
+        switch group.rangeWidth {
+        case .full: 1.0
+        case .wide: config.light ? 0.25 : 0.75
+        case .half: 0.5
+        case .narrow: config.light ? 0.75 : 0.25
+        }
     }
     
     private func saveFile(to filePath: String, colorName: String, lightArgb: Int, darkArgb: Int) {

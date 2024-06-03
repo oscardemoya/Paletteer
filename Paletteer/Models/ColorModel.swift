@@ -11,12 +11,15 @@ enum ColorModel: Identifiable, Hashable {
     var id: String { rawValue }
     
     case hct(_ value: Hct)
+    case hsb(_ value: HSBA)
     case rgb(_ value: Color)
     
     var color: Color {
         switch self {
-        case .hct(let color):
-            Color(hctColor: color)
+        case .hct(let hct):
+            Color(hctColor: hct)
+        case .hsb(let hsba):
+            Color(hsba: hsba)
         case .rgb(let color):
             color
         }
@@ -24,7 +27,8 @@ enum ColorModel: Identifiable, Hashable {
     
     var hctColor: Hct? {
         switch self {
-        case .hct(let color): color
+        case .hct(let hct): hct
+        case .hsb(let hsba): Color(hsba: hsba).hct
         case .rgb(let color): color.hct
         }
     }
@@ -61,6 +65,9 @@ extension ColorModel: Codable {
         case "hct":
             let color = try container.decode(Hct.self, forKey: .associatedValue)
             self = .hct(color)
+        case "hsb":
+            let color = try container.decode(HSBA.self, forKey: .associatedValue)
+            self = .hsb(color)
         case "rgb":
             let color = try container.decode(Color.self, forKey: .associatedValue)
             self = .rgb(color)
@@ -74,6 +81,9 @@ extension ColorModel: Codable {
         switch self {
         case .hct(let color):
             try container.encode("hct", forKey: .type)
+            try container.encode(color, forKey: .associatedValue)
+        case .hsb(let color):
+            try container.encode("hsb", forKey: .type)
             try container.encode(color, forKey: .associatedValue)
         case .rgb(let color):
             try container.encode("rgb", forKey: .type)

@@ -28,8 +28,8 @@ struct ColorPaletteSettingsView: View {
         ColorConfig(colorModel: .rgb(.red.muted), groupName: "Semantic", colorName: "Error"),
         ColorConfig(colorModel: .rgb(.gray.replace(brightness: 0.9)), groupName: "Neutral", colorName: "Background",
                     lightColorScale: .lightening, rangeWidth: .wide),
-        ColorConfig(colorModel: .rgb(.black.replace(brightness: 0.25)), groupName: "Neutral", colorName: "Foreground",
-                    lightColorScale: .lightening, darkColorScale: .darkening)
+        ColorConfig(colorModel: .rgb(.gray.replace(brightness: 0.5)), groupName: "Neutral", colorName: "Foreground",
+                    lightColorScale: .lightening, darkColorScale: .darkening, rangeWidth: .wide)
     ]}
     
     var body: some View {

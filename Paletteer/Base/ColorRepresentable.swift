@@ -9,7 +9,35 @@ import Foundation
 import SwiftUI
 
 typealias RGBA = (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)
-typealias HSBA = (hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat)
+
+struct HSBA: Codable, RawRepresentable {
+    var hue: CGFloat
+    var saturation: CGFloat
+    var brightness: CGFloat
+    var alpha: CGFloat
+    
+    var label: String { rawValue }
+    
+    var rawValue: String {
+        if alpha != 1.0 {
+            "H\(Int(round(hue))) S\(Int(round(saturation))) B\(Int(round(brightness))) A\(Int(round(alpha)))"
+        } else {
+            "H\(Int(round(hue))) S\(Int(round(saturation))) B\(Int(round(brightness)))"
+        }
+    }
+
+    init?(rawValue: String) {
+        guard let hsba = rawValue.hsba else { return nil }
+        self = hsba
+    }
+    
+    init(hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat = 1.0) {
+        self.hue = hue
+        self.saturation = saturation
+        self.brightness = brightness
+        self.alpha = alpha
+    }
+}
 
 extension Color: RawRepresentable {
     public var rawValue: String {
@@ -37,12 +65,7 @@ extension Color: RawRepresentable {
     }
 
     init(hex: String) {
-        let rgba = hex.rgba
-        self.init(.sRGB,
-                  red: Double(rgba.red),
-                  green: Double(rgba.green),
-                  blue: Double(rgba.blue),
-                  opacity: Double(rgba.alpha))
+        self.init(rgba: hex.rgba)
     }
     
     init(argb: Int) {
@@ -51,6 +74,24 @@ extension Color: RawRepresentable {
             red: Double((argb >> 16) & 0xFF) / 255,
             green: Double((argb >> 08) & 0xFF) / 255,
             blue: Double((argb >> 00) & 0xFF) / 255
+        )
+    }
+    
+    init(rgba: RGBA) {
+        self.init(.sRGB,
+                  red: rgba.red,
+                  green: rgba.green,
+                  blue: rgba.blue,
+                  opacity: rgba.alpha
+        )
+    }
+    
+    init(hsba: HSBA) {
+        self.init(
+            hue: hsba.hue,
+            saturation: hsba.saturation,
+            brightness: hsba.brightness,
+            opacity: hsba.alpha
         )
     }
     
@@ -110,14 +151,17 @@ extension CrossPlatformColor {
     }
     
     var hsba: HSBA? {
-        var (h, s, b, a): RGBA = (0, 0, 0, 0)
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
 #if os(macOS)
-        guard let rgbColor = self.usingColorSpace(NSColorSpace.deviceRGB) else { return nil }
+        guard let hsbColor = self.usingColorSpace(NSColorSpace.deviceRGB) else { return nil }
 #else
-        let rgbColor = self
+        let hsbColor = self
 #endif
-        rgbColor.getHue(&h, saturation: &s, brightness: &b, alpha: &a)
-        return (h, s, b, a)
+        hsbColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+        return HSBA(hue: hue, saturation: saturation, brightness: brightness, alpha: alpha)
     }
 }
 

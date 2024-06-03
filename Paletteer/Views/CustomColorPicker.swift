@@ -35,7 +35,7 @@ struct CustomColorPicker: View {
     
     var body: some View {
         Button { if !colorConfig.colorName.isEmpty { isEditingColor = true } } label: {
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 VStack(spacing: 0) {
                     if isEditing {
                         TextField("Color Name", text: $colorConfig.colorName)
@@ -451,6 +451,8 @@ struct CustomColorPicker: View {
             switch colorConfig.colorModel {
             case .hct(let color):
                 colorValue("HCT", value: color.label)
+            case .hsb(let hsba):
+                colorValue("HSB", value: hsba.label)
             case .rgb(let color):
                 colorValue("HCT", value: color.hct?.label ?? "")
             }

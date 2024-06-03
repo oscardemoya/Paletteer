@@ -61,19 +61,19 @@ struct ColorPalette {
         } else {
             if light {
                 [
-                    (true, 01),
                     (true, 02),
-                    (true, 05),
                     (true, 10),
                     (true, 15),
                     (true, 20),
                     (true, 25),
                     (true, 30),
-                    (true, 35),
                     (true, 40),
                     (true, 50),
                     (true, 60),
+                    (true, 70),
                     (true, 80),
+                    (true, 90),
+                    (true, 95),
                     (nil, 100)
                 ]
             } else {
