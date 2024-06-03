@@ -252,9 +252,9 @@ struct CustomColorPicker: View {
             return
         }
         withAnimation {
-            hueSliderValue = hct.hue
-            chromaOrSaturationSliderValue = hct.chroma
-            toneOrBrightnessSliderValue = hct.tone
+            hueSliderValue = round(hct.hue)
+            chromaOrSaturationSliderValue = round(hct.chroma)
+            toneOrBrightnessSliderValue = round(hct.tone)
         }
     }
     
@@ -264,15 +264,18 @@ struct CustomColorPicker: View {
             return
         }
         withAnimation {
-            hueSliderValue = hsba.hue * 360
-            chromaOrSaturationSliderValue = hsba.saturation * 100
-            toneOrBrightnessSliderValue = hsba.brightness * 100
+            hueSliderValue = round(hsba.hue * 360)
+            chromaOrSaturationSliderValue = round(hsba.saturation * 100)
+            toneOrBrightnessSliderValue = round(hsba.brightness * 100)
         }
     }
     
     func updateColor() {
         switch colorSpace {
         case .hct:
+            debugPrint(hueSliderValue)
+            debugPrint(chromaOrSaturationSliderValue)
+            debugPrint(toneOrBrightnessSliderValue)
             let hctColor = Hct.from(hueSliderValue, chromaOrSaturationSliderValue, toneOrBrightnessSliderValue)
             colorConfig.colorModel = .hct(hctColor)
         case .hsb:
@@ -369,7 +372,7 @@ struct CustomColorPicker: View {
                    sliderValue: Binding<Double>, in range: ClosedRange<Double>) -> some View {
         GridRow {
             Text(titleKey).frame(alignment: .leading)
-            Slider(value: sliderValue, in: range)
+            Slider(value: sliderValue, in: range, step: 1.0)
             HStack {
                 Spacer(minLength: 0)
                 Stepper("\(Int(sliderValue.wrappedValue))", value: sliderValue, in: range)

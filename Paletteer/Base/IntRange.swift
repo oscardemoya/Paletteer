@@ -9,6 +9,6 @@ import Foundation
 
 extension ClosedRange where ClosedRange.Bound == Double {
     var median: Double {
-        lowerBound + ((upperBound - lowerBound) / 2)
+        round(lowerBound + ((upperBound - lowerBound) / 2))
     }
 }
