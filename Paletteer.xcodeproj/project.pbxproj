@@ -23,6 +23,7 @@
 		262EFCD52C0D0BBB0048EA62 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 262EFCD42C0D0BBB0048EA62 /* Colors.xcassets */; };
 		262EFCDB2C0D55A10048EA62 /* JSONData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCDA2C0D55A10048EA62 /* JSONData.swift */; };
 		262EFCDD2C0D55BB0048EA62 /* JSONString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCDC2C0D55BB0048EA62 /* JSONString.swift */; };
+		262EFCDF2C0E31E70048EA62 /* ColorPickerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCDE2C0E31E70048EA62 /* ColorPickerPreview.swift */; };
 		2656F3A82C04F979007BB5E9 /* CodableColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3A72C04F979007BB5E9 /* CodableColor.swift */; };
 		2656F3AA2C04FA06007BB5E9 /* ColorClipboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */; };
 		2656F3AC2C051235007BB5E9 /* ColorString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3AB2C051235007BB5E9 /* ColorString.swift */; };
@@ -112,6 +113,7 @@
 		262EFCD42C0D0BBB0048EA62 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		262EFCDA2C0D55A10048EA62 /* JSONData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONData.swift; sourceTree = "<group>"; };
 		262EFCDC2C0D55BB0048EA62 /* JSONString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONString.swift; sourceTree = "<group>"; };
+		262EFCDE2C0E31E70048EA62 /* ColorPickerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerPreview.swift; sourceTree = "<group>"; };
 		2656F3A72C04F979007BB5E9 /* CodableColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableColor.swift; sourceTree = "<group>"; };
 		2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorClipboard.swift; sourceTree = "<group>"; };
 		2656F3AB2C051235007BB5E9 /* ColorString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorString.swift; sourceTree = "<group>"; };
@@ -210,6 +212,7 @@
 			children = (
 				262EFCB22C0AE2690048EA62 /* ColorConfigForm.swift */,
 				267533CB2BDEE408007C1F51 /* CustomColorPicker.swift */,
+				262EFCDE2C0E31E70048EA62 /* ColorPickerPreview.swift */,
 				262EFCAC2C0ABC840048EA62 /* CircularButton.swift */,
 				2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */,
 				26227E262C0289C300E44707 /* ButtonStyle.swift */,
@@ -575,6 +578,7 @@
 				267533A62BDDDBB2007C1F51 /* ColorPaletteView.swift in Sources */,
 				269C3B952BF15200002329C1 /* CrossplatformColor.swift in Sources */,
 				267533BF2BDE982E007C1F51 /* Theme.swift in Sources */,
+				262EFCDF2C0E31E70048EA62 /* ColorPickerPreview.swift in Sources */,
 				26227E252C02847400E44707 /* Pasteboard.swift in Sources */,
 				26BF53E12BD75EFD001CAFBC /* QuantizerMap.swift in Sources */,
 				26BF53DF2BD75EFD001CAFBC /* Quantizer.swift in Sources */,

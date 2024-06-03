@@ -35,7 +35,7 @@ struct CustomColorPicker: View {
     
     var body: some View {
         Button { if !colorConfig.colorName.isEmpty { isEditingColor = true } } label: {
-            HStack(spacing: 4) {
+            HStack(spacing: 10) {
                 VStack(spacing: 0) {
                     if isEditing {
                         TextField("Color Name", text: $colorConfig.colorName)
@@ -45,31 +45,32 @@ struct CustomColorPicker: View {
                             Text(colorConfig.groupName)
                                 .font(.subheadline)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .foregroundColor(.foreground500)
+                                .foregroundColor(.foreground300)
                         }
                         Text(colorConfig.colorName)
-                            .foregroundColor(.foreground300)
+                            .foregroundColor(.foreground100)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
                 .frame(maxWidth: .infinity)
-                Group {
+                HStack(spacing: 8) {
                     if colorConfig.lightColorScale.isLightening {
                         Image(systemName: "square.2.layers.3d.fill")
+                            .font(.title3)
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.background800, .background500)
                             .rounded(backgroundColor: .background400, padding: 4, cornerRadius: 8)
                     }
                     if colorConfig.darkColorScale.isDarkening {
                         Image(systemName: "square.2.layers.3d.fill")
+                            .font(.title3)
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.background020, .background300)
                             .rounded(backgroundColor: .background400, padding: 4, cornerRadius: 8)
                     }
                 }
-                .font(.title3)
                 ZStack {
-                    borderedRect(color: colorConfig.colorModel)
+                    ColorPickerPreview(color: colorConfig.colorModel)
                         .frame(width: 32, height: 32)
                         .onTapGesture {
                             isEditingColor = true
@@ -293,13 +294,13 @@ struct CustomColorPicker: View {
                         Text(colorConfig.groupName)
                             .font(.subheadline)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .foregroundColor(.foreground500)
+                            .foregroundColor(.foreground300)
                     }
                     Text(colorConfig.colorName)
                         .font(.title3)
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.foreground300)
+                        .foregroundColor(.foreground100)
                 }
                 HStack(spacing: 12) {
                     rectangle(color: colorConfig.colorModel)
@@ -330,11 +331,11 @@ struct CustomColorPicker: View {
                 .textCase(.uppercase)
                 .font(.caption)
                 .fontWeight(.bold)
-                .foregroundColor(.foreground500)
+                .foregroundColor(.foreground300)
             if let text = colorClipboard.text, text.color != nil {
                 Text(text)
                     .font(.caption2)
-                    .foregroundColor(.foreground700)
+                    .foregroundColor(.foreground500)
             }
         }
         .padding(12)
@@ -441,14 +442,6 @@ struct CustomColorPicker: View {
         Rectangle()
             .fill(color.color)
             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-    }
-    
-    func borderedRect(color: ColorModel, strokeColor: Color = .clear) -> some View {
-        rectangle(color: color)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .strokeBorder(.primaryBackground, lineWidth: 2)
-            )
     }
     
     @ViewBuilder
