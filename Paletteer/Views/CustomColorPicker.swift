@@ -273,9 +273,6 @@ struct CustomColorPicker: View {
     func updateColor() {
         switch colorSpace {
         case .hct:
-            debugPrint(hueSliderValue)
-            debugPrint(chromaOrSaturationSliderValue)
-            debugPrint(toneOrBrightnessSliderValue)
             let hctColor = Hct.from(hueSliderValue, chromaOrSaturationSliderValue, toneOrBrightnessSliderValue)
             colorConfig.colorModel = .hct(hctColor)
         case .hsb:
@@ -372,12 +369,20 @@ struct CustomColorPicker: View {
                    sliderValue: Binding<Double>, in range: ClosedRange<Double>) -> some View {
         GridRow {
             Text(titleKey).frame(alignment: .leading)
-            Slider(value: sliderValue, in: range, step: 1.0)
+            Slider(value: sliderValue, in: range)
             HStack {
-                Spacer(minLength: 0)
+                TextField("", value: sliderValue, formatter: NumberFormatter())
+                    .multilineTextAlignment(.center)
+#if !os(macOS)
+                    .keyboardType(.decimalPad)
+#endif
+                    .frame(width: 50)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
                 Stepper("\(Int(sliderValue.wrappedValue))", value: sliderValue, in: range)
+                    .labelsHidden()
                     .fixedSize()
             }
+            .padding(.leading, 4)
             .gridColumnAlignment(.trailing)
         }
     }

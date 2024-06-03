@@ -13,7 +13,6 @@ struct PaletteerApp: App {
         WindowGroup {
             ColorPaletteSettingsView()
         }
-        
 #if os(macOS)
         Settings {
             SettingsPane()
