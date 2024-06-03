@@ -55,19 +55,19 @@ struct CustomColorPicker: View {
                 .frame(maxWidth: .infinity)
                 Group {
                     if colorConfig.lightColorScale.isLightening {
-                        Image(systemName: "square.2.layers.3d.top.filled")
+                        Image(systemName: "square.2.layers.3d.fill")
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(.background980, .background950)
-                            .rounded(backgroundColor: .background700, padding: 4, cornerRadius: 8)
+                            .foregroundStyle(.background800, .background500)
+                            .rounded(backgroundColor: .background400, padding: 4, cornerRadius: 8)
                     }
                     if colorConfig.darkColorScale.isDarkening {
-                        Image(systemName: "square.2.layers.3d.top.filled")
+                        Image(systemName: "square.2.layers.3d.fill")
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(.background020, .background100)
-                            .rounded(backgroundColor: .background300, padding: 4, cornerRadius: 8)
+                            .foregroundStyle(.background020, .background300)
+                            .rounded(backgroundColor: .background400, padding: 4, cornerRadius: 8)
                     }
                 }
-                .font(.body)
+                .font(.title3)
                 ZStack {
                     borderedRect(color: colorConfig.colorModel)
                         .frame(width: 32, height: 32)
