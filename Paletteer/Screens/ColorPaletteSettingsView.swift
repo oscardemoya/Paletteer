@@ -20,15 +20,15 @@ struct ColorPaletteSettingsView: View {
     var columns = [GridItem(.adaptive(minimum: 200), spacing: 12)]
     
     var defaultColorPalette: [ColorConfig] {[
-        ColorConfig(colorModel: .rgb(Color(hex: "#5188BB")), groupName: "Brand", colorName: "Primary"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#897ABD")), groupName: "Brand", colorName: "Secondary"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#C06D58")), groupName: "Brand", colorName: "Tertiary"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#519161")), groupName: "Semantic", colorName: "Success"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#A19032")), groupName: "Semantic", colorName: "Warning"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#B35E57")), groupName: "Semantic", colorName: "Error"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#A9A9B0")), groupName: "Neutral", colorName: "Background",
+        ColorConfig(colorModel: .rgb(Color(hex: "#689FD4")), groupName: "Brand", colorName: "Primary"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#A091D7")), groupName: "Brand", colorName: "Secondary"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#E79161")), groupName: "Brand", colorName: "Tertiary"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#6EA97A")), groupName: "Semantic", colorName: "Success"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#CEBC5A")), groupName: "Semantic", colorName: "Warning"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#D97F75")), groupName: "Semantic", colorName: "Error"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#A9A8AC")), groupName: "Neutral", colorName: "Background",
                     lightColorScale: .lightening, rangeWidth: .wide),
-        ColorConfig(colorModel: .rgb(Color(hex: "#45464C")), groupName: "Neutral", colorName: "Foreground",
+        ColorConfig(colorModel: .rgb(Color(hex: "#525354")), groupName: "Neutral", colorName: "Foreground",
                     lightColorScale: .lightening, darkColorScale: .darkening, rangeWidth: .wide)
     ]}
     
