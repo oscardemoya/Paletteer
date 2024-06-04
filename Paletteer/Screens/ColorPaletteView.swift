@@ -249,6 +249,9 @@ struct ColorPaletteView: View {
             argb = hctColor.toInt()
         case .hsb(let hsbColor):
             var baseColor = hsbColor
+            if group.colorName == "Background" {
+                print("brightness: \(hsbColor.brightness)")
+            }
             if !group.rangeWidth.isFull {
                 baseColor.saturation = config.light ? hsbColor.saturation + 0.01 : 0
                 baseColor.brightness = baseBrightness(group: group, config: config)
@@ -256,10 +259,10 @@ struct ColorPaletteView: View {
             let opacities = ColorPalette.overlayOpacities(light: config.light, full: group.rangeWidth.isFull)
             let opacity = Double(opacities[config.index].opacity) / 100.0
             if opacities[config.index].light {
-                baseColor.saturation = hsbColor.saturation * opacity
-                baseColor.brightness = hsbColor.brightness + (((1 - hsbColor.brightness)) * (1 - opacity))
+                baseColor.saturation *= opacity
+                baseColor.brightness = baseColor.brightness + (((1 - baseColor.brightness)) * (1 - opacity))
             } else {
-                baseColor.brightness = hsbColor.brightness * opacity
+                baseColor.brightness *= opacity
             }
             color = Color(hsba: baseColor)
             argb = color.rgbInt ?? 0
@@ -287,7 +290,7 @@ struct ColorPaletteView: View {
     
     private func baseBrightness(group: ColorConfig, config: ColorConversion) -> CGFloat {
         switch group.rangeWidth {
-        case .full: 1.0
+        case .full: config.light ? 0.0 : 1.0
         case .wide: config.light ? 0.25 : 0.75
         case .half: 0.5
         case .narrow: config.light ? 0.75 : 0.25
