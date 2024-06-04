@@ -11,7 +11,7 @@ struct SettingsPane: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(key(.colorPalette)) var colorPalette = [ColorConfig]()
     @AppStorage(key(.showCopyIcons)) var showCopyIcons: Bool = true
-    @AppStorage(key(.useColorInClipboard)) var useLastCopiedColor: Bool = true
+    @AppStorage(key(.useColorInClipboard)) var useColorInClipboard: Bool = true
     @State private var colorClipboard = ColorClipboard()
     @State private var showDeleteConfirmation: Bool = false
 
@@ -22,7 +22,7 @@ struct SettingsPane: View {
                     Toggle("Show Copy Icons", isOn: $showCopyIcons)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(4)
-                    Toggle("Use Last Copied Color", isOn: $useLastCopiedColor)
+                    Toggle("Use Color in Clipboard", isOn: $useColorInClipboard)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(4)
 
