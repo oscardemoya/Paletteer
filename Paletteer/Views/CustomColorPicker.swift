@@ -48,6 +48,8 @@ struct CustomColorPicker: View {
                                 .foregroundColor(.foreground300)
                         }
                         Text(colorConfig.colorName)
+                            .font(.headline)
+                            .fontWeight(.medium)
                             .foregroundColor(.foreground100)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
@@ -113,11 +115,13 @@ struct CustomColorPicker: View {
             .onChange(of: hueSliderValue, updateColor)
             .onChange(of: chromaOrSaturationSliderValue, updateColor)
             .onChange(of: toneOrBrightnessSliderValue, updateColor)
+#if os(macOS)
             .pasteDestination(for: String.self) { strings in
                 if let string = strings.first {
                     colorClipboard.text = string
                 }
             }
+#endif
     }
     
     @ViewBuilder

@@ -5,9 +5,9 @@
         "color-space" : "srgb",
         "components" : {
           "alpha" : "{{la}}",
-          "blue" : "0xAF",
-          "green" : "0xAD",
-          "red" : "0xAC"
+          "blue" : "0xCF",
+          "green" : "0xCA",
+          "red" : "0xCA"
         }
       },
       "idiom" : "universal"
@@ -23,9 +23,9 @@
         "color-space" : "srgb",
         "components" : {
           "alpha" : "{{da}}",
-          "blue" : "0x28",
-          "green" : "0x27",
-          "red" : "0x27"
+          "blue" : "0x1C",
+          "green" : "0x1C",
+          "red" : "0x1C"
         }
       },
       "idiom" : "universal"

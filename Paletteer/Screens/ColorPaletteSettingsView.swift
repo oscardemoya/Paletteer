@@ -23,12 +23,12 @@ struct ColorPaletteSettingsView: View {
         ColorConfig(colorModel: .rgb(Color(hex: "#5188BB")), groupName: "Brand", colorName: "Primary"),
         ColorConfig(colorModel: .rgb(Color(hex: "#897ABD")), groupName: "Brand", colorName: "Secondary"),
         ColorConfig(colorModel: .rgb(Color(hex: "#C06D58")), groupName: "Brand", colorName: "Tertiary"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#688E4C")), groupName: "Semantic", colorName: "Success"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#688E4C")), groupName: "Semantic", colorName: "Warning"),
-        ColorConfig(colorModel: .rgb(.red.muted), groupName: "Semantic", colorName: "Error"),
-        ColorConfig(colorModel: .rgb(.gray.replace(brightness: 0.9)), groupName: "Neutral", colorName: "Background",
+        ColorConfig(colorModel: .rgb(Color(hex: "#519161")), groupName: "Semantic", colorName: "Success"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#A19032")), groupName: "Semantic", colorName: "Warning"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#B35E57")), groupName: "Semantic", colorName: "Error"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#A9A9B0")), groupName: "Neutral", colorName: "Background",
                     lightColorScale: .lightening, rangeWidth: .wide),
-        ColorConfig(colorModel: .rgb(.gray.replace(brightness: 0.5)), groupName: "Neutral", colorName: "Foreground",
+        ColorConfig(colorModel: .rgb(Color(hex: "#45464C")), groupName: "Neutral", colorName: "Foreground",
                     lightColorScale: .lightening, darkColorScale: .darkening, rangeWidth: .wide)
     ]}
     

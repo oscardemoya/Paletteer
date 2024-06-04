@@ -249,9 +249,6 @@ struct ColorPaletteView: View {
             argb = hctColor.toInt()
         case .hsb(let hsbColor):
             var baseColor = hsbColor
-            if group.colorName == "Background" {
-                print("brightness: \(hsbColor.brightness)")
-            }
             if !group.rangeWidth.isFull {
                 baseColor.saturation = config.light ? hsbColor.saturation + 0.01 : 0
                 baseColor.brightness = baseBrightness(group: group, config: config)
