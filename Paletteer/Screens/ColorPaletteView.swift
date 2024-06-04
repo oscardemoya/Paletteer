@@ -255,23 +255,11 @@ struct ColorPaletteView: View {
             }
             let opacities = ColorPalette.overlayOpacities(light: config.light, full: group.rangeWidth.isFull)
             let opacity = Double(opacities[config.index].opacity) / 100.0
-            if opacity == 1 {
-                if !config.light {
-                    baseColor.hue += 0.03
-                    baseColor.saturation += -0.02
-                    baseColor.brightness += -0.05
-                }
-            } else if let light = opacities[config.index].light {
-                if light {
-                    baseColor.brightness = hsbColor.brightness + (((255 - hsbColor.brightness) / 255) * (1 - opacity))
-                } else {
-                    baseColor.brightness = (((hsbColor.brightness / 255) * opacity) * 255)
-                }
-                if !config.light {
-                    baseColor.hue += 0.045
-                    baseColor.saturation += 0.01
-                    baseColor.brightness += -0.05
-                }
+            if opacities[config.index].light {
+                baseColor.saturation = hsbColor.saturation * opacity
+                baseColor.brightness = hsbColor.brightness + (((1 - hsbColor.brightness)) * (1 - opacity))
+            } else {
+                baseColor.brightness = hsbColor.brightness * opacity
             }
             color = Color(hsba: baseColor)
             argb = color.rgbInt ?? 0

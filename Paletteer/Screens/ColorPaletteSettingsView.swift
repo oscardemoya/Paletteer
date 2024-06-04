@@ -20,11 +20,11 @@ struct ColorPaletteSettingsView: View {
     var columns = [GridItem(.adaptive(minimum: 200), spacing: 12)]
     
     var defaultColorPalette: [ColorConfig] {[
-        ColorConfig(colorModel: .rgb(.blue.muted), groupName: "Brand", colorName: "Primary"),
-        ColorConfig(colorModel: .rgb(.purple.muted), groupName: "Brand", colorName: "Secondary"),
-        ColorConfig(colorModel: .rgb(.orange.muted), groupName: "Brand", colorName: "Tertiary"),
-        ColorConfig(colorModel: .rgb(.mint.muted), groupName: "Semantic", colorName: "Success"),
-        ColorConfig(colorModel: .rgb(.yellow.muted), groupName: "Semantic", colorName: "Warning"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#5188BB")), groupName: "Brand", colorName: "Primary"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#897ABD")), groupName: "Brand", colorName: "Secondary"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#C06D58")), groupName: "Brand", colorName: "Tertiary"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#688E4C")), groupName: "Semantic", colorName: "Success"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#688E4C")), groupName: "Semantic", colorName: "Warning"),
         ColorConfig(colorModel: .rgb(.red.muted), groupName: "Semantic", colorName: "Error"),
         ColorConfig(colorModel: .rgb(.gray.replace(brightness: 0.9)), groupName: "Neutral", colorName: "Background",
                     lightColorScale: .lightening, rangeWidth: .wide),

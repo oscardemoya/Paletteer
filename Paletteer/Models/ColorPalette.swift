@@ -21,7 +21,7 @@ struct ColorPalette {
     static var darkestColor: Color = Color(hex: "#080808")
     static var overlaysCount: Int { overlayOpacities(light: true, full: true).count }
     
-    static func overlayOpacities(light: Bool, full: Bool) -> [(light: Bool?, opacity: Int)] {
+    static func overlayOpacities(light: Bool, full: Bool) -> [(light: Bool, opacity: Int)] {
         if full {
             if light {
                 [
@@ -31,7 +31,7 @@ struct ColorPalette {
                     (true, 40),
                     (true, 60),
                     (true, 80),
-                    (nil, 100),
+                    (true, 100),
                     (false, 80),
                     (false, 60),
                     (false, 40),
@@ -49,7 +49,7 @@ struct ColorPalette {
                     (false, 40),
                     (false, 60),
                     (false, 80),
-                    (nil, 100),
+                    (false, 100),
                     (true, 80),
                     (true, 60),
                     (true, 40),
@@ -74,7 +74,7 @@ struct ColorPalette {
                     (true, 80),
                     (true, 90),
                     (true, 95),
-                    (nil, 100)
+                    (true, 100)
                 ]
             } else {
                 [
@@ -91,7 +91,7 @@ struct ColorPalette {
                     (false, 50),
                     (false, 60),
                     (false, 80),
-                    (nil, 100)
+                    (false, 100)
                 ]
             }
         }

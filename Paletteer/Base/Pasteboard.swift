@@ -26,7 +26,9 @@ public extension String {
         set {
 #if os(macOS)
             if let newValue {
-                NSPasteboard.general.setString(newValue, forType: .string)
+                let pasteboard = NSPasteboard.general
+                pasteboard.declareTypes([.string], owner: nil)
+                pasteboard.setString(newValue, forType: .string)
             } else {
                 NSPasteboard.general.clearContents()
             }

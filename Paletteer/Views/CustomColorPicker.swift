@@ -113,6 +113,11 @@ struct CustomColorPicker: View {
             .onChange(of: hueSliderValue, updateColor)
             .onChange(of: chromaOrSaturationSliderValue, updateColor)
             .onChange(of: toneOrBrightnessSliderValue, updateColor)
+            .pasteDestination(for: String.self) { strings in
+                if let string = strings.first {
+                    colorClipboard.text = string
+                }
+            }
     }
     
     @ViewBuilder

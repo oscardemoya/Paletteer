@@ -33,6 +33,6 @@ extension Color {
     }
     
     var muted: Color {
-        self.replace(saturation: 0.5, brightness: 0.8)
+        self.replace(saturation: 0.5, brightness: 0.7)
     }
 }
