@@ -226,12 +226,14 @@ struct CustomColorPicker: View {
                          icon: Image = Image(systemName: "doc.on.clipboard"), size: CGFloat = 32) -> some View {
         ZStack {
             rectangle(color: color)
-            icon
-                .resizable()
-                .scaledToFit()
-                .padding(size / 4)
-                .symbolRenderingMode(.hierarchical)
-                .foregroundColor(color.color.contrastingColor)
+            if showCopyIcons {
+                icon
+                    .resizable()
+                    .scaledToFit()
+                    .padding(size / 4)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundColor(color.color.contrastingColor)
+            }
                 
         }
         .frame(width: size, height: size)

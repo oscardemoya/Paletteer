@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct ColorPaletteSettingsView: View {
+    static var defaultColorConfig = ColorConfig(colorModel: .rgb(Color(hex: "#689FD4")), colorName: "")
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
     @AppStorage(key(.colorPalette)) var colorPalette = [ColorConfig]()
+    @AppStorage(key(.useColorInClipboard)) var useColorInClipboard: Bool = true
     @State private var path = NavigationPath()
     @State private var colorClipboard = ColorClipboard()
     @State private var isAdding = false
-    @State private var newColor = ColorConfig(colorModel: .rgb(.blue), colorName: "")
+    @State private var newColor = defaultColorConfig
     @State private var isEditing = false
-    @State private var exisitingColor = ColorConfig(colorModel: .rgb(.blue), colorName: "")
+    @State private var exisitingColor = defaultColorConfig
     @State private var isConfiguring = false
     var columns = [GridItem(.adaptive(minimum: 200), spacing: 12)]
     
@@ -90,7 +92,11 @@ struct ColorPaletteSettingsView: View {
         
     @ViewBuilder var addButton: some View {
         Button {
-            newColor = ColorConfig(colorModel: .rgb(colorPalette.last?.color ?? .blue.muted), colorName: "")
+            if useColorInClipboard, let text = String.pasteboardString, let colorInClipboard = text.color {
+                newColor = ColorConfig(colorModel: colorInClipboard, colorName: "")
+            } else {
+                newColor = Self.defaultColorConfig
+            }
             isAdding = true
         } label: {
             Label("Add Color", systemImage: "plus.circle.fill")

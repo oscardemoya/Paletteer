@@ -11,23 +11,33 @@ struct SettingsPane: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(key(.colorPalette)) var colorPalette = [ColorConfig]()
     @AppStorage(key(.showCopyIcons)) var showCopyIcons: Bool = true
+    @AppStorage(key(.useColorInClipboard)) var useLastCopiedColor: Bool = true
+    @State private var colorClipboard = ColorClipboard()
     @State private var showDeleteConfirmation: Bool = false
 
     var body: some View {
         NavigationStack {
             Form {
-                Toggle("Show Copy Icons", isOn: $showCopyIcons)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(4)
-                Button {
-                    showDeleteConfirmation = true
-                } label: {
-                    Text("Delete All Colors")
-                        .frame(maxWidth: .infinity)
+                Section("New Colors") {
+                    Toggle("Show Copy Icons", isOn: $showCopyIcons)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(4)
+                    Toggle("Use Last Copied Color", isOn: $useLastCopiedColor)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(4)
+
                 }
-                .buttonStyle(.custom(backgroundColor: .destructiveBackground,
-                                     foregroundColor: .foreground950,
-                                     cornerRadius: 16))
+                Section("Danger Zone") {
+                    Button {
+                        showDeleteConfirmation = true
+                    } label: {
+                        Text("Delete All Colors")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.custom(backgroundColor: .destructiveBackground,
+                                         foregroundColor: .foreground950,
+                                         cornerRadius: 16))
+                }
             }
             .navigationTitle("Settings")
         }
@@ -42,6 +52,7 @@ struct SettingsPane: View {
                 DispatchQueue.main.async {
                     dismiss()
                     colorPalette.removeAll()
+                    colorClipboard.removeAll()
                 }
             }
             Button("Cancel", role: .cancel) {}

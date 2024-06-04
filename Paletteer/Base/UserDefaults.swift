@@ -15,6 +15,7 @@ extension UserDefaults {
         case clipboardColors
         case colorPalette
         case showCopyIcons
+        case useColorInClipboard
     }
 }
 
