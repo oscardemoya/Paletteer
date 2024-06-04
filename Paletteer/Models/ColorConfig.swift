@@ -57,6 +57,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         hasher.combine(darkColorScale)
         hasher.combine(rangeWidth)
     }
+    
+    var colorDescription: String { "\(colorName): \(color.hexRGB.uppercased())" }
 
     var rawValue: String {
         guard let data = try? JSONEncoder().encode(self),

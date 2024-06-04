@@ -12,7 +12,6 @@
 		26227E272C0289C300E44707 /* ButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26227E262C0289C300E44707 /* ButtonStyle.swift */; };
 		26227E352C03F89E00E44707 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 26227E342C03F89E00E44707 /* PrivacyInfo.xcprivacy */; };
 		262EFCA92C0AB0C80048EA62 /* CodableRawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCA82C0AB0C80048EA62 /* CodableRawRepresentable.swift */; };
-		262EFCAD2C0ABC840048EA62 /* CircularButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCAC2C0ABC840048EA62 /* CircularButton.swift */; };
 		262EFCAF2C0ACD5B0048EA62 /* ViewStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCAE2C0ACD5B0048EA62 /* ViewStyles.swift */; };
 		262EFCB32C0AE2690048EA62 /* ColorConfigForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCB22C0AE2690048EA62 /* ColorConfigForm.swift */; };
 		262EFCB52C0C2B590048EA62 /* SettingsPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCB42C0C2B590048EA62 /* SettingsPane.swift */; };
@@ -24,6 +23,7 @@
 		262EFCDB2C0D55A10048EA62 /* JSONData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCDA2C0D55A10048EA62 /* JSONData.swift */; };
 		262EFCDD2C0D55BB0048EA62 /* JSONString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCDC2C0D55BB0048EA62 /* JSONString.swift */; };
 		262EFCDF2C0E31E70048EA62 /* ColorPickerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCDE2C0E31E70048EA62 /* ColorPickerPreview.swift */; };
+		262EFCE12C0F93810048EA62 /* CircularButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCE02C0F93810048EA62 /* CircularButton.swift */; };
 		2656F3A82C04F979007BB5E9 /* CodableColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3A72C04F979007BB5E9 /* CodableColor.swift */; };
 		2656F3AA2C04FA06007BB5E9 /* ColorClipboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */; };
 		2656F3AC2C051235007BB5E9 /* ColorString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3AB2C051235007BB5E9 /* ColorString.swift */; };
@@ -102,7 +102,6 @@
 		26227E312C03F3F200E44707 /* Paletteer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Paletteer-Info.plist"; sourceTree = "<group>"; };
 		26227E342C03F89E00E44707 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		262EFCA82C0AB0C80048EA62 /* CodableRawRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableRawRepresentable.swift; sourceTree = "<group>"; };
-		262EFCAC2C0ABC840048EA62 /* CircularButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CircularButton.swift; path = ../../../../../../../../../Applications/CircularButton.swift; sourceTree = "<group>"; };
 		262EFCAE2C0ACD5B0048EA62 /* ViewStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewStyles.swift; sourceTree = "<group>"; };
 		262EFCB22C0AE2690048EA62 /* ColorConfigForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConfigForm.swift; sourceTree = "<group>"; };
 		262EFCB42C0C2B590048EA62 /* SettingsPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPane.swift; sourceTree = "<group>"; };
@@ -114,6 +113,7 @@
 		262EFCDA2C0D55A10048EA62 /* JSONData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONData.swift; sourceTree = "<group>"; };
 		262EFCDC2C0D55BB0048EA62 /* JSONString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONString.swift; sourceTree = "<group>"; };
 		262EFCDE2C0E31E70048EA62 /* ColorPickerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerPreview.swift; sourceTree = "<group>"; };
+		262EFCE02C0F93810048EA62 /* CircularButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularButton.swift; sourceTree = "<group>"; };
 		2656F3A72C04F979007BB5E9 /* CodableColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableColor.swift; sourceTree = "<group>"; };
 		2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorClipboard.swift; sourceTree = "<group>"; };
 		2656F3AB2C051235007BB5E9 /* ColorString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorString.swift; sourceTree = "<group>"; };
@@ -213,7 +213,7 @@
 				262EFCB22C0AE2690048EA62 /* ColorConfigForm.swift */,
 				267533CB2BDEE408007C1F51 /* CustomColorPicker.swift */,
 				262EFCDE2C0E31E70048EA62 /* ColorPickerPreview.swift */,
-				262EFCAC2C0ABC840048EA62 /* CircularButton.swift */,
+				262EFCE02C0F93810048EA62 /* CircularButton.swift */,
 				2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */,
 				26227E262C0289C300E44707 /* ButtonStyle.swift */,
 				267533B12BDE8981007C1F51 /* Triangle.swift */,
@@ -549,7 +549,6 @@
 				26BF53E02BD75EFD001CAFBC /* QuantizerCelebi.swift in Sources */,
 				267533C62BDE9E2D007C1F51 /* UserDefaults.swift in Sources */,
 				26BF53CF2BD75EFD001CAFBC /* Contrast.swift in Sources */,
-				262EFCAD2C0ABC840048EA62 /* CircularButton.swift in Sources */,
 				269C3B932BF151DC002329C1 /* ColorBlending.swift in Sources */,
 				26BF53DD2BD75EFD001CAFBC /* PointProvider.swift in Sources */,
 				26BF53E82BD75EFD001CAFBC /* SchemeMonochrome.swift in Sources */,
@@ -606,6 +605,7 @@
 				26BF53DC2BD75EFD001CAFBC /* TonalPalette.swift in Sources */,
 				267533B82BDE8A64007C1F51 /* ColorConfig.swift in Sources */,
 				262EFCDB2C0D55A10048EA62 /* JSONData.swift in Sources */,
+				262EFCE12C0F93810048EA62 /* CircularButton.swift in Sources */,
 				267533BC2BDE8AD7007C1F51 /* FileManager.swift in Sources */,
 				26BF53E72BD75EFD001CAFBC /* SchemeFruitSalad.swift in Sources */,
 				26BF53D82BD75EFD001CAFBC /* Hct.swift in Sources */,

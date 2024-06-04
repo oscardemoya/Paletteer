@@ -60,15 +60,15 @@ struct CustomColorPicker: View {
                         Image(systemName: "square.2.layers.3d.fill")
                             .font(.title3)
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(.background800, .background500)
-                            .rounded(backgroundColor: .background400, padding: 4, cornerRadius: 8)
+                            .foregroundStyle(.background950, .background800)
+                            .rounded(backgroundColor: .background500, padding: 4, cornerRadius: 8)
                     }
                     if colorConfig.darkColorScale.isDarkening {
                         Image(systemName: "square.2.layers.3d.fill")
                             .font(.title3)
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(.background020, .background300)
-                            .rounded(backgroundColor: .background400, padding: 4, cornerRadius: 8)
+                            .foregroundStyle(.background050, .background200)
+                            .rounded(backgroundColor: .background500, padding: 4, cornerRadius: 8)
                     }
                 }
                 ZStack {

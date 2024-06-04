@@ -102,7 +102,7 @@ struct ColorConfigForm: View {
                     .frame(height: 30)
                 }
                 .frame(maxWidth: .infinity)
-                .foregroundColor(.foreground300)
+                .foregroundColor(.foreground010)
                 .rounded(backgroundColor: .secondaryInputBackground, padding: 12)
                 Button {
                     dismiss()

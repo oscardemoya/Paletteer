@@ -34,7 +34,7 @@ struct ColorPaletteSettingsView: View {
     
     var body: some View {
         NavigationStack(path: $path) {
-            VStack(spacing: 0) {
+            Group {
                 if colorPalette.isEmpty {
                     emptyStateView
                 } else {
@@ -64,6 +64,13 @@ struct ColorPaletteSettingsView: View {
                         Image(systemName: selectedAppearance.iconName)
                     }
                 }
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        copyColorPaletteConfig()
+                    } label: {
+                        Image(systemName: "square.on.square")
+                    }
+                }
 #if !os(macOS)
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -73,14 +80,6 @@ struct ColorPaletteSettingsView: View {
                     }
                 }
 #endif
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        newColor = ColorConfig(colorModel: .rgb(colorPalette.last?.color ?? .blue.muted), colorName: "")
-                        isAdding = true
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                }
             }
         }
         .onAppear {
@@ -90,26 +89,24 @@ struct ColorPaletteSettingsView: View {
             SettingsPane()
         }
     }
-    
-    @ViewBuilder var colorPaletteView: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 8) {
-                ForEach($colorPalette) { $colorConfig in
-                    CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {
-                        colorPalette.removeAll { colorConfig.id == $0.id }
-                    } onEdit: {
-                        exisitingColor = colorConfig
-                        isEditing = true
-                    }
-                    .buttonStyle(.custom(backgroundColor: .primaryInputBackground,
-                                         foregroundColor: .primaryActionForeground))
-                }
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
+        
+    @ViewBuilder var addButton: some View {
+        Button {
+            newColor = ColorConfig(colorModel: .rgb(colorPalette.last?.color ?? .blue.muted), colorName: "")
+            isAdding = true
+        } label: {
+            Label("Add Color", systemImage: "plus.circle.fill")
+                .font(.title3)
+                .fontWeight(.medium)
+                .fontDesign(.rounded)
+                .frame(maxWidth: .infinity)
         }
-        Spacer(minLength: 0)
-        Divider()
+        .buttonStyle(.custom(backgroundColor: .secondaryActionBackground,
+                             foregroundColor: .secondaryActionForeground,
+                             cornerRadius: 16))
+    }
+    
+    @ViewBuilder var generateButton: some View {
         Button {
             path.append(colorPalette)
         } label: {
@@ -122,7 +119,35 @@ struct ColorPaletteSettingsView: View {
         .buttonStyle(.custom(backgroundColor: .primaryActionBackground,
                              foregroundColor: .primaryActionForeground,
                              cornerRadius: 16))
-        .padding()
+    }
+    
+    @ViewBuilder var colorPaletteView: some View {
+        VStack(spacing: 0) {
+            
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 8) {
+                    ForEach($colorPalette) { $colorConfig in
+                        CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {
+                            colorPalette.removeAll { colorConfig.id == $0.id }
+                        } onEdit: {
+                            exisitingColor = colorConfig
+                            isEditing = true
+                        }
+                        .buttonStyle(.custom(backgroundColor: .primaryInputBackground,
+                                             foregroundColor: .primaryActionForeground))
+                    }
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+            }
+            Spacer(minLength: 0)
+            Divider()
+            HStack(spacing: 12) {
+                addButton
+                generateButton
+            }
+            .padding()
+        }
     }
     
     @ViewBuilder var emptyStateView: some View {
@@ -138,6 +163,10 @@ struct ColorPaletteSettingsView: View {
             .buttonStyle(.borderedProminent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    func copyColorPaletteConfig() {
+        String.pasteboardString = colorPalette.map(\.colorDescription).joined(separator: "\n")
     }
 }
 
