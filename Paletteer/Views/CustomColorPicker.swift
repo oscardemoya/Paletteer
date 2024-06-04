@@ -537,7 +537,7 @@ struct CustomColorPicker: View {
 }
 
 #Preview {
-    @State var colorConfig = ColorConfig(colorModel: .rgb(.blue.muted), groupName: "Brand", colorName: "Primary",
+    @State var colorConfig = ColorConfig(colorModel: .rgb(.blue.muted), colorName: "Primary", groupName: "Brand",
                                          lightColorScale: .lightening, darkColorScale: .darkening, rangeWidth: .half)
     @State var colorClipboard = ColorClipboard()
     return CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {} onEdit: {}

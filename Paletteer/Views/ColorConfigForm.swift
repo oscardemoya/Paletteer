@@ -60,12 +60,12 @@ struct ColorConfigForm: View {
             }
             Divider()
             VStack(spacing: 12) {
-                TextField("Group Name (Optional)", text: $colorConfig.groupName)
-                    .textFieldStyle(.plain)
-                    .rounded(backgroundColor: .secondaryInputBackground)
                 CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: true)
                     .buttonStyle(.custom(backgroundColor: .secondaryInputBackground,
                                          foregroundColor: .secondaryActionForeground))
+                TextField("Group Name (Optional)", text: $colorConfig.groupName)
+                    .textFieldStyle(.plain)
+                    .rounded(backgroundColor: .secondaryInputBackground)
                 Group {
                     HStack {
                         Text("Light Color Scale")

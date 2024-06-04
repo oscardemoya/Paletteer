@@ -10,8 +10,8 @@ import SwiftUI
 struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
     var id: String = UUID().uuidString
     var colorModel: ColorModel
-    var groupName: String = ""
     var colorName: String
+    var groupName: String = ""
     var lightColorScale: ColorScale = .darkening
     var darkColorScale: ColorScale = .lightening
     var rangeWidth: ColorRangeWidth = .full
@@ -23,16 +23,16 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
     init(
         id: String = UUID().uuidString,
         colorModel: ColorModel,
-        groupName: String = "",
         colorName: String,
+        groupName: String = "",
         lightColorScale: ColorScale = .darkening,
         darkColorScale: ColorScale = .lightening,
         rangeWidth: ColorRangeWidth = .full
     ) {
         self.id = id
         self.colorModel = colorModel
-        self.groupName = groupName
         self.colorName = colorName
+        self.groupName = groupName
         self.lightColorScale = lightColorScale
         self.darkColorScale = darkColorScale
         self.rangeWidth = rangeWidth
@@ -40,8 +40,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
     
     mutating func update(with other: Self) {
         self.colorModel = other.colorModel
-        self.groupName = other.groupName
         self.colorName = other.colorName
+        self.groupName = other.groupName
         self.lightColorScale = other.lightColorScale
         self.darkColorScale = other.darkColorScale
         self.rangeWidth = other.rangeWidth
@@ -51,8 +51,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         var hasher = hasher
         hasher.combine(id)
         hasher.combine(colorModel)
-        hasher.combine(groupName)
         hasher.combine(colorName)
+        hasher.combine(groupName)
         hasher.combine(lightColorScale)
         hasher.combine(darkColorScale)
         hasher.combine(rangeWidth)
@@ -76,8 +76,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         self.init(
             id: result.id,
             colorModel: result.colorModel,
-            groupName: result.groupName,
             colorName: result.colorName,
+            groupName: result.groupName,
             lightColorScale: result.lightColorScale,
             darkColorScale: result.darkColorScale,
             rangeWidth: result.rangeWidth
@@ -98,8 +98,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         colorModel = try container.decode(ColorModel.self, forKey: .colorModel)
-        groupName = try container.decode(String.self, forKey: .groupName)
         colorName = try container.decode(String.self, forKey: .colorName)
+        groupName = try container.decode(String.self, forKey: .groupName)
         lightColorScale = try container.decode(ColorScale.self, forKey: .lightColorScale)
         darkColorScale = try container.decode(ColorScale.self, forKey: .darkColorScale)
         rangeWidth = try container.decode(ColorRangeWidth.self, forKey: .rangeWidth)
@@ -109,8 +109,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(colorModel, forKey: .colorModel)
-        try container.encode(groupName, forKey: .groupName)
         try container.encode(colorName, forKey: .colorName)
+        try container.encode(groupName, forKey: .groupName)
         try container.encode(lightColorScale, forKey: .lightColorScale)
         try container.encode(darkColorScale, forKey: .darkColorScale)
         try container.encode(rangeWidth, forKey: .rangeWidth)

@@ -20,16 +20,14 @@ struct ColorPaletteSettingsView: View {
     var columns = [GridItem(.adaptive(minimum: 200), spacing: 12)]
     
     var defaultColorPalette: [ColorConfig] {[
-        ColorConfig(colorModel: .rgb(Color(hex: "#689FD4")), groupName: "Brand", colorName: "Primary"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#A091D7")), groupName: "Brand", colorName: "Secondary"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#E79161")), groupName: "Brand", colorName: "Tertiary"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#6EA97A")), groupName: "Semantic", colorName: "Success"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#CEBC5A")), groupName: "Semantic", colorName: "Warning"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#D97F75")), groupName: "Semantic", colorName: "Error"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#A9A8AC")), groupName: "Neutral", colorName: "Background",
-                    lightColorScale: .lightening, rangeWidth: .wide),
-        ColorConfig(colorModel: .rgb(Color(hex: "#525354")), groupName: "Neutral", colorName: "Foreground",
-                    lightColorScale: .lightening, darkColorScale: .darkening, rangeWidth: .wide)
+        ColorConfig(colorModel: .rgb(Color(hex: "#689FD4")), colorName: "Primary", groupName: "Brand"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#A091D7")), colorName: "Secondary", groupName: "Brand"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#E79161")), colorName: "Tertiary", groupName: "Brand"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#6EA97A")), colorName: "Success", groupName: "Semantic"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#D9C764")), colorName: "Warning", groupName: "Semantic"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#DF706F")), colorName: "Error", groupName: "Semantic"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#A9A8AC")), colorName: "Background", groupName: "Neutral", lightColorScale: .lightening, rangeWidth: .wide),
+        ColorConfig(colorModel: .rgb(Color(hex: "#525354")), colorName: "Foreground", groupName: "Neutral", lightColorScale: .lightening, darkColorScale: .darkening, rangeWidth: .wide)
     ]}
     
     var body: some View {
