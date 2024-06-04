@@ -261,6 +261,10 @@ struct ColorPaletteView: View {
             } else {
                 baseColor.brightness *= opacity
             }
+            if !config.light {
+                baseColor.saturation += 0.01
+                baseColor.brightness += -0.05
+            }
             color = Color(hsba: baseColor)
             argb = color.rgbInt ?? 0
         case .rgb(let rgbColor):
@@ -278,7 +282,7 @@ struct ColorPaletteView: View {
                 let overlay = ColorPalette.overlay(light: opacities[config.index].light)
                 let blend = Color.blend(color1: baseColor, intensity1: opacity,
                                         color2: overlay, intensity2: 1 - opacity)
-                color = config.light ? blend : blend.adjust(hue: 0.045, saturation: 0.01, brightness: -0.05)
+                color = config.light ? blend : blend.adjust(saturation: 0.01, brightness: -0.05)
             }
             argb = color.rgbInt ?? 0
         }
