@@ -58,7 +58,10 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         hasher.combine(rangeWidth)
     }
     
-    var colorDescription: String { "\(colorName): \(color.hexRGB.uppercased())" }
+    var colorDescription: String {
+        "\(!groupName.isEmpty ? groupName + "/" : "")" +
+        "\(colorName): \(color.hexRGB.uppercased())"
+    }
 
     var rawValue: String {
         guard let data = try? JSONEncoder().encode(self),

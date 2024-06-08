@@ -181,12 +181,13 @@ struct ColorPaletteSettingsView: View {
     
     func pasteColorPaletteConfig(strings: [String]) {
         guard let string = strings.first else { return }
-        let colorRegex = /(?<colorName>\w+)\s*: #(?<hexString>[a-f0-9]{6})/.ignoresCase().dotMatchesNewlines()
+        let colorRegex = /((?<groupName>\w+)\/)?(?<colorName>\w+)\s*: #(?<hexString>[a-f0-9]{6})/.ignoresCase().dotMatchesNewlines()
         colorPalette = string.split(separator: "\n").compactMap { line in
             line.matches(of: colorRegex).compactMap { match -> ColorConfig? in
+                let groupName = String(match.output.groupName ?? "")
                 let colorName = String(match.output.colorName)
                 let hexString = String(match.output.hexString)
-                return ColorConfig(colorModel: .rgb(Color(hex: hexString)), colorName: colorName)
+                return ColorConfig(colorModel: .rgb(Color(hex: hexString)), colorName: colorName, groupName: groupName)
             }.first
         }
     }

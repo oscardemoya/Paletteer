@@ -249,14 +249,15 @@ struct ColorPaletteView: View {
             argb = hctColor.toInt()
         case .hsb(let hsbColor):
             var baseColor = hsbColor
-            baseColor.hue += (config.light ? 0 : 0.025)
+            baseColor.hue += (config.light ? 0 : 0.015)
             let tones = ColorPalette.tones(light: config.light)
             let tone = Double(tones[config.index])
             let transformedTone = transformedTone(tone, group: group, config: config)
             let clampedTone = min(max(transformedTone / 100, 0), 1)
-            baseColor.brightness = (1 - clampedTone).logaritmic(M_E * group.rangeWidth.value)
-            let baseSaturation = (config.light ? 1.5 : 1.25)
-            baseColor.saturation *= baseSaturation * clampedTone.logaritmic(M_E * group.rangeWidth.value)
+            let brightnessFactor = (config.light ? 1.5 : 1.25) * hsbColor.saturation.mapped(to: 0.25...1)
+            baseColor.brightness = (1 - clampedTone).logaritmic(M_E * brightnessFactor)
+            let saturationFactor = (config.light ? 1.75 : 1.5)
+            baseColor.saturation *= saturationFactor * clampedTone.logaritmic(M_E * group.rangeWidth.value)
             color = Color(hsba: baseColor)
             argb = color.rgbInt ?? 0
         case .rgb(let rgbColor):
