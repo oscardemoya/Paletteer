@@ -116,3 +116,18 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         try container.encode(rangeWidth, forKey: .rangeWidth)
     }
 }
+
+extension [ColorConfig] {
+    static var sample: Self {[
+        ColorConfig(colorModel: .rgb(Color(hex: "#689FD4")), colorName: "Primary", groupName: "Brand"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#A091D7")), colorName: "Secondary", groupName: "Brand"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#E79161")), colorName: "Tertiary", groupName: "Brand"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#6EA97A")), colorName: "Success", groupName: "Semantic"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#D9C764")), colorName: "Warning", groupName: "Semantic"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#DF706F")), colorName: "Error", groupName: "Semantic"),
+        ColorConfig(colorModel: .rgb(Color(hex: "#A9A8AC")), colorName: "Background", groupName: "Neutral",
+                    lightColorScale: .lightening, rangeWidth: .wide),
+        ColorConfig(colorModel: .rgb(Color(hex: "#525354")), colorName: "Foreground", groupName: "Neutral",
+                    lightColorScale: .lightening, darkColorScale: .darkening, rangeWidth: .wide)
+    ]}
+}

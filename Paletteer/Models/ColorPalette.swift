@@ -27,35 +27,35 @@ struct ColorPalette {
                 [
                     (true, 10),
                     (true, 20),
-                    (true, 30),
                     (true, 40),
                     (true, 60),
                     (true, 80),
                     (true, 100),
                     (false, 80),
                     (false, 60),
+                    (false, 50),
                     (false, 40),
                     (false, 30),
                     (false, 20),
                     (false, 10),
-                    (false, 02)
+                    (false, 0),
                 ]
             } else {
                 [
-                    (false, 02),
-                    (false, 10),
+                    (false, 15),
                     (false, 20),
+                    (false, 25),
                     (false, 30),
                     (false, 40),
+                    (false, 50),
                     (false, 60),
                     (false, 80),
                     (false, 100),
                     (true, 80),
                     (true, 60),
                     (true, 40),
-                    (true, 30),
                     (true, 20),
-                    (true, 10)
+                    (true, 10),
                 ]
             }
         } else {

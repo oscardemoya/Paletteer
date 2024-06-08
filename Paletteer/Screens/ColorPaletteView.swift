@@ -16,86 +16,90 @@ struct ColorPaletteView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
-    @State private var colorSpace: ColorSpace = .hct
+    @State var colorSpace: ColorSpace = .hct
+    @State private var colorShades = [ColorConfig: [ColorPair]]()
     @State private var backupFileURL: URL?
     @State private var assetsFileURL: URL?
     @State private var isShowingShareView: Bool = false
-    @State private var isLoading = false
     @State private var showAlert = false
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
 
     var body: some View {
-        ZStack(alignment: .center) {
-            VStack(spacing: 0) {
-                ScrollView {
-                    ForEach(colorList) { colorConfig in
-                        rectangleStack(colorPairs: shades(for: colorConfig))
-                    }
-                    .scrollTargetLayout()
+        VStack(spacing: 0) {
+            ScrollView {
+                ForEach(colorList) { colorConfig in
+                    rectangleStack(colorPairs: shades(for: colorConfig))
                 }
-                .scrollTargetBehavior(.viewAligned)
-                .contentMargins(8, for: .scrollContent)
-                .listRowInsets(EdgeInsets())
-                Spacer(minLength: 0)
+                .scrollTargetLayout()
             }
-            .background(.primaryBackground)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Picker("Color Space", selection: $colorSpace) {
-                        ForEach(ColorSpace.allCases) {
-                            Text($0.title)
-                        }
+            .scrollTargetBehavior(.viewAligned)
+            .contentMargins(8, for: .scrollContent)
+            .listRowInsets(EdgeInsets())
+            Spacer(minLength: 0)
+        }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Picker("Color Space", selection: $colorSpace) {
+                    ForEach(ColorSpace.allCases) {
+                        Text($0.title)
                     }
-                    .pickerStyle(.segmented)
-                    .fixedSize()
                 }
+                .pickerStyle(.segmented)
+                .fixedSize()
+            }
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    selectedAppearance.toggle()
+                    ColorSchemeSwitcher.shared.overrideDisplayMode()
+                } label: {
+                    Image(systemName: selectedAppearance.iconName)
+                }
+            }
+            if let fileURL {
                 ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        selectedAppearance.toggle()
-                        ColorSchemeSwitcher.shared.overrideDisplayMode()
-                    } label: {
-                        Image(systemName: selectedAppearance.iconName)
-                    }
-                }
-                if let fileURL {
-                    ToolbarItem(placement: .primaryAction) {
 #if os(macOS)
-                        Button {
-                            exportFile(at: fileURL)
-                        } label: {
-                            Image(systemName: "square.and.arrow.down")
-                        }
-#else
-                        ShareLink(item: fileURL) {
-                            Image(systemName: "square.and.arrow.up")
-                        }
-#endif
+                    Button {
+                        exportFile(at: fileURL)
+                    } label: {
+                        Image(systemName: "square.and.arrow.down")
                     }
+#else
+                    ShareLink(item: fileURL) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+#endif
                 }
-            }
-            if isLoading {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding()
             }
         }
 #if os(macOS)
-        .aspectRatio(14/8, contentMode: .fit)
+        .aspectRatio(14/CGFloat(colorList.count), contentMode: .fit)
+#else
+        .background(.primaryBackground)
 #endif
         .onAppear {
             ColorSchemeSwitcher.shared.overrideDisplayMode()
         }
         .onAppear {
-            saveFiles()
+            generateColorShades()
+#if !os(macOS)
+            createAssetsFile()
+#endif
         }
         .onChange(of: colorSpace) { _, _ in
-            saveFiles()
+            generateColorShades()
+#if !os(macOS)
+            createAssetsFile()
+#endif
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text(alertTitle), message: Text(alertMessage))
         }
     }
     
 #if os(macOS)
     func exportFile(at fileURL: URL) {
+        createAssetsFile()
         if let assetsFileURL = showSavePanel() {
             do {
                 let fileManager = FileManager.default
@@ -121,27 +125,35 @@ struct ColorPaletteView: View {
     }
 #endif
     
-    private func saveFiles() {
+    private func generateColorShades() {
+        if let existingFileURL = fileURL, FileManager.default.fileExists(atPath: existingFileURL.path) {
+            FileManager.default.removeDirectory(atURL: existingFileURL)
+        }
+        let keysAndValues = colorList.map { ($0, shades(for: $0)) }
+        colorShades = Dictionary(keysAndValues) { first, _ in first }
+    }
+    
+    private func createAssetsFile() {
         if let existingFileURL = fileURL, FileManager.default.fileExists(atPath: existingFileURL.path) {
             FileManager.default.removeDirectory(atURL: existingFileURL)
         }
         colorList.forEach { group in
-            saveFile(for: group)
+            createFile(for: group)
         }
     }
     
-    private func saveFile(for config: ColorConfig) {
+    private func createFile(for config: ColorConfig) {
         if !config.groupName.isEmpty {
             saveEmptyFiles(to: config.groupName)
         }
-        shades(for: config).enumerated().forEach { index, tuple in
+        colorShades[config]?.enumerated().forEach { index, color in
             let lightCode: String
-            if colorSpace == .hct {
-                let lightTone = ColorPalette.tones(light: false)[index]
-                lightCode = String(format: "%03d", lightTone * 10)
-            } else {
+            if colorSpace == .rgb {
                 let overlayTone = ColorPalette.overlayTones[index]
                 lightCode = String(format: "%03d", overlayTone * 10)
+            } else {
+                let lightTone = ColorPalette.tones(light: false)[index]
+                lightCode = String(format: "%03d", lightTone * 10)
             }
             let colorName = "\(config.colorName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))-\(lightCode)"
             var pathComponents = [String]()
@@ -150,8 +162,8 @@ struct ColorPaletteView: View {
             }
             pathComponents.append(config.colorName)
             let path = pathComponents.joined(separator: "/")
-            let lightArgb = tuple.light.rgbInt ?? 0
-            let darkArgb = tuple.dark.rgbInt ?? 0
+            let lightArgb = color.light.rgbInt ?? 0
+            let darkArgb = color.dark.rgbInt ?? 0
             saveFile(to: path, colorName: colorName, lightArgb: lightArgb, darkArgb: darkArgb)
         }
     }
@@ -198,9 +210,6 @@ struct ColorPaletteView: View {
                 alertMessage = "Copied to the clipboard."
                 showAlert = true
             }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text(alertTitle), message: Text(alertMessage))
-            }
     }
     
     private func shades(for group: ColorConfig) -> [ColorPair] {
@@ -234,37 +243,20 @@ struct ColorPaletteView: View {
         case .hct(let hctColor):
             let tones = ColorPalette.tones(light: config.light)
             let tone = Double(tones[config.index])
-            switch group.rangeWidth {
-            case .full:
-                hctColor.tone = tone
-            case .wide:
-                hctColor.tone = (config.light ? 25 : 0) + (tone * 3.0 / 4.0)
-            case .half:
-                hctColor.tone = (config.light ? 50 : 0) + (tone / 2.0)
-            case .narrow:
-                hctColor.tone = (config.light ? 75 : 0) + (tone / 4.0)
-            }
+            hctColor.tone = transformedTone(tone, group: group, config: config)
             hctColor.chroma = hctColor.chroma * (config.light ? 1 : 0.75)
             color = Color(hctColor: hctColor)
             argb = hctColor.toInt()
         case .hsb(let hsbColor):
             var baseColor = hsbColor
-            if !group.rangeWidth.isFull {
-                baseColor.saturation = config.light ? hsbColor.saturation + 0.01 : 0
-                baseColor.brightness = baseBrightness(group: group, config: config)
-            }
-            let opacities = ColorPalette.overlayOpacities(light: config.light, full: group.rangeWidth.isFull)
-            let opacity = Double(opacities[config.index].opacity) / 100.0
-            if opacities[config.index].light {
-                baseColor.saturation *= opacity
-                baseColor.brightness = baseColor.brightness + (((1 - baseColor.brightness)) * (1 - opacity))
-            } else {
-                baseColor.brightness *= opacity
-            }
-            if !config.light {
-                baseColor.saturation += 0.01
-                baseColor.brightness += -0.05
-            }
+            baseColor.hue += (config.light ? 0 : 0.025)
+            let tones = ColorPalette.tones(light: config.light)
+            let tone = Double(tones[config.index])
+            let transformedTone = transformedTone(tone, group: group, config: config)
+            let clampedTone = min(max(transformedTone / 100, 0), 1)
+            baseColor.brightness = (1 - clampedTone).logaritmic(M_E * (config.light ? 10 : 0.5))
+            let baseSaturation = (config.light ? 1.75 : 1.25)
+            baseColor.saturation *= baseSaturation * clampedTone.logaritmic(M_E * (config.light ? 1 : 10))
             color = Color(hsba: baseColor)
             argb = color.rgbInt ?? 0
         case .rgb(let rgbColor):
@@ -276,24 +268,28 @@ struct ColorPaletteView: View {
             }
             let opacities = ColorPalette.overlayOpacities(light: config.light, full: group.rangeWidth.isFull)
             let opacity = Double(opacities[config.index].opacity) / 100.0
-            if opacity == 1 {
-                color = config.light ? baseColor : baseColor.adjust(hue: 0.03, saturation: -0.02, brightness: -0.05)
-            } else {
-                let overlay = ColorPalette.overlay(light: opacities[config.index].light)
-                let blend = Color.blend(color1: baseColor, intensity1: opacity,
-                                        color2: overlay, intensity2: 1 - opacity)
-                color = config.light ? blend : blend.adjust(saturation: 0.01, brightness: -0.05)
-            }
+            let overlay = ColorPalette.overlay(light: opacities[config.index].light)
+            let blend = Color.blend(color1: baseColor, intensity1: opacity, color2: overlay, intensity2: 1 - opacity)
+            color = config.light ? blend : blend.adjust(saturation: 0.01, brightness: -0.05)
             argb = color.rgbInt ?? 0
         }
         return (color: color, argb: argb)
+    }
+    
+    private func transformedTone(_ tone: Double, group: ColorConfig, config: ColorConversion) -> CGFloat {
+        switch group.rangeWidth {
+        case .full: tone
+        case .wide: (config.light ? 25 : 0) + (tone * 3.0 / 4.0)
+        case .half: (config.light ? 50 : 0) + (tone / 2.0)
+        case .narrow: (config.light ? 75 : 0) + (tone / 4.0)
+        }
     }
     
     private func baseBrightness(group: ColorConfig, config: ColorConversion) -> CGFloat {
         switch group.rangeWidth {
         case .full: config.light ? 0.0 : 1.0
         case .wide: config.light ? 0.25 : 0.75
-        case .half: 0.5
+        case .half: config.light ? 0.5 : 0.5
         case .narrow: config.light ? 0.75 : 0.25
         }
     }
@@ -309,9 +305,11 @@ struct ColorPaletteView: View {
             "{{lr}}" : lightRed.hexStringWithPrefix,
             "{{lg}}" : lightGreen.hexStringWithPrefix,
             "{{lb}}" : lightBlue.hexStringWithPrefix,
+            "{{la}}" : "1.000",
             "{{dr}}" : darkRed.hexStringWithPrefix,
             "{{dg}}" : darkGreen.hexStringWithPrefix,
             "{{db}}" : darkBlue.hexStringWithPrefix,
+            "{{da}}" : "1.000",
         ]
         let fileContent = String(forResource: "ColorContentsTemplate", ofType: "json", parameters: parameters)
         fileContent?.write(to: "Colors.xcassets/Colors/\(filePath)/\(colorName).colorset/Contents.json")
@@ -332,5 +330,5 @@ class CopyFileManagerDelegate: NSObject, FileManagerDelegate {
 }
 
 #Preview {
-    ColorPaletteView(colorList: [])
+    ColorPaletteView(colorList: .sample, colorSpace: .hsb)
 }

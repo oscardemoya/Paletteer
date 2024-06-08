@@ -24,6 +24,7 @@
 		262EFCDD2C0D55BB0048EA62 /* JSONString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCDC2C0D55BB0048EA62 /* JSONString.swift */; };
 		262EFCDF2C0E31E70048EA62 /* ColorPickerPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCDE2C0E31E70048EA62 /* ColorPickerPreview.swift */; };
 		262EFCE12C0F93810048EA62 /* CircularButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCE02C0F93810048EA62 /* CircularButton.swift */; };
+		262EFCE32C10F6420048EA62 /* Double.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EFCE22C10F6420048EA62 /* Double.swift */; };
 		2656F3A82C04F979007BB5E9 /* CodableColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3A72C04F979007BB5E9 /* CodableColor.swift */; };
 		2656F3AA2C04FA06007BB5E9 /* ColorClipboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */; };
 		2656F3AC2C051235007BB5E9 /* ColorString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2656F3AB2C051235007BB5E9 /* ColorString.swift */; };
@@ -114,6 +115,7 @@
 		262EFCDC2C0D55BB0048EA62 /* JSONString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONString.swift; sourceTree = "<group>"; };
 		262EFCDE2C0E31E70048EA62 /* ColorPickerPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerPreview.swift; sourceTree = "<group>"; };
 		262EFCE02C0F93810048EA62 /* CircularButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularButton.swift; sourceTree = "<group>"; };
+		262EFCE22C10F6420048EA62 /* Double.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Double.swift; sourceTree = "<group>"; };
 		2656F3A72C04F979007BB5E9 /* CodableColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableColor.swift; sourceTree = "<group>"; };
 		2656F3A92C04FA06007BB5E9 /* ColorClipboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorClipboard.swift; sourceTree = "<group>"; };
 		2656F3AB2C051235007BB5E9 /* ColorString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorString.swift; sourceTree = "<group>"; };
@@ -244,6 +246,7 @@
 				267533C02BDE9AAC007C1F51 /* ColorSchemeSwitcher.swift */,
 				2656F3AB2C051235007BB5E9 /* ColorString.swift */,
 				269C3B942BF15200002329C1 /* CrossplatformColor.swift */,
+				262EFCE22C10F6420048EA62 /* Double.swift */,
 				267533BB2BDE8AD7007C1F51 /* FileManager.swift */,
 				267533D52BDEFABA007C1F51 /* HCTColor.swift */,
 				267533B92BDE8A9D007C1F51 /* IntFormatting.swift */,
@@ -560,6 +563,7 @@
 				269C3B972BF17D3E002329C1 /* ColorAdjustment.swift in Sources */,
 				267533952BDD7532007C1F51 /* StringFile.swift in Sources */,
 				26BF533D2BD75C82001CAFBC /* ColorPaletteSettingsView.swift in Sources */,
+				262EFCE32C10F6420048EA62 /* Double.swift in Sources */,
 				262EFCD32C0CD9240048EA62 /* ColorModel.swift in Sources */,
 				267533D62BDEFABA007C1F51 /* HCTColor.swift in Sources */,
 				2656F3AC2C051235007BB5E9 /* ColorString.swift in Sources */,

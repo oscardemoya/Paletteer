@@ -20,9 +20,9 @@ struct HSBA: Codable, RawRepresentable {
     
     var rawValue: String {
         if alpha != 1.0 {
-            "H\(Int(round(hue))) S\(Int(round(saturation))) B\(Int(round(brightness))) A\(Int(round(alpha)))"
+            "H\(Int(round(hue * 255))) S\(Int(round(saturation * 255))) B\(Int(round(brightness * 255))) A\(Int(round(alpha * 255)))"
         } else {
-            "H\(Int(round(hue))) S\(Int(round(saturation))) B\(Int(round(brightness)))"
+            "H\(Int(round(hue * 255))) S\(Int(round(saturation * 255))) B\(Int(round(brightness * 255)))"
         }
     }
 
@@ -79,19 +79,19 @@ extension Color: RawRepresentable {
     
     init(rgba: RGBA) {
         self.init(.sRGB,
-                  red: rgba.red,
-                  green: rgba.green,
-                  blue: rgba.blue,
-                  opacity: rgba.alpha
+                  red: min(max(rgba.red, 0), 1),
+                  green: min(max(rgba.green, 0), 1),
+                  blue: min(max(rgba.blue, 0), 1),
+                  opacity: min(max(rgba.alpha, 0), 1)
         )
     }
     
     init(hsba: HSBA) {
         self.init(
-            hue: hsba.hue,
-            saturation: hsba.saturation,
-            brightness: hsba.brightness,
-            opacity: hsba.alpha
+            hue: min(max(hsba.hue, 0), 1),
+            saturation: min(max(hsba.saturation, 0), 1),
+            brightness: min(max(hsba.brightness, 0), 1),
+            opacity: min(max(hsba.alpha, 0), 1)
         )
     }
     
