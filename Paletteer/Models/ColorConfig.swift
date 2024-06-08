@@ -126,8 +126,8 @@ extension [ColorConfig] {
         ColorConfig(colorModel: .rgb(Color(hex: "#D9C764")), colorName: "Warning", groupName: "Semantic"),
         ColorConfig(colorModel: .rgb(Color(hex: "#DF706F")), colorName: "Error", groupName: "Semantic"),
         ColorConfig(colorModel: .rgb(Color(hex: "#A9A8AC")), colorName: "Background", groupName: "Neutral",
-                    lightColorScale: .lightening, rangeWidth: .wide),
+                    lightColorScale: .lightening, rangeWidth: .narrow),
         ColorConfig(colorModel: .rgb(Color(hex: "#525354")), colorName: "Foreground", groupName: "Neutral",
-                    lightColorScale: .lightening, darkColorScale: .darkening, rangeWidth: .wide)
+                    lightColorScale: .lightening, darkColorScale: .darkening)
     ]}
 }

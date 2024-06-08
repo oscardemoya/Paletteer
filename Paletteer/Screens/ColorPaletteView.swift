@@ -254,9 +254,9 @@ struct ColorPaletteView: View {
             let tone = Double(tones[config.index])
             let transformedTone = transformedTone(tone, group: group, config: config)
             let clampedTone = min(max(transformedTone / 100, 0), 1)
-            baseColor.brightness = (1 - clampedTone).logaritmic(M_E * (config.light ? 10 : 0.5))
-            let baseSaturation = (config.light ? 1.75 : 1.25)
-            baseColor.saturation *= baseSaturation * clampedTone.logaritmic(M_E * (config.light ? 1 : 10))
+            baseColor.brightness = (1 - clampedTone).logaritmic(M_E * group.rangeWidth.value)
+            let baseSaturation = (config.light ? 1.5 : 1.25)
+            baseColor.saturation *= baseSaturation * clampedTone.logaritmic(M_E * group.rangeWidth.value)
             color = Color(hsba: baseColor)
             argb = color.rgbInt ?? 0
         case .rgb(let rgbColor):

@@ -78,7 +78,7 @@ struct CustomColorPicker: View {
                             isEditingColor = true
                         }
                     if !colorConfig.rangeWidth.isFull {
-                        CircularProgressView(progress: colorConfig.rangeWidth.progress,
+                        CircularProgressView(progress: colorConfig.rangeWidth.value,
                                              color: colorConfig.color.contrastingColor,
                                              lineWidth: 4)
                             .frame(width: 16, height: 16)

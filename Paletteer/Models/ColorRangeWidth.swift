@@ -37,7 +37,7 @@ enum ColorRangeWidth: String, Codable, CaseIterable, Identifiable, Hashable {
         }
     }
     
-    var progress: Double {
+    var value: Double {
         switch self {
         case .full: 1.0
         case .wide: 0.75

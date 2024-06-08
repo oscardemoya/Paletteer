@@ -60,6 +60,13 @@ struct ColorPaletteSettingsView: View {
                         Image(systemName: "square.on.square")
                     }
                 }
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        pasteColorPaletteConfig()
+                    } label: {
+                        Image(systemName: "doc.on.clipboard")
+                    }
+                }
 #if !os(macOS)
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -77,6 +84,11 @@ struct ColorPaletteSettingsView: View {
         .sheet(isPresented: $isConfiguring) {
             SettingsPane()
         }
+#if os(macOS)
+            .pasteDestination(for: String.self) { strings in
+                pasteColorPaletteConfig(strings: strings)
+            }
+#endif
     }
         
     @ViewBuilder var addButton: some View {
@@ -160,6 +172,23 @@ struct ColorPaletteSettingsView: View {
     
     func copyColorPaletteConfig() {
         String.pasteboardString = colorPalette.map(\.colorDescription).joined(separator: "\n")
+    }
+    
+    func pasteColorPaletteConfig() {
+        guard let string = String.pasteboardString else { return }
+        pasteColorPaletteConfig(strings: [string])
+    }
+    
+    func pasteColorPaletteConfig(strings: [String]) {
+        guard let string = strings.first else { return }
+        let colorRegex = /(?<colorName>\w+)\s*: #(?<hexString>[a-f0-9]{6})/.ignoresCase().dotMatchesNewlines()
+        colorPalette = string.split(separator: "\n").compactMap { line in
+            line.matches(of: colorRegex).compactMap { match -> ColorConfig? in
+                let colorName = String(match.output.colorName)
+                let hexString = String(match.output.hexString)
+                return ColorConfig(colorModel: .rgb(Color(hex: hexString)), colorName: colorName)
+            }.first
+        }
     }
 }
 
