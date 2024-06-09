@@ -177,7 +177,7 @@ struct ColorPaletteSettingsView: View {
     }
     
     func copyColorPaletteConfig() {
-        String.pasteboardString = colorPalette.map(\.colorDescription).joined(separator: "\n")
+        String.pasteboardString = colorPalette.map(\.description).joined(separator: "\n")
         alertTitle = "Color Palette"
         alertMessage = "Copied to the clipboard."
         showAlert = true
@@ -190,13 +190,26 @@ struct ColorPaletteSettingsView: View {
     
     func pasteColorPaletteConfig(strings: [String]) {
         guard let string = strings.first else { return }
-        let colorRegex = /((?<groupName>\w+)\/)?(?<colorName>\w+)\s*: #(?<hexString>[a-f0-9]{6})/.ignoresCase().dotMatchesNewlines()
+        let colorRegex = /((?<groupName>\w+)\/)?(?<colorName>\w+)\s*: #(?<hexString>[a-f0-9]{6})\s*(?<lbl>{LB<})?\s*(?<dbd>{DB>})?\s*(?<range>\[[0-9]+,[0-9]+\])?/
+            .ignoresCase()
+            .dotMatchesNewlines()
         colorPalette = string.split(separator: "\n").compactMap { line in
             line.matches(of: colorRegex).compactMap { match -> ColorConfig? in
                 let groupName = String(match.output.groupName ?? "")
                 let colorName = String(match.output.colorName)
                 let hexString = String(match.output.hexString)
-                return ColorConfig(colorModel: .rgb(Color(hex: hexString)), colorName: colorName, groupName: groupName)
+                let lightColorScale: ColorScale = match.output.lbl == nil ? .darkening : .lightening
+                let darkColorScale: ColorScale = match.output.dbd == nil ? .lightening : .darkening
+                let rangeDescription = String(match.output.range ?? "")
+                let colorRange = ColorRange(percentDescription: rangeDescription) ?? .whole
+                return ColorConfig(
+                    colorModel: .rgb(Color(hex: hexString)),
+                    colorName: colorName,
+                    groupName: groupName,
+                    lightColorScale: lightColorScale,
+                    darkColorScale: darkColorScale,
+                    colorRange: colorRange
+                )
             }.first
         }
     }

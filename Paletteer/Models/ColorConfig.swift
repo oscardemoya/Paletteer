@@ -58,13 +58,28 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         hasher.combine(colorRange)
     }
     
-    var colorDescription: String {
-        "\(!groupName.isEmpty ? groupName + "/" : "")" +
-        "\(colorName): \(color.hexRGB.uppercased())"
-//        +
-//        "\(lightColorScale.isLightening ? "": "")" +
-//        "\(darkColorScale.isDarkening ? "": "")" +
-//        "\(!rangeWidth.isWhole ? "[\()]": "")"
+    var colorPath: String {
+        var components = [String]()
+        if !groupName.isEmpty {
+            components.append(groupName)
+        }
+        components.append(colorName)
+        return components.joined(separator: "/")
+    }
+    
+    var description: String {
+        var components = [String]()
+        components.append("\(colorPath): \(color.hexRGB.uppercased())")
+        if lightColorScale.isLightening {
+            components.append("{LB<}")
+        }
+        if darkColorScale.isDarkening {
+            components.append("{DB>}")
+        }
+        if !colorRange.width.isWhole {
+            components.append(colorRange.percentDescription)
+        }
+        return components.joined(separator: " ")
     }
 
     var rawValue: String {

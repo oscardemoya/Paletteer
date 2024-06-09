@@ -21,6 +21,15 @@ enum ColorRange: String, Codable, CaseIterable, Identifiable, Hashable {
     
     var id: Self { self }
     var startPercent: Double { startValue * 100 }
+    var percentDescription: String { "[\(Int(startPercent)),\(Int(width.percent))]" }
+    
+    init?(percentDescription: String) {
+        guard !percentDescription.isEmpty,
+              let value = Self.allCases.first(where: { $0.percentDescription == percentDescription }) else {
+            return nil
+        }
+        self = value
+    }
     
     var name: String {
         switch self {
