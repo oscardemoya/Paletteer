@@ -95,9 +95,7 @@ struct ColorPaletteView: View {
             generateColorShades()
         }
         .alert(isPresented: $showAlert) {
-            print(alertTitle)
-            print(alertMessage)
-            return Alert(title: Text(alertTitle), message: Text(alertMessage))
+            Alert(title: Text(alertTitle), message: Text(alertMessage))
         }
     }
     
