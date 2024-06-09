@@ -22,6 +22,8 @@ enum ColorRange: String, Codable, CaseIterable, Identifiable, Hashable {
     var id: Self { self }
     var startPercent: Double { startValue * 100 }
     var percentDescription: String { "[\(Int(startPercent)),\(Int(width.percent))]" }
+    var index: Int { width.ranges.firstIndex(of: self) ?? 0 }
+    var startValue: Double { Double(index) * width.value }
     
     init?(percentDescription: String) {
         guard !percentDescription.isEmpty,
@@ -52,21 +54,6 @@ enum ColorRange: String, Codable, CaseIterable, Identifiable, Hashable {
         case .waningGibbous, .waxingGibbous: .gibbous
         case .firstHalf, .centerHalf, .lastHalf: .half
         case .firstQuarter, .secondQuarter, .thirdQuarter, .lastQuarter: .quarter
-        }
-    }
-    
-    var startValue: Double {
-        switch self {
-        case .whole: 0
-        case .waningGibbous: 0
-        case .waxingGibbous: 0.25
-        case .firstHalf: 0
-        case .centerHalf: 0.25
-        case .lastHalf: 0.5
-        case .firstQuarter: 0
-        case .secondQuarter: 0.25
-        case .thirdQuarter: 0.5
-        case .lastQuarter: 0.75
         }
     }
 }
