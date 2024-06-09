@@ -16,8 +16,16 @@ struct ColorPaletteView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
+    @AppStorage(key(.hctLightChromaFactor)) var hctLightChromaFactor = ColorPaletteParams.hctLightChromaFactor
+    @AppStorage(key(.hctDarkChromaFactor)) var hctDarkChromaFactor = ColorPaletteParams.hctDarkChromaFactor
+    @AppStorage(key(.hsbDarkColorsHueOffset)) var hsbDarkColorsHueOffset = ColorPaletteParams.hsbDarkColorsHueOffset
+    @AppStorage(key(.hsbLightSaturationFactor)) var hsbLightSaturationFactor = ColorPaletteParams.hsbLightSaturationFactor
+    @AppStorage(key(.hsbDarkSaturationFactor)) var hsbDarkSaturationFactor = ColorPaletteParams.hsbDarkSaturationFactor
+    @AppStorage(key(.hsbLightBrightnessFactor)) var hsbLightBrightnessFactor = ColorPaletteParams.hsbLightBrightnessFactor
+    @AppStorage(key(.hsbDarkBrightnessFactor)) var hsbDarkBrightnessFactor = ColorPaletteParams.hsbDarkBrightnessFactor
+    @AppStorage(key(.rgbDarkSaturationFactor)) var rgbDarkSaturationFactor = ColorPaletteParams.rgbDarkSaturationFactor
+    @AppStorage(key(.rgbDarkBrightnessFactor)) var rgbDarkBrightnessFactor = ColorPaletteParams.rgbDarkBrightnessFactor
     @State var colorSpace: ColorSpace = .hct
-    @State private var colorShades = [ColorConfig: [ColorPair]]()
     @State private var backupFileURL: URL?
     @State private var assetsFileURL: URL?
     @State private var isShowingShareView: Bool = false
@@ -82,24 +90,19 @@ struct ColorPaletteView: View {
         }
         .onAppear {
             generateColorShades()
-#if !os(macOS)
-            createAssetsFile()
-#endif
         }
         .onChange(of: colorSpace) { _, _ in
             generateColorShades()
-#if !os(macOS)
-            createAssetsFile()
-#endif
         }
         .alert(isPresented: $showAlert) {
-            Alert(title: Text(alertTitle), message: Text(alertMessage))
+            print(alertTitle)
+            print(alertMessage)
+            return Alert(title: Text(alertTitle), message: Text(alertMessage))
         }
     }
     
 #if os(macOS)
     func exportFile(at fileURL: URL) {
-        createAssetsFile()
         if let assetsFileURL = showSavePanel() {
             do {
                 let fileManager = FileManager.default
@@ -129,24 +132,16 @@ struct ColorPaletteView: View {
         if let existingFileURL = fileURL, FileManager.default.fileExists(atPath: existingFileURL.path) {
             FileManager.default.removeDirectory(atURL: existingFileURL)
         }
-        let keysAndValues = colorList.map { ($0, shades(for: $0)) }
-        colorShades = Dictionary(keysAndValues) { first, _ in first }
-    }
-    
-    private func createAssetsFile() {
-        if let existingFileURL = fileURL, FileManager.default.fileExists(atPath: existingFileURL.path) {
-            FileManager.default.removeDirectory(atURL: existingFileURL)
-        }
-        colorList.forEach { group in
-            createFile(for: group)
+        colorList.forEach { config in
+            createFile(for: config, colorPairs: shades(for: config))
         }
     }
     
-    private func createFile(for config: ColorConfig) {
+    private func createFile(for config: ColorConfig, colorPairs: [ColorPair]) {
         if !config.groupName.isEmpty {
             saveEmptyFiles(to: config.groupName)
         }
-        colorShades[config]?.enumerated().forEach { index, color in
+        colorPairs.enumerated().forEach { index, color in
             let lightCode: String
             if colorSpace == .rgb {
                 let overlayTone = ColorPalette.overlayTones[index]
@@ -172,20 +167,18 @@ struct ColorPaletteView: View {
         VStack(spacing: 8) {
             if horizontalSizeClass == .compact {
                 HStack(spacing: 8) {
-                    ForEach(colorPairs.prefix(Int(ColorPalette.shadesCount(isMaterial: colorSpace == .hct) / 2)),
-                            id: \.light.self) { color in
+                    ForEach(colorPairs.prefix(Int(ColorPalette.shadesCount(isMaterial: colorSpace == .hct) / 2))) { color in
                         rectangle(colorPair: color)
                     }
                 }
                 HStack {
-                    ForEach(colorPairs.suffix(Int(ColorPalette.shadesCount(isMaterial: colorSpace == .hct) / 2)),
-                            id: \.light.self) { color in
+                    ForEach(colorPairs.suffix(Int(ColorPalette.shadesCount(isMaterial: colorSpace == .hct) / 2))) { color in
                         rectangle(colorPair: color)
                     }
                 }
             } else {
                 HStack(spacing: 8) {
-                    ForEach(colorPairs, id: \.light.self) { color in
+                    ForEach(colorPairs) { color in
                         rectangle(colorPair: color)
                     }
                 }
@@ -232,66 +225,50 @@ struct ColorPaletteView: View {
             let darkConfig = ColorConversion(color: color, index: darkIndex, light: false)
             let lightColor = generateColor(for: group, using: lightConfig)
             let darkColor = generateColor(for: group, using: darkConfig)
-            return (light: lightColor.color, dark: darkColor.color)
+            return ColorPair(light: lightColor.color, dark: darkColor.color)
         }
     }
     
     private func generateColor(for group: ColorConfig, using config: ColorConversion) -> (color: Color, argb: Int) {
         var color: Color
         var argb: Int
+        let tones = ColorPalette.tones(light: config.light)
+        let tone = Double(tones[config.index])
+        let transformedTone = transformedTone(tone, group: group, config: config)
+        let normalizedTone = min(max(transformedTone / 100, 0), 1)
         switch config.color {
         case .hct(let hctColor):
-            let tones = ColorPalette.tones(light: config.light)
-            let tone = Double(tones[config.index])
-            hctColor.tone = transformedTone(tone, group: group, config: config)
-            hctColor.chroma = hctColor.chroma * (config.light ? 1 : 0.75)
+            hctColor.tone = transformedTone
+            hctColor.chroma = hctColor.chroma * (config.light ? hctLightChromaFactor : hctDarkChromaFactor)
             color = Color(hctColor: hctColor)
             argb = hctColor.toInt()
         case .hsb(let hsbColor):
             var baseColor = hsbColor
-            baseColor.hue += (config.light ? 0 : 0.015)
-            let tones = ColorPalette.tones(light: config.light)
-            let tone = Double(tones[config.index])
-            let transformedTone = transformedTone(tone, group: group, config: config)
-            let clampedTone = min(max(transformedTone / 100, 0), 1)
-            let brightnessFactor = (config.light ? 1.5 : 1.25) * hsbColor.saturation.mapped(to: 0.25...1)
-            baseColor.brightness = (1 - clampedTone).logaritmic(M_E * brightnessFactor)
-            let saturationFactor = (config.light ? 1.75 : 1.5)
-            baseColor.saturation *= saturationFactor * clampedTone.logaritmic(M_E * group.rangeWidth.value)
+            baseColor.hue += (config.light ? 0 : hsbDarkColorsHueOffset)
+            let saturationFactor = (config.light ? hsbLightSaturationFactor : hsbDarkSaturationFactor)
+            baseColor.saturation *= saturationFactor * normalizedTone.logaritmic(M_E * group.colorRange.width.value)
+            let brightnessFactor = (config.light ? hsbLightBrightnessFactor : hsbDarkBrightnessFactor) * hsbColor.saturation.mapped(to: 0.25...1)
+            baseColor.brightness = (1 - normalizedTone).logaritmic(M_E * brightnessFactor)
             color = Color(hsba: baseColor)
             argb = color.rgbInt ?? 0
         case .rgb(let rgbColor):
-            var baseColor = rgbColor
-            if !group.rangeWidth.isFull, let originalValues = rgbColor.hsba {
-                let brightness: CGFloat = baseBrightness(group: group, config: config)
-                baseColor = rgbColor.replace(saturation: config.light ? originalValues.saturation + 0.01 : 0,
-                                             brightness: brightness)
-            }
-            let opacities = ColorPalette.overlayOpacities(light: config.light, full: group.rangeWidth.isFull)
-            let opacity = Double(opacities[config.index].opacity) / 100.0
-            let overlay = ColorPalette.overlay(light: opacities[config.index].light)
-            let blend = Color.blend(color1: baseColor, intensity1: opacity, color2: overlay, intensity2: 1 - opacity)
-            color = config.light ? blend : blend.adjust(saturation: 0.01, brightness: -0.05)
+            let opacity = (normalizedTone < 0.5 ? normalizedTone : 1 - normalizedTone) * 2
+            let overlay = ColorPalette.overlay(light: normalizedTone > 0.5)
+            let blend = Color.blend(color1: rgbColor, intensity1: opacity, color2: overlay, intensity2: 1 - opacity)
+            color = config.light ? blend : blend.adjust(saturation: rgbDarkSaturationFactor, brightness: rgbDarkBrightnessFactor)
             argb = color.rgbInt ?? 0
         }
         return (color: color, argb: argb)
     }
     
     private func transformedTone(_ tone: Double, group: ColorConfig, config: ColorConversion) -> CGFloat {
-        switch group.rangeWidth {
-        case .full: tone
-        case .wide: (config.light ? 25 : 0) + (tone * 3.0 / 4.0)
-        case .half: (config.light ? 50 : 0) + (tone / 2.0)
-        case .narrow: (config.light ? 75 : 0) + (tone / 4.0)
-        }
-    }
-    
-    private func baseBrightness(group: ColorConfig, config: ColorConversion) -> CGFloat {
-        switch group.rangeWidth {
-        case .full: config.light ? 0.0 : 1.0
-        case .wide: config.light ? 0.25 : 0.75
-        case .half: config.light ? 0.5 : 0.5
-        case .narrow: config.light ? 0.75 : 0.25
+        if group.colorRange.width.isWhole {
+            return tone
+        } else {
+            let startPercent = group.colorRange.startPercent
+            let rangeWidthPercent = group.colorRange.width.percent
+            let rangeWidth = group.colorRange.width.value
+            return (config.light ? startPercent : 100 - rangeWidthPercent - startPercent) + (tone * rangeWidth)
         }
     }
     
@@ -331,5 +308,5 @@ class CopyFileManagerDelegate: NSObject, FileManagerDelegate {
 }
 
 #Preview {
-    ColorPaletteView(colorList: .sample, colorSpace: .hsb)
+    ColorPaletteView(colorList: .sample, colorSpace: .rgb)
 }

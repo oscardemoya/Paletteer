@@ -25,7 +25,7 @@ struct CustomColorPicker: View {
     @State private var toneOrBrightnessSliderValue = Self.toneOrBrightnessRange.median
     @State private var closeButtonSize: CGSize = .zero
     @State private var showDeleteConfirmation: Bool = false
-    @State private var colorRangeWidth: ColorRangeWidth = .full
+    @State private var colorRangeWidth: ColorRangeWidth = .whole
     
     static let hueRange: ClosedRange<Double> = 0...360
     static let chromaOrSaturationRange: ClosedRange<Double> = 0...120
@@ -77,8 +77,8 @@ struct CustomColorPicker: View {
                         .onTapGesture {
                             isEditingColor = true
                         }
-                    if !colorConfig.rangeWidth.isFull {
-                        CircularProgressView(progress: colorConfig.rangeWidth.value,
+                    if !colorConfig.colorRange.width.isWhole {
+                        CircularProgressView(progress: colorConfig.colorRange.width.value,
                                              color: colorConfig.color.contrastingColor,
                                              lineWidth: 4)
                             .frame(width: 16, height: 16)
@@ -540,7 +540,7 @@ struct CustomColorPicker: View {
 
 #Preview {
     @State var colorConfig = ColorConfig(colorModel: .rgb(.blue.muted), colorName: "Primary", groupName: "Brand",
-                                         lightColorScale: .lightening, darkColorScale: .darkening, rangeWidth: .half)
+                                         lightColorScale: .lightening, darkColorScale: .darkening, colorRange: .firstHalf)
     @State var colorClipboard = ColorClipboard()
     return CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {} onEdit: {}
 }

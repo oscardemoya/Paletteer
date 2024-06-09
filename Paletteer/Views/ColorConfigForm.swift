@@ -13,12 +13,16 @@ struct ColorConfigForm: View {
     @Binding var colorConfig: ColorConfig
     @Binding var colorClipboard: ColorClipboard
     var isEditing: Bool
+    @State private var colorRangeWidth: ColorRangeWidth = .whole
     @State private var sheetHeight: CGFloat = .zero
     @State private var closeButtonSize: CGSize = .zero
     
     var body: some View {
         colorConfigForm
             .background(.secondaryBackground)
+            .onAppear {
+                colorRangeWidth = colorConfig.colorRange.width
+            }
     }
     
     @ViewBuilder
@@ -93,8 +97,19 @@ struct ColorConfigForm: View {
                         Text("Color Range Width")
                             .padding(.horizontal, 4)
                         Spacer()
-                        Picker("", selection: $colorConfig.rangeWidth) {
+                        Picker("", selection: $colorRangeWidth.onChange({ colorConfig.colorRange = $0.defaultRange })) {
                             ForEach(ColorRangeWidth.allCases, id: \.self) { item in
+                                Text(item.name).tag(item)
+                            }
+                        }
+                    }
+                    .frame(height: 30)
+                    HStack {
+                        Text("Color Range")
+                            .padding(.horizontal, 4)
+                        Spacer()
+                        Picker("", selection: $colorConfig.colorRange) {
+                            ForEach(colorRangeWidth.ranges, id: \.self) { item in
                                 Text(item.name).tag(item)
                             }
                         }

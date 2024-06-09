@@ -8,101 +8,17 @@
 import SwiftUI
 
 struct ColorPalette {
-    static func shadesCount(isMaterial: Bool) -> Int {
-        if isMaterial {
-            ColorPalette.tonesCount
-        } else {
-            ColorPalette.overlaysCount
-        }
-    }
+    static func shadesCount(isMaterial: Bool) -> Int { ColorPalette.tonesCount }
     
     // RGB Conversion
-    static var lightestColor: Color = .white
+    static var lightestColor: Color = Color(hex: "#FFFFFF")
     static var darkestColor: Color = Color(hex: "#080808")
-    static var overlaysCount: Int { overlayOpacities(light: true, full: true).count }
-    
-    static func overlayOpacities(light: Bool, full: Bool) -> [(light: Bool, opacity: Int)] {
-        if full {
-            if light {
-                [
-                    (true, 10),
-                    (true, 20),
-                    (true, 40),
-                    (true, 60),
-                    (true, 80),
-                    (true, 100),
-                    (false, 80),
-                    (false, 60),
-                    (false, 50),
-                    (false, 40),
-                    (false, 30),
-                    (false, 20),
-                    (false, 10),
-                    (false, 0),
-                ]
-            } else {
-                [
-                    (false, 15),
-                    (false, 20),
-                    (false, 25),
-                    (false, 30),
-                    (false, 40),
-                    (false, 50),
-                    (false, 60),
-                    (false, 80),
-                    (false, 100),
-                    (true, 80),
-                    (true, 60),
-                    (true, 40),
-                    (true, 20),
-                    (true, 10),
-                ]
-            }
-        } else {
-            if light {
-                [
-                    (true, 02),
-                    (true, 10),
-                    (true, 15),
-                    (true, 20),
-                    (true, 25),
-                    (true, 30),
-                    (true, 40),
-                    (true, 50),
-                    (true, 60),
-                    (true, 70),
-                    (true, 80),
-                    (true, 90),
-                    (true, 95),
-                    (true, 100)
-                ]
-            } else {
-                [
-                    (false, 01),
-                    (false, 02),
-                    (false, 05),
-                    (false, 10),
-                    (false, 15),
-                    (false, 20),
-                    (false, 25),
-                    (false, 30),
-                    (false, 35),
-                    (false, 40),
-                    (false, 50),
-                    (false, 60),
-                    (false, 80),
-                    (false, 100)
-                ]
-            }
-        }
-    }
     
     static var overlayTones: [Int] = {
         [01, 02, 05, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98, 99]
     }()
     
-    static func overlay(light: Bool?) -> Color {
-        guard let light else { return .clear }
+    static func overlay(light: Bool) -> Color {
         return light ? lightestColor : darkestColor
     }
 

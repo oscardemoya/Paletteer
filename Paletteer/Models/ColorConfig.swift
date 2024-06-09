@@ -14,7 +14,7 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
     var groupName: String = ""
     var lightColorScale: ColorScale = .darkening
     var darkColorScale: ColorScale = .lightening
-    var rangeWidth: ColorRangeWidth = .full
+    var colorRange: ColorRange = .whole
     
     var color: Color { colorModel.color }
     var hexColor: String { colorModel.color.hexRGB }
@@ -27,7 +27,7 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         groupName: String = "",
         lightColorScale: ColorScale = .darkening,
         darkColorScale: ColorScale = .lightening,
-        rangeWidth: ColorRangeWidth = .full
+        colorRange: ColorRange = .whole
     ) {
         self.id = id
         self.colorModel = colorModel
@@ -35,7 +35,7 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         self.groupName = groupName
         self.lightColorScale = lightColorScale
         self.darkColorScale = darkColorScale
-        self.rangeWidth = rangeWidth
+        self.colorRange = colorRange
     }
     
     mutating func update(with other: Self) {
@@ -44,7 +44,7 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         self.groupName = other.groupName
         self.lightColorScale = other.lightColorScale
         self.darkColorScale = other.darkColorScale
-        self.rangeWidth = other.rangeWidth
+        self.colorRange = other.colorRange
     }
     
     func hash(into hasher: inout Hasher) {
@@ -55,12 +55,16 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         hasher.combine(groupName)
         hasher.combine(lightColorScale)
         hasher.combine(darkColorScale)
-        hasher.combine(rangeWidth)
+        hasher.combine(colorRange)
     }
     
     var colorDescription: String {
         "\(!groupName.isEmpty ? groupName + "/" : "")" +
         "\(colorName): \(color.hexRGB.uppercased())"
+//        +
+//        "\(lightColorScale.isLightening ? "": "")" +
+//        "\(darkColorScale.isDarkening ? "": "")" +
+//        "\(!rangeWidth.isWhole ? "[\()]": "")"
     }
 
     var rawValue: String {
@@ -83,7 +87,7 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
             groupName: result.groupName,
             lightColorScale: result.lightColorScale,
             darkColorScale: result.darkColorScale,
-            rangeWidth: result.rangeWidth
+            colorRange: result.colorRange
         )
     }
 
@@ -94,7 +98,7 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         case colorName
         case lightColorScale
         case darkColorScale
-        case rangeWidth
+        case colorRange
     }
     
     init(from decoder: Decoder) throws {
@@ -105,7 +109,7 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         groupName = try container.decode(String.self, forKey: .groupName)
         lightColorScale = try container.decode(ColorScale.self, forKey: .lightColorScale)
         darkColorScale = try container.decode(ColorScale.self, forKey: .darkColorScale)
-        rangeWidth = try container.decode(ColorRangeWidth.self, forKey: .rangeWidth)
+        colorRange = try container.decode(ColorRange.self, forKey: .colorRange)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -116,7 +120,7 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         try container.encode(groupName, forKey: .groupName)
         try container.encode(lightColorScale, forKey: .lightColorScale)
         try container.encode(darkColorScale, forKey: .darkColorScale)
-        try container.encode(rangeWidth, forKey: .rangeWidth)
+        try container.encode(colorRange, forKey: .colorRange)
     }
 }
 
@@ -129,7 +133,7 @@ extension [ColorConfig] {
         ColorConfig(colorModel: .rgb(Color(hex: "#D9C764")), colorName: "Warning", groupName: "Semantic"),
         ColorConfig(colorModel: .rgb(Color(hex: "#DF706F")), colorName: "Error", groupName: "Semantic"),
         ColorConfig(colorModel: .rgb(Color(hex: "#A9A8AC")), colorName: "Background", groupName: "Neutral",
-                    lightColorScale: .lightening, rangeWidth: .narrow),
+                    lightColorScale: .lightening, colorRange: .firstQuarter),
         ColorConfig(colorModel: .rgb(Color(hex: "#525354")), colorName: "Foreground", groupName: "Neutral",
                     lightColorScale: .lightening, darkColorScale: .darkening)
     ]}

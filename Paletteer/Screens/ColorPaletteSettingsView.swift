@@ -19,6 +19,9 @@ struct ColorPaletteSettingsView: View {
     @State private var isEditing = false
     @State private var exisitingColor = defaultColorConfig
     @State private var isConfiguring = false
+    @State private var showAlert = false
+    @State private var alertTitle: String = ""
+    @State private var alertMessage: String = ""
     var columns = [GridItem(.adaptive(minimum: 200), spacing: 12)]
     
     var body: some View {
@@ -45,6 +48,15 @@ struct ColorPaletteSettingsView: View {
                 ColorConfigForm(colorConfig: $exisitingColor, colorClipboard: $colorClipboard, isEditing: true)
             }
             .toolbar {
+#if !os(macOS)
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        isConfiguring = true
+                    } label: {
+                        Image(systemName: "gear")
+                    }
+                }
+#endif
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         selectedAppearance.toggle()
@@ -67,27 +79,21 @@ struct ColorPaletteSettingsView: View {
                         Image(systemName: "doc.on.clipboard")
                     }
                 }
-#if !os(macOS)
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        isConfiguring = true
-                    } label: {
-                        Image(systemName: "gear")
-                    }
-                }
-#endif
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertTitle), message: Text(alertMessage))
+            }
+            .sheet(isPresented: $isConfiguring) {
+                SettingsPane()
             }
         }
         .onAppear {
             ColorSchemeSwitcher.shared.overrideDisplayMode()
         }
-        .sheet(isPresented: $isConfiguring) {
-            SettingsPane()
-        }
 #if os(macOS)
-            .pasteDestination(for: String.self) { strings in
-                pasteColorPaletteConfig(strings: strings)
-            }
+        .pasteDestination(for: String.self) { strings in
+            pasteColorPaletteConfig(strings: strings)
+        }
 #endif
     }
         
@@ -101,7 +107,7 @@ struct ColorPaletteSettingsView: View {
             isAdding = true
         } label: {
             Label("Add Color", systemImage: "plus.circle.fill")
-                .font(.title3)
+                .font(.headline)
                 .fontWeight(.medium)
                 .fontDesign(.rounded)
                 .frame(maxWidth: .infinity)
@@ -115,8 +121,8 @@ struct ColorPaletteSettingsView: View {
         Button {
             path.append(colorPalette)
         } label: {
-            Text("Generate")
-                .font(.title3)
+            Label("Generate", systemImage: "swatchpalette")
+                .font(.headline)
                 .fontWeight(.medium)
                 .fontDesign(.rounded)
                 .frame(maxWidth: .infinity)
@@ -172,6 +178,9 @@ struct ColorPaletteSettingsView: View {
     
     func copyColorPaletteConfig() {
         String.pasteboardString = colorPalette.map(\.colorDescription).joined(separator: "\n")
+        alertTitle = "Color Palette"
+        alertMessage = "Copied to the clipboard."
+        showAlert = true
     }
     
     func pasteColorPaletteConfig() {

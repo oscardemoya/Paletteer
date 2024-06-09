@@ -7,4 +7,8 @@
 
 import SwiftUI
 
-typealias ColorPair = (light: Color, dark: Color)
+struct ColorPair: Identifiable {
+    var id: String = UUID().uuidString
+    var light: Color
+    var dark: Color
+}
