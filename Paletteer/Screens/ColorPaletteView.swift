@@ -16,14 +16,20 @@ struct ColorPaletteView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
+    @AppStorage(key(.hctDarkColorsHueOffset)) var hctDarkColorsHueOffset = ColorPaletteParams.hctDarkColorsHueOffset
     @AppStorage(key(.hctLightChromaFactor)) var hctLightChromaFactor = ColorPaletteParams.hctLightChromaFactor
     @AppStorage(key(.hctDarkChromaFactor)) var hctDarkChromaFactor = ColorPaletteParams.hctDarkChromaFactor
+    @AppStorage(key(.hctLightToneFactor)) var hctLightToneFactor = ColorPaletteParams.hctLightToneFactor
+    @AppStorage(key(.hctDarkToneFactor)) var hctDarkToneFactor = ColorPaletteParams.hctDarkToneFactor
     @AppStorage(key(.hsbDarkColorsHueOffset)) var hsbDarkColorsHueOffset = ColorPaletteParams.hsbDarkColorsHueOffset
     @AppStorage(key(.hsbLightSaturationFactor)) var hsbLightSaturationFactor = ColorPaletteParams.hsbLightSaturationFactor
     @AppStorage(key(.hsbDarkSaturationFactor)) var hsbDarkSaturationFactor = ColorPaletteParams.hsbDarkSaturationFactor
     @AppStorage(key(.hsbLightBrightnessFactor)) var hsbLightBrightnessFactor = ColorPaletteParams.hsbLightBrightnessFactor
     @AppStorage(key(.hsbDarkBrightnessFactor)) var hsbDarkBrightnessFactor = ColorPaletteParams.hsbDarkBrightnessFactor
+    @AppStorage(key(.rgbDarkColorsHueOffset)) var rgbDarkColorsHueOffset = ColorPaletteParams.rgbDarkColorsHueOffset
+    @AppStorage(key(.rgbLightSaturationFactor)) var rgbLightSaturationFactor = ColorPaletteParams.rgbLightSaturationFactor
     @AppStorage(key(.rgbDarkSaturationFactor)) var rgbDarkSaturationFactor = ColorPaletteParams.rgbDarkSaturationFactor
+    @AppStorage(key(.rgbLightBrightnessFactor)) var rgbLightBrightnessFactor = ColorPaletteParams.rgbLightBrightnessFactor
     @AppStorage(key(.rgbDarkBrightnessFactor)) var rgbDarkBrightnessFactor = ColorPaletteParams.rgbDarkBrightnessFactor
     @State var colorSpace: ColorSpace = .hct
     @State private var backupFileURL: URL?
@@ -81,7 +87,7 @@ struct ColorPaletteView: View {
             }
         }
 #if os(macOS)
-        .aspectRatio(14/CGFloat(colorList.count), contentMode: .fit)
+        .aspectRatio(Double(ColorPalette.shadesCount) / CGFloat(colorList.count), contentMode: .fit)
 #else
         .background(.primaryBackground)
 #endif
@@ -142,7 +148,7 @@ struct ColorPaletteView: View {
         colorPairs.enumerated().forEach { index, color in
             let lightCode: String
             if colorSpace == .rgb {
-                let overlayTone = ColorPalette.overlayTones[index]
+                let overlayTone = ColorPalette.toneValues[index]
                 lightCode = String(format: "%03d", overlayTone * 10)
             } else {
                 let lightTone = ColorPalette.tones(light: false)[index]
@@ -165,12 +171,12 @@ struct ColorPaletteView: View {
         VStack(spacing: 8) {
             if horizontalSizeClass == .compact {
                 HStack(spacing: 8) {
-                    ForEach(colorPairs.prefix(Int(ColorPalette.shadesCount(isMaterial: colorSpace == .hct) / 2))) { color in
+                    ForEach(colorPairs.prefix(Int(ColorPalette.shadesCount / 2))) { color in
                         rectangle(colorPair: color)
                     }
                 }
                 HStack {
-                    ForEach(colorPairs.suffix(Int(ColorPalette.shadesCount(isMaterial: colorSpace == .hct) / 2))) { color in
+                    ForEach(colorPairs.suffix(Int(ColorPalette.shadesCount / 2))) { color in
                         rectangle(colorPair: color)
                     }
                 }
@@ -204,7 +210,7 @@ struct ColorPaletteView: View {
     }
     
     private func shades(for group: ColorConfig) -> [ColorPair] {
-        let colorCount = ColorPalette.shadesCount(isMaterial: colorSpace == .hct)
+        let colorCount = ColorPalette.shadesCount
         return (0..<colorCount).compactMap { index in
             switch colorSpace {
             case .hct:
@@ -236,38 +242,42 @@ struct ColorPaletteView: View {
         let normalizedTone = min(max(transformedTone / 100, 0), 1)
         switch config.color {
         case .hct(let hctColor):
-            hctColor.tone = transformedTone
-            hctColor.chroma = hctColor.chroma * (config.light ? hctLightChromaFactor : hctDarkChromaFactor)
+            hctColor.hue += (config.light ? 0 : hctDarkColorsHueOffset)
+            hctColor.chroma *= (config.light ? hctLightChromaFactor : hctDarkChromaFactor)
+            hctColor.tone = transformedTone * (config.light ? hctLightToneFactor : hctDarkToneFactor)
             color = Color(hctColor: hctColor)
             argb = hctColor.toInt()
         case .hsb(let hsbColor):
             var baseColor = hsbColor
             baseColor.hue += (config.light ? 0 : hsbDarkColorsHueOffset)
             let saturationFactor = (config.light ? hsbLightSaturationFactor : hsbDarkSaturationFactor)
-            baseColor.saturation *= saturationFactor * normalizedTone.logaritmic(M_E * group.colorRange.width.value)
-            let brightnessFactor = (config.light ? hsbLightBrightnessFactor : hsbDarkBrightnessFactor) * hsbColor.saturation.mapped(to: 0.25...1)
+            baseColor.saturation *= saturationFactor * normalizedTone.logaritmic(M_E * saturationFactor)
+            let brightnessFactor = (config.light ? hsbLightBrightnessFactor : hsbDarkBrightnessFactor) * hsbColor.saturation
             baseColor.brightness = (1 - normalizedTone).logaritmic(M_E * brightnessFactor)
             color = Color(hsba: baseColor)
             argb = color.rgbInt ?? 0
         case .rgb(let rgbColor):
-            let opacity = (normalizedTone < 0.5 ? normalizedTone : 1 - normalizedTone) * 2
-            let overlay = ColorPalette.overlay(light: normalizedTone > 0.5)
-            let blend = Color.blend(color1: rgbColor, intensity1: opacity, color2: overlay, intensity2: 1 - opacity)
-            color = config.light ? blend : blend.adjust(saturation: rgbDarkSaturationFactor, brightness: rgbDarkBrightnessFactor)
+            let adjustedValue = normalizedTone.skewed(towards: 0, alpha: 0.75)
+            let opacity = (adjustedValue < 0.5 ? adjustedValue : 1 - adjustedValue) * 2
+            let overlay = ColorPalette.overlay(light: adjustedValue > 0.5)
+            let blend = Color.blend(color1: rgbColor, intensity1: opacity, color2: overlay, intensity2: (1 - opacity))
+            let saturationFactor = config.light ? rgbLightSaturationFactor : rgbDarkSaturationFactor
+            let brightnessFactor = config.light ? rgbLightBrightnessFactor : rgbDarkBrightnessFactor
+            let hueOffset = (config.light ? 0 : hctDarkColorsHueOffset)
+            let hsbColor = rgbColor.hsba ?? .black
+            let saturation = hsbColor.saturation * saturationFactor
+            let brightness = hsbColor.brightness * brightnessFactor
+            color = blend.adjust(hue: hueOffset, saturation: saturation, brightness: brightness)
             argb = color.rgbInt ?? 0
         }
         return (color: color, argb: argb)
     }
     
     private func transformedTone(_ tone: Double, group: ColorConfig, config: ColorConversion) -> CGFloat {
-        if group.colorRange.width.isWhole {
-            return tone
-        } else {
-            let startPercent = group.colorRange.startPercent
-            let rangeWidthPercent = group.colorRange.width.percent
-            let rangeWidth = group.colorRange.width.value
-            return (config.light ? startPercent : 100 - rangeWidthPercent - startPercent) + (tone * rangeWidth)
-        }
+        let startPercent = group.colorRange.startPercent
+        let rangeWidthPercent = group.colorRange.width.percent
+        let rangeWidth = group.colorRange.width.value
+        return (config.light ? startPercent : 100 - rangeWidthPercent - startPercent) + (tone * rangeWidth)
     }
     
     private func saveFile(to filePath: String, colorName: String, lightArgb: Int, darkArgb: Int) {
@@ -306,5 +316,5 @@ class CopyFileManagerDelegate: NSObject, FileManagerDelegate {
 }
 
 #Preview {
-    ColorPaletteView(colorList: .sample, colorSpace: .rgb)
+    ColorPaletteView(colorList: .sample, colorSpace: .hct)
 }

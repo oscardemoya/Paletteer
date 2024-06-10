@@ -147,8 +147,8 @@ extension [ColorConfig] {
         ColorConfig(colorModel: .rgb(Color(hex: "#6EA97A")), colorName: "Success", groupName: "Semantic"),
         ColorConfig(colorModel: .rgb(Color(hex: "#D9C764")), colorName: "Warning", groupName: "Semantic"),
         ColorConfig(colorModel: .rgb(Color(hex: "#DF706F")), colorName: "Error", groupName: "Semantic"),
-        ColorConfig(colorModel: .rgb(Color(hex: "#A9A8AC")), colorName: "Background", groupName: "Neutral",
-                    lightColorScale: .lightening, colorRange: .firstQuarter),
+        ColorConfig(colorModel: .rgb(Color(hex: "#C3C7CB")), colorName: "Background", groupName: "Neutral",
+                    lightColorScale: .lightening, colorRange: .lastQuarter),
         ColorConfig(colorModel: .rgb(Color(hex: "#525354")), colorName: "Foreground", groupName: "Neutral",
                     lightColorScale: .lightening, darkColorScale: .darkening)
     ]}

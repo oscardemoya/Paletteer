@@ -8,37 +8,6 @@
 import Foundation
 import SwiftUI
 
-typealias RGBA = (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)
-
-struct HSBA: Codable, RawRepresentable {
-    var hue: CGFloat
-    var saturation: CGFloat
-    var brightness: CGFloat
-    var alpha: CGFloat
-    
-    var label: String { rawValue }
-    
-    var rawValue: String {
-        if alpha != 1.0 {
-            "H\(Int(round(hue * 255))) S\(Int(round(saturation * 255))) B\(Int(round(brightness * 255))) A\(Int(round(alpha * 255)))"
-        } else {
-            "H\(Int(round(hue * 255))) S\(Int(round(saturation * 255))) B\(Int(round(brightness * 255)))"
-        }
-    }
-
-    init?(rawValue: String) {
-        guard let hsba = rawValue.hsba else { return nil }
-        self = hsba
-    }
-    
-    init(hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat = 1.0) {
-        self.hue = hue
-        self.saturation = saturation
-        self.brightness = brightness
-        self.alpha = alpha
-    }
-}
-
 extension Color: RawRepresentable {
     public var rawValue: String {
         do {
@@ -100,20 +69,20 @@ extension Color: RawRepresentable {
     var hsba: HSBA? { uiColor.hsba }
     
     var hexRGB: String {
-        guard let (red, green, blue, _) = rgba else { return "" }
+        guard let rgba = rgba else { return "" }
         return String(format: "#%02x%02x%02x",
-                      Int(red * 255),
-                      Int(green * 255),
-                      Int(blue * 255))
+                      Int(rgba.red * 255),
+                      Int(rgba.green * 255),
+                      Int(rgba.blue * 255))
     }
     
     var hexRGBA: String {
-        guard let (red, green, blue, alpha) = rgba else { return "" }
+        guard let rgba = rgba else { return "" }
         return String(format: "#%02x%02x%02x%02x",
-                      Int(red * 255),
-                      Int(green * 255),
-                      Int(blue * 255),
-                      Int(alpha * 255))
+                      Int(rgba.red * 255),
+                      Int(rgba.green * 255),
+                      Int(rgba.blue * 255),
+                      Int(rgba.alpha * 255))
     }
     
     var rgbInt: Int? {
@@ -140,14 +109,17 @@ extension Color: RawRepresentable {
 
 extension CrossPlatformColor {
     var rgba: RGBA? {
-        var (r, g, b, a): RGBA = (0, 0, 0, 0)
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
 #if os(macOS)
         guard let rgbColor = self.usingColorSpace(NSColorSpace.deviceRGB) else { return nil }
 #else
         let rgbColor = self
 #endif
-        rgbColor.getRed(&r, green: &g, blue: &b, alpha: &a)
-        return (r, g, b, a)
+        rgbColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        return RGBA(red: red, green: green, blue: blue, alpha: alpha)
     }
     
     var hsba: HSBA? {
@@ -185,14 +157,13 @@ extension String {
             r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
             g = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
             b = CGFloat(rgb & 0x0000FF) / 255.0
-        }
-        else if length == 8 {
+        } else if length == 8 {
             r = CGFloat((rgb & 0xFF000000) >> 24) / 255.0
             g = CGFloat((rgb & 0x00FF0000) >> 16) / 255.0
             b = CGFloat((rgb & 0x0000FF00) >> 8) / 255.0
             a = CGFloat(rgb & 0x000000FF) / 255.0
         }
         
-        return (r, g, b, a)
+        return RGBA(red: r, green: g, blue: b, alpha: a)
     }
 }

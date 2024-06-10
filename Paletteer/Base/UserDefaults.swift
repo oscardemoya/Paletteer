@@ -16,14 +16,23 @@ extension UserDefaults {
         case colorPalette
         case showCopyIcons
         case useColorInClipboard
+        // HCT
+        case hctDarkColorsHueOffset
         case hctLightChromaFactor
         case hctDarkChromaFactor
+        case hctLightToneFactor
+        case hctDarkToneFactor
+        // HSB
         case hsbDarkColorsHueOffset
         case hsbLightSaturationFactor
         case hsbDarkSaturationFactor
         case hsbLightBrightnessFactor
         case hsbDarkBrightnessFactor
+        // RBG
+        case rgbDarkColorsHueOffset
+        case rgbLightSaturationFactor
         case rgbDarkSaturationFactor
+        case rgbLightBrightnessFactor
         case rgbDarkBrightnessFactor
     }
 }

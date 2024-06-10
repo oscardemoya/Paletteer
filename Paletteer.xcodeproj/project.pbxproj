@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		261C8A852C16B9E400D7E647 /* HSBA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261C8A842C16B9E400D7E647 /* HSBA.swift */; };
+		261C8A872C16BA0C00D7E647 /* RGBA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261C8A862C16BA0C00D7E647 /* RGBA.swift */; };
 		26227E232C02740E00E44707 /* AppColorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26227E222C02740E00E44707 /* AppColorScheme.swift */; };
 		26227E252C02847400E44707 /* Pasteboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26227E242C02847400E44707 /* Pasteboard.swift */; };
 		26227E272C0289C300E44707 /* ButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26227E262C0289C300E44707 /* ButtonStyle.swift */; };
@@ -54,7 +56,6 @@
 		269C3B952BF15200002329C1 /* CrossplatformColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269C3B942BF15200002329C1 /* CrossplatformColor.swift */; };
 		269C3B972BF17D3E002329C1 /* ColorAdjustment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269C3B962BF17D3E002329C1 /* ColorAdjustment.swift */; };
 		26BCDD0F2C15329000967687 /* NumberFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BCDD0E2C15329000967687 /* NumberFormatter.swift */; };
-		26BCDD112C1540A300967687 /* ColorPaletteParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BCDD102C1540A300967687 /* ColorPaletteParams.swift */; };
 		26BF533B2BD75C82001CAFBC /* PaletteerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BF533A2BD75C82001CAFBC /* PaletteerApp.swift */; };
 		26BF533D2BD75C82001CAFBC /* ColorPaletteSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BF533C2BD75C82001CAFBC /* ColorPaletteSettingsView.swift */; };
 		26BF533F2BD75C84001CAFBC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26BF533E2BD75C84001CAFBC /* Assets.xcassets */; };
@@ -98,6 +99,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		261C8A842C16B9E400D7E647 /* HSBA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HSBA.swift; sourceTree = "<group>"; };
+		261C8A862C16BA0C00D7E647 /* RGBA.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RGBA.swift; sourceTree = "<group>"; };
 		26227E222C02740E00E44707 /* AppColorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColorScheme.swift; sourceTree = "<group>"; };
 		26227E242C02847400E44707 /* Pasteboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pasteboard.swift; sourceTree = "<group>"; };
 		26227E262C0289C300E44707 /* ButtonStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonStyle.swift; sourceTree = "<group>"; };
@@ -147,7 +150,6 @@
 		269C3B942BF15200002329C1 /* CrossplatformColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossplatformColor.swift; sourceTree = "<group>"; };
 		269C3B962BF17D3E002329C1 /* ColorAdjustment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorAdjustment.swift; sourceTree = "<group>"; };
 		26BCDD0E2C15329000967687 /* NumberFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberFormatter.swift; sourceTree = "<group>"; };
-		26BCDD102C1540A300967687 /* ColorPaletteParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteParams.swift; sourceTree = "<group>"; };
 		26BF53372BD75C82001CAFBC /* Paletteer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Paletteer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BF533A2BD75C82001CAFBC /* PaletteerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaletteerApp.swift; sourceTree = "<group>"; };
 		26BF533C2BD75C82001CAFBC /* ColorPaletteSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteSettingsView.swift; sourceTree = "<group>"; };
@@ -253,15 +255,17 @@
 				262EFCE22C10F6420048EA62 /* Double.swift */,
 				267533BB2BDE8AD7007C1F51 /* FileManager.swift */,
 				267533D52BDEFABA007C1F51 /* HCTColor.swift */,
+				261C8A842C16B9E400D7E647 /* HSBA.swift */,
+				261C8A862C16BA0C00D7E647 /* RGBA.swift */,
 				267533B92BDE8A9D007C1F51 /* IntFormatting.swift */,
 				267533D92BDF3728007C1F51 /* IntRange.swift */,
 				262EFCDA2C0D55A10048EA62 /* JSONData.swift */,
 				262EFCDC2C0D55BB0048EA62 /* JSONString.swift */,
+				26BCDD0E2C15329000967687 /* NumberFormatter.swift */,
 				26227E242C02847400E44707 /* Pasteboard.swift */,
 				267533942BDD7532007C1F51 /* StringFile.swift */,
 				267533C52BDE9E2D007C1F51 /* UserDefaults.swift */,
 				267533CD2BDEE5A5007C1F51 /* ViewSizing.swift */,
-				26BCDD0E2C15329000967687 /* NumberFormatter.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -276,7 +280,6 @@
 				262EFCD22C0CD9240048EA62 /* ColorModel.swift */,
 				267533C32BDE9C9A007C1F51 /* ColorPair.swift */,
 				267533AF2BDE896B007C1F51 /* ColorPalette.swift */,
-				26BCDD102C1540A300967687 /* ColorPaletteParams.swift */,
 				262EFCB82C0C95D30048EA62 /* ColorScale.swift */,
 				267533DB2BDF409C007C1F51 /* ColorSpace.swift */,
 				262EFCBA2C0C95EC0048EA62 /* ColorRange.swift */,
@@ -559,6 +562,7 @@
 				267533C62BDE9E2D007C1F51 /* UserDefaults.swift in Sources */,
 				26BF53CF2BD75EFD001CAFBC /* Contrast.swift in Sources */,
 				269C3B932BF151DC002329C1 /* ColorBlending.swift in Sources */,
+				261C8A872C16BA0C00D7E647 /* RGBA.swift in Sources */,
 				26BF53DD2BD75EFD001CAFBC /* PointProvider.swift in Sources */,
 				26BF53E82BD75EFD001CAFBC /* SchemeMonochrome.swift in Sources */,
 				267533D22BDEE64C007C1F51 /* Closures.swift in Sources */,
@@ -580,7 +584,6 @@
 				267533B42BDE89DF007C1F51 /* ColorConversion.swift in Sources */,
 				267533DC2BDF409C007C1F51 /* ColorSpace.swift in Sources */,
 				26BF53D32BD75EFD001CAFBC /* DynamicScheme.swift in Sources */,
-				26BCDD112C1540A300967687 /* ColorPaletteParams.swift in Sources */,
 				262EFCB32C0AE2690048EA62 /* ColorConfigForm.swift in Sources */,
 				262EFCAF2C0ACD5B0048EA62 /* ViewStyles.swift in Sources */,
 				26BF53E32BD75EFD001CAFBC /* QuantizerWu.swift in Sources */,
@@ -591,6 +594,7 @@
 				267533BF2BDE982E007C1F51 /* Theme.swift in Sources */,
 				262EFCDF2C0E31E70048EA62 /* ColorPickerPreview.swift in Sources */,
 				26227E252C02847400E44707 /* Pasteboard.swift in Sources */,
+				261C8A852C16B9E400D7E647 /* HSBA.swift in Sources */,
 				26BF53E12BD75EFD001CAFBC /* QuantizerMap.swift in Sources */,
 				26BF53DF2BD75EFD001CAFBC /* Quantizer.swift in Sources */,
 				262EFCBB2C0C95EC0048EA62 /* ColorRange.swift in Sources */,

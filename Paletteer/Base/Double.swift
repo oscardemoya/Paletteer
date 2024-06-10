@@ -29,6 +29,14 @@ extension Double {
         let rangeSize = range.upperBound - range.lowerBound
         return self * rangeSize + range.lowerBound
     }
+    
+    func skewed(towards target: Self, alpha: Self = 2) -> Self {
+        if self < target {
+            return pow(self / target, alpha) * target
+        } else {
+            return 1 - pow((1 - self) / (1 - target), alpha) * (1 - target)
+        }
+    }
 }
 
 extension CGFloat {
@@ -51,5 +59,13 @@ extension CGFloat {
     func mapped(to range: ClosedRange<Self>) -> Self {
         let rangeSize = range.upperBound - range.lowerBound
         return self * rangeSize + range.lowerBound
+    }
+    
+    func skewed(towards target: Self, alpha: Self = 2) -> Self {
+        if self < target {
+            return pow(self / target, alpha) * target
+        } else {
+            return 1 - pow((1 - self) / (1 - target), alpha) * (1 - target)
+        }
     }
 }

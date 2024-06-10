@@ -17,12 +17,12 @@ public extension Color {
         guard normalisedIntensity1 > 0 else { return color2 }
         guard normalisedIntensity2 > 0 else { return color1 }
         
-        guard let (r1, g1, b1, a1) = color1.rgba else { return color2 }
-        guard let (r2, g2, b2, a2) = color2.rgba else { return color1 }
+        guard let rgba1 = color1.rgba else { return color2 }
+        guard let rgba2 = color2.rgba else { return color1 }
 
-        return Color(red: normalisedIntensity1 * r1 + normalisedIntensity2 * r2,
-                     green: normalisedIntensity1 * g1 + normalisedIntensity2 * g2,
-                     blue: normalisedIntensity1 * b1 + normalisedIntensity2 * b2,
-                     opacity: normalisedIntensity1 * a1 + normalisedIntensity2 * a2)
+        return Color(red: normalisedIntensity1 * rgba1.red + normalisedIntensity2 * rgba2.red,
+                     green: normalisedIntensity1 * rgba1.green + normalisedIntensity2 * rgba2.green,
+                     blue: normalisedIntensity1 * rgba1.blue + normalisedIntensity2 * rgba2.blue,
+                     opacity: normalisedIntensity1 * rgba1.alpha + normalisedIntensity2 * rgba2.alpha)
     }
 }
