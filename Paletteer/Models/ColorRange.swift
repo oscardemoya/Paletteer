@@ -23,7 +23,8 @@ enum ColorRange: String, Codable, CaseIterable, Identifiable, Hashable {
     var startPercent: Double { startValue * 100 }
     var percentDescription: String { "[\(Int(startPercent)),\(Int(width.percent))]" }
     var index: Int { width.ranges.firstIndex(of: self) ?? 0 }
-    var startValue: Double { Double(index) * width.value }
+    var startValue: Double { Double(index) * 0.25 }
+    var startAngle: Angle { .degrees(startValue * 360) }
     
     init?(percentDescription: String) {
         guard !percentDescription.isEmpty,

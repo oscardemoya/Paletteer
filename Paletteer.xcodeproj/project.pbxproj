@@ -204,6 +204,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		261C8A882C16BC7100D7E647 /* Color */ = {
+			isa = PBXGroup;
+			children = (
+				261C8A892C16BC8800D7E647 /* Utilities */,
+				267533D52BDEFABA007C1F51 /* HCTColor.swift */,
+				261C8A842C16B9E400D7E647 /* HSBA.swift */,
+				261C8A862C16BA0C00D7E647 /* RGBA.swift */,
+			);
+			path = Color;
+			sourceTree = "<group>";
+		};
+		261C8A892C16BC8800D7E647 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				2656F3A72C04F979007BB5E9 /* CodableColor.swift */,
+				262EFCA82C0AB0C80048EA62 /* CodableRawRepresentable.swift */,
+				269C3B962BF17D3E002329C1 /* ColorAdjustment.swift */,
+				269C3B922BF151DC002329C1 /* ColorBlending.swift */,
+				267533C92BDEAAB3007C1F51 /* ColorRepresentable.swift */,
+				267533C02BDE9AAC007C1F51 /* ColorSchemeSwitcher.swift */,
+				2656F3AB2C051235007BB5E9 /* ColorString.swift */,
+				269C3B942BF15200002329C1 /* CrossplatformColor.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		2675338B2BDD73D3007C1F51 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -244,19 +270,8 @@
 			children = (
 				267533D72BDEFC8C007C1F51 /* Binding.swift */,
 				267533D12BDEE64C007C1F51 /* Closures.swift */,
-				2656F3A72C04F979007BB5E9 /* CodableColor.swift */,
-				262EFCA82C0AB0C80048EA62 /* CodableRawRepresentable.swift */,
-				269C3B962BF17D3E002329C1 /* ColorAdjustment.swift */,
-				269C3B922BF151DC002329C1 /* ColorBlending.swift */,
-				267533C92BDEAAB3007C1F51 /* ColorRepresentable.swift */,
-				267533C02BDE9AAC007C1F51 /* ColorSchemeSwitcher.swift */,
-				2656F3AB2C051235007BB5E9 /* ColorString.swift */,
-				269C3B942BF15200002329C1 /* CrossplatformColor.swift */,
 				262EFCE22C10F6420048EA62 /* Double.swift */,
 				267533BB2BDE8AD7007C1F51 /* FileManager.swift */,
-				267533D52BDEFABA007C1F51 /* HCTColor.swift */,
-				261C8A842C16B9E400D7E647 /* HSBA.swift */,
-				261C8A862C16BA0C00D7E647 /* RGBA.swift */,
 				267533B92BDE8A9D007C1F51 /* IntFormatting.swift */,
 				267533D92BDF3728007C1F51 /* IntRange.swift */,
 				262EFCDA2C0D55A10048EA62 /* JSONData.swift */,
@@ -320,6 +335,7 @@
 				267533AC2BDE88DF007C1F51 /* App */,
 				267533AD2BDE891D007C1F51 /* Base */,
 				26E2A4EF2C04253600CB40CD /* Config */,
+				261C8A882C16BC7100D7E647 /* Color */,
 				267533AE2BDE8954007C1F51 /* Models */,
 				2675338B2BDD73D3007C1F51 /* Resources */,
 				267533B52BDE8A06007C1F51 /* Screens */,

@@ -11,6 +11,7 @@ struct CircularProgressView: View {
     var progress: Double
     var color: Color
     var lineWidth: CGFloat
+    var rotationAngle: Angle = .zero
     
     var body: some View {
         ZStack {
@@ -28,7 +29,7 @@ struct CircularProgressView: View {
                         lineCap: .round
                     )
                 )
-                .rotationEffect(.degrees(-90))
+                .rotationEffect(.degrees(-90) + rotationAngle)
         }
     }
 }

@@ -80,7 +80,8 @@ struct CustomColorPicker: View {
                     if !colorConfig.colorRange.width.isWhole {
                         CircularProgressView(progress: colorConfig.colorRange.width.value,
                                              color: colorConfig.color.contrastingColor,
-                                             lineWidth: 4)
+                                             lineWidth: 4,
+                                             rotationAngle: colorConfig.colorRange.startAngle)
                             .frame(width: 16, height: 16)
                     }
                 }
