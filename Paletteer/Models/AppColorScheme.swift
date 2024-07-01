@@ -38,12 +38,5 @@ enum AppColorScheme: String, CaseIterable, Identifiable {
         }
     }
     
-    func color(for color: ColorPair) -> Color {
-        switch self {
-        case .system, .light:
-            color.light
-        case .dark:
-            color.dark
-        }
-    }
+    func color(for color: ColorPair) -> Color { color.color(for: self) }
 }

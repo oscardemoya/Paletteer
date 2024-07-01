@@ -28,4 +28,11 @@ enum ColorScale: String, Codable, CaseIterable, Identifiable, Hashable {
         case .lightening: return "square.2.layers.3d.bottom.filled" // 􀯯
         }
     }
+    
+    var symbol: String {
+        switch self {
+        case .lightening: "<"
+        case .darkening: ">"
+        }
+    }
 }

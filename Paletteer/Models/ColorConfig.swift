@@ -12,9 +12,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
     var colorModel: ColorModel
     var colorName: String
     var groupName: String = ""
-    var lightColorScale: ColorScale = .darkening
-    var darkColorScale: ColorScale = .lightening
-    var colorRange: ColorRange = .whole
+    var lightConfig = SchemeConfig(scale: .darkening)
+    var darkConfig = SchemeConfig(scale: .lightening)
     
     var color: Color { colorModel.color }
     var hexColor: String { colorModel.color.hexRGB }
@@ -25,26 +24,23 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         colorModel: ColorModel,
         colorName: String,
         groupName: String = "",
-        lightColorScale: ColorScale = .darkening,
-        darkColorScale: ColorScale = .lightening,
-        colorRange: ColorRange = .whole
+        lightConfig: SchemeConfig = SchemeConfig(scale: .darkening),
+        darkConfig: SchemeConfig = SchemeConfig(scale: .lightening)
     ) {
         self.id = id
         self.colorModel = colorModel
         self.colorName = colorName
         self.groupName = groupName
-        self.lightColorScale = lightColorScale
-        self.darkColorScale = darkColorScale
-        self.colorRange = colorRange
+        self.lightConfig = lightConfig
+        self.darkConfig = darkConfig
     }
     
     mutating func update(with other: Self) {
         self.colorModel = other.colorModel
         self.colorName = other.colorName
         self.groupName = other.groupName
-        self.lightColorScale = other.lightColorScale
-        self.darkColorScale = other.darkColorScale
-        self.colorRange = other.colorRange
+        self.lightConfig.update(with: other.lightConfig)
+        self.darkConfig.update(with: other.darkConfig)
     }
     
     func hash(into hasher: inout Hasher) {
@@ -53,9 +49,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         hasher.combine(colorModel)
         hasher.combine(colorName)
         hasher.combine(groupName)
-        hasher.combine(lightColorScale)
-        hasher.combine(darkColorScale)
-        hasher.combine(colorRange)
+        hasher.combine(lightConfig)
+        hasher.combine(darkConfig)
     }
     
     var colorPath: String {
@@ -70,14 +65,11 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
     var description: String {
         var components = [String]()
         components.append("\(colorPath): \(color.hexRGB.uppercased())")
-        if lightColorScale.isLightening {
-            components.append("{LB<}")
+        if let description = lightConfig.description(defaultScale: .darkening) {
+            components.append("L{\(description)}")
         }
-        if darkColorScale.isDarkening {
-            components.append("{DB>}")
-        }
-        if !colorRange.width.isWhole {
-            components.append(colorRange.percentDescription)
+        if let description = darkConfig.description(defaultScale: .lightening) {
+            components.append("D{\(description)}")
         }
         return components.joined(separator: " ")
     }
@@ -100,9 +92,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
             colorModel: result.colorModel,
             colorName: result.colorName,
             groupName: result.groupName,
-            lightColorScale: result.lightColorScale,
-            darkColorScale: result.darkColorScale,
-            colorRange: result.colorRange
+            lightConfig: result.lightConfig,
+            darkConfig: result.darkConfig
         )
     }
 
@@ -111,9 +102,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         case colorModel
         case groupName
         case colorName
-        case lightColorScale
-        case darkColorScale
-        case colorRange
+        case lightConfig
+        case darkConfig
     }
     
     init(from decoder: Decoder) throws {
@@ -122,9 +112,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         colorModel = try container.decode(ColorModel.self, forKey: .colorModel)
         colorName = try container.decode(String.self, forKey: .colorName)
         groupName = try container.decode(String.self, forKey: .groupName)
-        lightColorScale = try container.decode(ColorScale.self, forKey: .lightColorScale)
-        darkColorScale = try container.decode(ColorScale.self, forKey: .darkColorScale)
-        colorRange = try container.decode(ColorRange.self, forKey: .colorRange)
+        lightConfig = try container.decode(SchemeConfig.self, forKey: .lightConfig)
+        darkConfig = try container.decode(SchemeConfig.self, forKey: .darkConfig)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -133,9 +122,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         try container.encode(colorModel, forKey: .colorModel)
         try container.encode(colorName, forKey: .colorName)
         try container.encode(groupName, forKey: .groupName)
-        try container.encode(lightColorScale, forKey: .lightColorScale)
-        try container.encode(darkColorScale, forKey: .darkColorScale)
-        try container.encode(colorRange, forKey: .colorRange)
+        try container.encode(lightConfig, forKey: .lightConfig)
+        try container.encode(darkConfig, forKey: .darkConfig)
     }
 }
 
@@ -148,8 +136,9 @@ extension [ColorConfig] {
         ColorConfig(colorModel: .rgb(Color(hex: "#D9C764")), colorName: "Warning", groupName: "Semantic"),
         ColorConfig(colorModel: .rgb(Color(hex: "#DF706F")), colorName: "Error", groupName: "Semantic"),
         ColorConfig(colorModel: .rgb(Color(hex: "#C3C7CB")), colorName: "Background", groupName: "Neutral",
-                    lightColorScale: .lightening, colorRange: .lastQuarter),
+                    lightConfig: SchemeConfig(scale: .lightening, range: .lastQuarter)),
         ColorConfig(colorModel: .rgb(Color(hex: "#525354")), colorName: "Foreground", groupName: "Neutral",
-                    lightColorScale: .lightening, darkColorScale: .darkening)
+                    lightConfig: SchemeConfig(scale: .lightening),
+                    darkConfig: SchemeConfig(scale: .darkening))
     ]}
 }

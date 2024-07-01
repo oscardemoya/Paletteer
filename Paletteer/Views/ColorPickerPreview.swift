@@ -28,7 +28,7 @@ struct ColorPickerPreview: View {
         borderedRect(color: color)
     }
     
-    func borderedRect(color: ColorModel, strokeColor: Color = .foreground980) -> some View {
+    func borderedRect(color: ColorModel, strokeColor: Color = .primaryInputBackground) -> some View {
         rectangle(color: color)
             .readSize { size in
                 contentSize = size

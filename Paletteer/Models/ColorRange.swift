@@ -37,15 +37,15 @@ enum ColorRange: String, Codable, CaseIterable, Identifiable, Hashable {
     var name: String {
         switch self {
         case .whole: String(localized: "Whole")
-        case .waningGibbous: String(localized: "Waning Gibbous")
-        case .waxingGibbous: String(localized: "Waxing Gibbous")
-        case .firstHalf: String(localized: "First Half")
-        case .centerHalf: String(localized: "Center Half")
-        case .lastHalf: String(localized: "Last Half")
-        case .firstQuarter: String(localized: "First Quarter")
-        case .secondQuarter: String(localized: "Second Quarter")
-        case .thirdQuarter: String(localized: "Third Quarter")
-        case .lastQuarter: String(localized: "Last Quarter")
+        case .waningGibbous: String(localized: "Waning")
+        case .waxingGibbous: String(localized: "Waxing")
+        case .firstHalf: String(localized: "First")
+        case .centerHalf: String(localized: "Center")
+        case .lastHalf: String(localized: "Last")
+        case .firstQuarter: String(localized: "First")
+        case .secondQuarter: String(localized: "Second")
+        case .thirdQuarter: String(localized: "Third")
+        case .lastQuarter: String(localized: "Last")
         }
     }
     

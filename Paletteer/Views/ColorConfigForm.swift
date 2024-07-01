@@ -13,7 +13,8 @@ struct ColorConfigForm: View {
     @Binding var colorConfig: ColorConfig
     @Binding var colorClipboard: ColorClipboard
     var isEditing: Bool
-    @State private var colorRangeWidth: ColorRangeWidth = .whole
+    @State private var lightRangeWidth: ColorRangeWidth = .whole
+    @State private var darkRangeWidth: ColorRangeWidth = .whole
     @State private var sheetHeight: CGFloat = .zero
     @State private var closeButtonSize: CGSize = .zero
     
@@ -21,7 +22,8 @@ struct ColorConfigForm: View {
         colorConfigForm
             .background(.secondaryBackground)
             .onAppear {
-                colorRangeWidth = colorConfig.colorRange.width
+                lightRangeWidth = colorConfig.lightConfig.range.width
+                darkRangeWidth = colorConfig.darkConfig.range.width
             }
     }
     
@@ -71,53 +73,115 @@ struct ColorConfigForm: View {
                     .textFieldStyle(.plain)
                     .rounded(backgroundColor: .secondaryInputBackground)
                 Group {
-                    HStack {
-                        Text("Light Color Scale")
-                            .padding(.horizontal, 4)
-                        Spacer()
-                        Picker("", selection: $colorConfig.lightColorScale) {
-                            ForEach(ColorScale.allCases, id: \.self) { item in
-                                Text(item.name).tag(item)
+                    VStack {
+                        Text("Light")
+                        Grid {
+                            GridRow {
+                                Text("Color Scale")
+                                    .padding(.horizontal, 4)
+                                    .gridColumnAlignment(.leading)
+                                Picker("", selection: $colorConfig.lightConfig.scale) {
+                                    ForEach(ColorScale.allCases, id: \.self) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                                .gridCellColumns(2)
+                            }
+                            GridRow {
+                                Text("Color Range")
+                                    .padding(.horizontal, 4)
+                                    .gridColumnAlignment(.leading)
+                                Picker("", selection: $lightRangeWidth.onChange({ colorConfig.lightConfig.range = $0.defaultRange })) {
+                                    ForEach(ColorRangeWidth.allCases, id: \.self) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                                Picker("", selection: $colorConfig.lightConfig.range) {
+                                    ForEach(lightRangeWidth.ranges, id: \.self) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                            }
+                            GridRow {
+                                Text("Saturation")
+                                    .padding(.horizontal, 4)
+                                    .gridColumnAlignment(.leading)
+                                Picker("", selection: $colorConfig.lightConfig.saturationLevel) {
+                                    ForEach(ColorAdjustmentLevel.allCases, id: \.self) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                                .gridCellColumns(2)
+                            }
+                            GridRow {
+                                Text("Brightness")
+                                    .padding(.horizontal, 4)
+                                    .gridColumnAlignment(.leading)
+                                Picker("", selection: $colorConfig.lightConfig.brightnessLevel) {
+                                    ForEach(ColorAdjustmentLevel.allCases, id: \.self) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                                .gridCellColumns(2)
                             }
                         }
                     }
-                    .frame(height: 30)
-                    HStack {
-                        Text("Dark Color Scale")
-                            .padding(.horizontal, 4)
-                        Spacer()
-                        Picker("", selection: $colorConfig.darkColorScale) {
-                            ForEach(ColorScale.allCases, id: \.self) { item in
-                                Text(item.name).tag(item)
+                    VStack {
+                        Text("Dark")
+                        Grid {
+                            GridRow {
+                                Text("Color Scale")
+                                    .padding(.horizontal, 4)
+                                    .gridColumnAlignment(.leading)
+                                Picker("", selection: $colorConfig.darkConfig.scale) {
+                                    ForEach(ColorScale.allCases, id: \.self) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                                .gridCellColumns(2)
+                            }
+                            GridRow {
+                                Text("Color Range")
+                                    .padding(.horizontal, 4)
+                                    .gridColumnAlignment(.leading)
+                                Picker("", selection: $darkRangeWidth.onChange({ colorConfig.darkConfig.range = $0.defaultRange })) {
+                                    ForEach(ColorRangeWidth.allCases, id: \.self) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                                Picker("", selection: $colorConfig.darkConfig.range) {
+                                    ForEach(darkRangeWidth.ranges, id: \.self) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                            }
+                            GridRow {
+                                Text("Saturation")
+                                    .padding(.horizontal, 4)
+                                    .gridColumnAlignment(.leading)
+                                Picker("", selection: $colorConfig.darkConfig.saturationLevel) {
+                                    ForEach(ColorAdjustmentLevel.allCases, id: \.self) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                                .gridCellColumns(2)
+                            }
+                            GridRow {
+                                Text("Brightness")
+                                    .padding(.horizontal, 4)
+                                    .gridColumnAlignment(.leading)
+                                Picker("", selection: $colorConfig.darkConfig.brightnessLevel) {
+                                    ForEach(ColorAdjustmentLevel.allCases, id: \.self) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                                .gridCellColumns(2)
                             }
                         }
                     }
-                    .frame(height: 30)
-                    HStack {
-                        Text("Color Range Width")
-                            .padding(.horizontal, 4)
-                        Spacer()
-                        Picker("", selection: $colorRangeWidth.onChange({ colorConfig.colorRange = $0.defaultRange })) {
-                            ForEach(ColorRangeWidth.allCases, id: \.self) { item in
-                                Text(item.name).tag(item)
-                            }
-                        }
-                    }
-                    .frame(height: 30)
-                    HStack {
-                        Text("Color Range")
-                            .padding(.horizontal, 4)
-                        Spacer()
-                        Picker("", selection: $colorConfig.colorRange) {
-                            ForEach(colorRangeWidth.ranges, id: \.self) { item in
-                                Text(item.name).tag(item)
-                            }
-                        }
-                    }
-                    .frame(height: 30)
                 }
                 .frame(maxWidth: .infinity)
-                .foregroundColor(.foreground010)
+                .foregroundColor(.foreground050)
                 .rounded(backgroundColor: .secondaryInputBackground, padding: 12)
                 Button {
                     dismiss()

@@ -55,35 +55,55 @@ struct CustomColorPicker: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
-                HStack(spacing: 8) {
-                    if colorConfig.lightColorScale.isLightening {
-                        Image(systemName: "square.2.layers.3d.fill")
-                            .font(.title3)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.background950, .background800)
-                            .rounded(backgroundColor: .background500, padding: 4, cornerRadius: 8)
-                    }
-                    if colorConfig.darkColorScale.isDarkening {
-                        Image(systemName: "square.2.layers.3d.fill")
-                            .font(.title3)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.background050, .background200)
-                            .rounded(backgroundColor: .background500, padding: 4, cornerRadius: 8)
-                    }
+                .contentShape(.rect)
+                .onTapGesture {
+                    onEdit?()
                 }
-                ZStack {
+                HStack(spacing: 8) {
+                    if !colorConfig.lightConfig.isWholeDarkening {
+                        ZStack {
+                            if colorConfig.lightConfig.scale.isLightening {
+                                Image(systemName: "square.2.layers.3d.fill")
+                                    .font(.title3)
+                                    .symbolRenderingMode(.palette)
+                                    .foregroundStyle(.bright100, .bright300)
+                            }
+                            if !colorConfig.lightConfig.range.width.isWhole {
+                                CircularProgressView(progress: colorConfig.lightConfig.range.width.value,
+                                                     color: .bright300,
+                                                     lineWidth: 4,
+                                                     rotationAngle: colorConfig.lightConfig.range.startAngle)
+                                .frame(width: 32, height: 32)
+                            }
+                        }
+                        .frame(width: 36, height: 36)
+                        .rounded(backgroundColor: .foreground900, padding: 0, cornerRadius: 18)
+                    }
+                    if !colorConfig.darkConfig.isWholeLightening {
+                        ZStack {
+                            if colorConfig.darkConfig.scale.isDarkening {
+                                Image(systemName: "square.2.layers.3d.fill")
+                                    .font(.title3)
+                                    .symbolRenderingMode(.palette)
+                                    .foregroundStyle(.dark100, .dark300)
+                            }
+                            if !colorConfig.darkConfig.range.width.isWhole {
+                                CircularProgressView(progress: colorConfig.darkConfig.range.width.value,
+                                                     color: .dark300,
+                                                     lineWidth: 4,
+                                                     rotationAngle: colorConfig.darkConfig.range.startAngle)
+                                .frame(width: 32, height: 32)
+                            }
+                        }
+                        .frame(width: 36, height: 36)
+                        .rounded(backgroundColor: .foreground900, padding: 0, cornerRadius: 18)
+                    }
                     ColorPickerPreview(color: colorConfig.colorModel)
                         .frame(width: 32, height: 32)
+                        .padding(.leading, 4)
                         .onTapGesture {
                             isEditingColor = true
                         }
-                    if !colorConfig.colorRange.width.isWhole {
-                        CircularProgressView(progress: colorConfig.colorRange.width.value,
-                                             color: colorConfig.color.contrastingColor,
-                                             lineWidth: 4,
-                                             rotationAngle: colorConfig.colorRange.startAngle)
-                            .frame(width: 16, height: 16)
-                    }
                 }
             }
             .onTapGesture {
@@ -540,8 +560,17 @@ struct CustomColorPicker: View {
 }
 
 #Preview {
-    @State var colorConfig = ColorConfig(colorModel: .rgb(.blue.muted), colorName: "Primary", groupName: "Brand",
-                                         lightColorScale: .lightening, darkColorScale: .darkening, colorRange: .firstHalf)
+    @State var colorConfig = ColorConfig(
+        colorModel: .rgb(.blue.muted),
+        colorName: "Primary",
+        groupName: "Brand",
+        lightConfig: SchemeConfig(
+            scale: .lightening, range: .firstHalf
+        ),
+        darkConfig: SchemeConfig(
+            scale: .darkening, range: .firstHalf
+        )
+    )
     @State var colorClipboard = ColorClipboard()
     return CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {} onEdit: {}
 }

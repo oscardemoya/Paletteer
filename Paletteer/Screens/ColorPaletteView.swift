@@ -40,6 +40,61 @@ struct ColorPaletteView: View {
     @State private var alertMessage: String = ""
 
     var body: some View {
+        colorGrid
+            .frame(minWidth: CGFloat(ColorPalette.shadesCount) * 50)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Picker("Color Space", selection: $colorSpace) {
+                        ForEach(ColorSpace.allCases) {
+                            Text($0.title)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .fixedSize()
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        selectedAppearance.toggle()
+                        ColorSchemeSwitcher.shared.overrideDisplayMode()
+                    } label: {
+                        Image(systemName: selectedAppearance.iconName)
+                    }
+                }
+                if let fileURL {
+                    ToolbarItem(placement: .primaryAction) {
+#if os(macOS)
+                        Button {
+                            generateColorShades()
+                            exportFile(at: fileURL)
+                        } label: {
+                            Image(systemName: "square.and.arrow.down")
+                        }
+#else
+                        ShareLink(item: fileURL) {
+                            Image(systemName: "square.and.arrow.up")
+                        }
+#endif
+                    }
+                }
+            }
+#if !os(macOS)
+            .background(.primaryBackground)
+#endif
+            .onAppear {
+                ColorSchemeSwitcher.shared.overrideDisplayMode()
+            }
+            .onAppear {
+                generateColorShades()
+            }
+            .onChange(of: colorSpace) { _, _ in
+                generateColorShades()
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text(alertTitle), message: Text(alertMessage))
+            }
+    }
+    
+    @ViewBuilder var colorGrid: some View {
         VStack(spacing: 0) {
             ScrollView {
                 ForEach(colorList) { colorConfig in
@@ -51,57 +106,6 @@ struct ColorPaletteView: View {
             .contentMargins(8, for: .scrollContent)
             .listRowInsets(EdgeInsets())
             Spacer(minLength: 0)
-        }
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Picker("Color Space", selection: $colorSpace) {
-                    ForEach(ColorSpace.allCases) {
-                        Text($0.title)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .fixedSize()
-            }
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    selectedAppearance.toggle()
-                    ColorSchemeSwitcher.shared.overrideDisplayMode()
-                } label: {
-                    Image(systemName: selectedAppearance.iconName)
-                }
-            }
-            if let fileURL {
-                ToolbarItem(placement: .primaryAction) {
-#if os(macOS)
-                    Button {
-                        exportFile(at: fileURL)
-                    } label: {
-                        Image(systemName: "square.and.arrow.down")
-                    }
-#else
-                    ShareLink(item: fileURL) {
-                        Image(systemName: "square.and.arrow.up")
-                    }
-#endif
-                }
-            }
-        }
-#if os(macOS)
-        .aspectRatio(Double(ColorPalette.shadesCount) / CGFloat(colorList.count), contentMode: .fit)
-#else
-        .background(.primaryBackground)
-#endif
-        .onAppear {
-            ColorSchemeSwitcher.shared.overrideDisplayMode()
-        }
-        .onAppear {
-            generateColorShades()
-        }
-        .onChange(of: colorSpace) { _, _ in
-            generateColorShades()
-        }
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text(alertTitle), message: Text(alertMessage))
         }
     }
     
@@ -147,11 +151,12 @@ struct ColorPaletteView: View {
         }
         colorPairs.enumerated().forEach { index, color in
             let lightCode: String
+            let tones = ColorPalette.tones(light: false)
             if colorSpace == .rgb {
-                let overlayTone = ColorPalette.toneValues[index]
+                let overlayTone = tones[index]
                 lightCode = String(format: "%03d", overlayTone * 10)
             } else {
-                let lightTone = ColorPalette.tones(light: false)[index]
+                let lightTone = tones[index]
                 lightCode = String(format: "%03d", lightTone * 10)
             }
             let colorName = "\(config.colorName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))-\(lightCode)"
@@ -196,17 +201,38 @@ struct ColorPaletteView: View {
             .overlay(
                 Triangle()
                     .fill(selectedAppearance == .system ? colorPair.dark : .clear)
+                    .onTapGesture {
+                        showColorCopiedAlert(colorPair: colorPair, for: .dark)
+                    }
             )
+            .overlay {
+                VStack {
+                    HStack {
+                        Text(colorPair.toneCode)
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundStyle((selectedAppearance == .dark ? colorPair.dark : colorPair.light).contrastingColor)
+                            .padding(.top, 2)
+                            .padding(.leading, 4)
+                        Spacer()
+                    }
+                    Spacer()
+                }
+            }
             .frame(maxWidth: .infinity)
             .aspectRatio(1, contentMode: .fill)
             .cornerRadius(8)
             .onTapGesture {
-                let hexColor = selectedAppearance.color(for: colorPair).hexRGB.uppercased()
-                String.pasteboardString = hexColor
-                alertTitle = hexColor
-                alertMessage = "Copied to the clipboard."
-                showAlert = true
+                showColorCopiedAlert(colorPair: colorPair, for: selectedAppearance)
             }
+    }
+    
+    private func showColorCopiedAlert(colorPair: ColorPair, for scheme: AppColorScheme = .system) {
+        let hexColor = colorPair.color(for: scheme).hexRGB.uppercased()
+        String.pasteboardString = hexColor
+        alertTitle = "\(colorPair.name)-\(colorPair.toneCode) (\(scheme.name))"
+        alertMessage = "Copied to the clipboard.\n\(hexColor)"
+        showAlert = true
     }
     
     private func shades(for group: ColorConfig) -> [ColorPair] {
@@ -223,13 +249,15 @@ struct ColorPaletteView: View {
                 return .rgb(group.color)
             }
         }.enumerated().map { (index: Int, color: ColorModel) in
-            let lightIndex = group.lightColorScale.isDarkening ? index : colorCount - index - 1
+            let lightIndex = group.lightConfig.scale.isDarkening ? index : colorCount - index - 1
             let lightConfig = ColorConversion(color: color, index: lightIndex, light: true)
-            let darkIndex = group.darkColorScale.isLightening ? index : colorCount - index - 1
+            let darkIndex = group.darkConfig.scale.isLightening ? index : colorCount - index - 1
             let darkConfig = ColorConversion(color: color, index: darkIndex, light: false)
             let lightColor = generateColor(for: group, using: lightConfig)
             let darkColor = generateColor(for: group, using: darkConfig)
-            return ColorPair(light: lightColor.color, dark: darkColor.color)
+            let overlayTone = ColorPalette.tones(light: false)[index]
+            let toneCode = String(format: "%03d", overlayTone * 10)
+            return ColorPair(name: group.colorName, toneCode: toneCode, light: lightColor.color, dark: darkColor.color)
         }
     }
     
@@ -249,11 +277,15 @@ struct ColorPaletteView: View {
             argb = hctColor.toInt()
         case .hsb(let hsbColor):
             var baseColor = hsbColor
+            let schemeConfig = (config.light ? group.lightConfig : group.darkConfig)
+            let colorScale = schemeConfig.scale
             baseColor.hue += (config.light ? 0 : hsbDarkColorsHueOffset)
             let saturationFactor = (config.light ? hsbLightSaturationFactor : hsbDarkSaturationFactor)
-            baseColor.saturation *= saturationFactor * normalizedTone.logaritmic(M_E * saturationFactor)
-            let brightnessFactor = (config.light ? hsbLightBrightnessFactor : hsbDarkBrightnessFactor) * hsbColor.saturation
-            baseColor.brightness = (1 - normalizedTone).logaritmic(M_E * brightnessFactor)
+            let saturationLevel = schemeConfig.saturationLevel.multiplier
+            baseColor.saturation *= saturationFactor * normalizedTone.logaritmic(M_E * saturationFactor) * saturationLevel
+            let brightnessLevel = schemeConfig.brightnessLevel.multiplier
+            let brightnessFactor = (config.light ? 1 / hsbLightBrightnessFactor : hsbDarkBrightnessFactor) * brightnessLevel
+            baseColor.brightness = normalizedTone.skewed(towards: colorScale.isDarkening ? 1 : 0, alpha: brightnessFactor)
             color = Color(hsba: baseColor)
             argb = color.rgbInt ?? 0
         case .rgb(let rgbColor):
@@ -274,9 +306,10 @@ struct ColorPaletteView: View {
     }
     
     private func transformedTone(_ tone: Double, group: ColorConfig, config: ColorConversion) -> CGFloat {
-        let startPercent = group.colorRange.startPercent
-        let rangeWidthPercent = group.colorRange.width.percent
-        let rangeWidth = group.colorRange.width.value
+        let range = (config.light ? group.lightConfig : group.darkConfig).range
+        let startPercent = range.startPercent
+        let rangeWidthPercent = range.width.percent
+        let rangeWidth = range.width.value
         return (config.light ? startPercent : 100 - rangeWidthPercent - startPercent) + (tone * rangeWidth)
     }
     
@@ -316,5 +349,5 @@ class CopyFileManagerDelegate: NSObject, FileManagerDelegate {
 }
 
 #Preview {
-    ColorPaletteView(colorList: .sample, colorSpace: .hct)
+    ColorPaletteView(colorList: .sample, colorSpace: .hsb)
 }

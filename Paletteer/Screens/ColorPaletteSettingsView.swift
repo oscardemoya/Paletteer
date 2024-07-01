@@ -25,6 +25,33 @@ struct ColorPaletteSettingsView: View {
     var columns = [GridItem(.adaptive(minimum: 200), spacing: 12)]
     
     var body: some View {
+        viewContainer
+            .onAppear {
+                ColorSchemeSwitcher.shared.overrideDisplayMode()
+            }
+#if os(macOS)
+            .pasteDestination(for: String.self) { strings in
+                pasteColorPaletteConfig(strings: strings)
+            }
+#endif
+    }
+    
+    @ViewBuilder var viewContainer: some View {
+#if os(macOS)
+        NavigationSplitView {
+            VStack {
+                ColorSettingsView()
+                Spacer()
+            }
+        } detail: {
+            navigationStack
+        }
+#else
+        navigationStack
+#endif
+    }
+    
+    @ViewBuilder var navigationStack: some View {
         NavigationStack(path: $path) {
             Group {
                 if colorPalette.isEmpty {
@@ -87,14 +114,6 @@ struct ColorPaletteSettingsView: View {
                 SettingsPane()
             }
         }
-        .onAppear {
-            ColorSchemeSwitcher.shared.overrideDisplayMode()
-        }
-#if os(macOS)
-        .pasteDestination(for: String.self) { strings in
-            pasteColorPaletteConfig(strings: strings)
-        }
-#endif
     }
         
     @ViewBuilder var addButton: some View {
@@ -190,7 +209,7 @@ struct ColorPaletteSettingsView: View {
     
     func pasteColorPaletteConfig(strings: [String]) {
         guard let string = strings.first else { return }
-        let colorRegex = /((?<groupName>\w+)\/)?(?<colorName>\w+)\s*: #(?<hexString>[a-f0-9]{6})\s*(?<lbl>{LB<})?\s*(?<dbd>{DB>})?\s*(?<range>\[[0-9]+,[0-9]+\])?/
+        let colorRegex = /((?<groupName>\w+)\/)?(?<colorName>\w+)\s*: #(?<hexString>[a-f0-9]{6})\s*(L{(?<lightConfig>\S*)?})?\s*(D{(?<darkConfig>\S*)?})?/
             .ignoresCase()
             .dotMatchesNewlines()
         colorPalette = string.split(separator: "\n").compactMap { line in
@@ -198,17 +217,14 @@ struct ColorPaletteSettingsView: View {
                 let groupName = String(match.output.groupName ?? "")
                 let colorName = String(match.output.colorName)
                 let hexString = String(match.output.hexString)
-                let lightColorScale: ColorScale = match.output.lbl == nil ? .darkening : .lightening
-                let darkColorScale: ColorScale = match.output.dbd == nil ? .lightening : .darkening
-                let rangeDescription = String(match.output.range ?? "")
-                let colorRange = ColorRange(percentDescription: rangeDescription) ?? .whole
+                let lightConfig = String(match.output.lightConfig ?? "")
+                let darkConfig = String(match.output.darkConfig ?? "")
                 return ColorConfig(
                     colorModel: .rgb(Color(hex: hexString)),
                     colorName: colorName,
                     groupName: groupName,
-                    lightColorScale: lightColorScale,
-                    darkColorScale: darkColorScale,
-                    colorRange: colorRange
+                    lightConfig: SchemeConfig(description: lightConfig, defaultScale: .darkening),
+                    darkConfig: SchemeConfig(description: darkConfig, defaultScale: .lightening)
                 )
             }.first
         }
