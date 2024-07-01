@@ -29,11 +29,11 @@ struct ColorPaletteParams {
     static var hctLightToneFactor = 1.0
     static var hctDarkToneFactor = 0.95
     // HSB
-    static var hsbDarkColorsHueOffset = 0.02
-    static var hsbLightSaturationFactor = 2.0
-    static var hsbDarkSaturationFactor = 1.5
-    static var hsbLightBrightnessFactor = 0.75
-    static var hsbDarkBrightnessFactor = 1.0
+    static var hsbDarkColorsHueOffset = 0.01
+    static var hsbLightSaturationFactor = 2.5
+    static var hsbDarkSaturationFactor = 2.0
+    static var hsbLightBrightnessFactor = 1.25
+    static var hsbDarkBrightnessFactor = 1.5
     // RGB
     static var rgbDarkColorsHueOffset = 0.02
     static var rgbBlendIntensityFactor = 0.55
