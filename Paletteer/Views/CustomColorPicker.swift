@@ -66,18 +66,18 @@ struct CustomColorPicker: View {
                                 Image(systemName: "square.2.layers.3d.fill")
                                     .font(.title3)
                                     .symbolRenderingMode(.palette)
-                                    .foregroundStyle(.bright100, .bright300)
+                                    .foregroundStyle(.bright950, .bright950.opacity(0.5))
                             }
                             if !colorConfig.lightConfig.range.width.isWhole {
                                 CircularProgressView(progress: colorConfig.lightConfig.range.width.value,
-                                                     color: .bright300,
+                                                     color: .bright950,
                                                      lineWidth: 4,
                                                      rotationAngle: colorConfig.lightConfig.range.startAngle)
                                 .frame(width: 32, height: 32)
                             }
                         }
                         .frame(width: 36, height: 36)
-                        .rounded(backgroundColor: .foreground900, padding: 0, cornerRadius: 18)
+                        .rounded(backgroundColor: .dark100.opacity(0.5), padding: 0, cornerRadius: 18)
                     }
                     if !colorConfig.darkConfig.isWholeLightening {
                         ZStack {
@@ -85,18 +85,18 @@ struct CustomColorPicker: View {
                                 Image(systemName: "square.2.layers.3d.fill")
                                     .font(.title3)
                                     .symbolRenderingMode(.palette)
-                                    .foregroundStyle(.dark100, .dark300)
+                                    .foregroundStyle(.dark700, .dark700.opacity(0.5))
                             }
                             if !colorConfig.darkConfig.range.width.isWhole {
                                 CircularProgressView(progress: colorConfig.darkConfig.range.width.value,
-                                                     color: .dark300,
+                                                     color: .dark700,
                                                      lineWidth: 4,
                                                      rotationAngle: colorConfig.darkConfig.range.startAngle)
                                 .frame(width: 32, height: 32)
                             }
                         }
                         .frame(width: 36, height: 36)
-                        .rounded(backgroundColor: .foreground900, padding: 0, cornerRadius: 18)
+                        .rounded(backgroundColor: .bright950.opacity(0.5), padding: 0, cornerRadius: 18)
                     }
                     ColorPickerPreview(color: colorConfig.colorModel)
                         .frame(width: 32, height: 32)
