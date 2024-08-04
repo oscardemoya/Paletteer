@@ -22,10 +22,16 @@ enum ColorRange: String, Codable, CaseIterable, Identifiable, Hashable {
     var id: Self { self }
     var startPercent: Double { startValue * 100 }
     var percentDescription: String { "[\(Int(startPercent)),\(Int(width.percent))]" }
-    var index: Int { width.ranges.firstIndex(of: self) ?? 0 }
     var startValue: Double { Double(index) * 0.25 }
     var startAngle: Angle { .degrees(startValue * 360) }
     
+    var index: Int {
+        guard let index = width.ranges.firstIndex(of: self) else {
+            fatalError("Range not found: \(self)")
+        }
+        return index
+    }
+
     init?(percentDescription: String) {
         guard !percentDescription.isEmpty,
               let value = Self.allCases.first(where: { $0.percentDescription == percentDescription }) else {

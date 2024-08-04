@@ -151,7 +151,7 @@ struct ColorPaletteView: View {
         }
         colorPairs.enumerated().forEach { index, color in
             let lightCode: String
-            let tones = ColorPalette.tones(light: false)
+            let tones = ColorPalette.toneNames
             if colorSpace == .rgb {
                 let overlayTone = tones[index]
                 lightCode = String(format: "%03d", overlayTone * 10)
@@ -255,7 +255,7 @@ struct ColorPaletteView: View {
             let darkConfig = ColorConversion(color: color, index: darkIndex, light: false)
             let lightColor = generateColor(for: group, using: lightConfig)
             let darkColor = generateColor(for: group, using: darkConfig)
-            let overlayTone = ColorPalette.tones(light: false)[index]
+            let overlayTone = ColorPalette.toneNames[index]
             let toneCode = String(format: "%03d", overlayTone * 10)
             return ColorPair(name: group.colorName, toneCode: toneCode, light: lightColor.color, dark: darkColor.color)
         }
@@ -278,14 +278,14 @@ struct ColorPaletteView: View {
         case .hsb(let hsbColor):
             var baseColor = hsbColor
             let schemeConfig = (config.light ? group.lightConfig : group.darkConfig)
-            let colorScale = schemeConfig.scale
             baseColor.hue += (config.light ? 0 : hsbDarkColorsHueOffset)
             let saturationFactor = (config.light ? hsbLightSaturationFactor : hsbDarkSaturationFactor)
             let saturationLevel = schemeConfig.saturationLevel.multiplier
             baseColor.saturation *= saturationFactor * normalizedTone.logaritmic(M_E * saturationFactor) * saturationLevel
-            let brightnessLevel = schemeConfig.brightnessLevel.multiplier
+            var brightnessLevel = schemeConfig.brightnessLevel.multiplier
+            brightnessLevel = config.light ? 1 / brightnessLevel : brightnessLevel
             let brightnessFactor = (config.light ? 1 / hsbLightBrightnessFactor : hsbDarkBrightnessFactor) * brightnessLevel
-            baseColor.brightness = normalizedTone.skewed(towards: colorScale.isDarkening ? 1 : 0, alpha: brightnessFactor)
+            baseColor.brightness = normalizedTone.skewed(towards: config.light ? 1 : 0, alpha: brightnessFactor)
             color = Color(hsba: baseColor)
             argb = color.rgbInt ?? 0
         case .rgb(let rgbColor):

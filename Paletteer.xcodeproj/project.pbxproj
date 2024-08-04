@@ -804,6 +804,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Paletteer/Preview Content\"";
 				DEVELOPMENT_TEAM = J7RK447Q9K;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Paletteer/Config/Paletteer-Info.plist";
@@ -837,6 +838,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Paletteer/Preview Content\"";
 				DEVELOPMENT_TEAM = J7RK447Q9K;
+				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Paletteer/Config/Paletteer-Info.plist";
