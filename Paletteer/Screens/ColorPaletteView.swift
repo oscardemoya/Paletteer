@@ -16,6 +16,8 @@ struct ColorPaletteView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
+    @AppStorage(key(.colorSkipCount)) var colorSkipCount = ColorPaletteParams.colorSkipCount
+    @AppStorage(key(.colorSkipScheme)) var colorSkipScheme = ColorPaletteParams.colorSkipScheme
     @AppStorage(key(.hctDarkColorsHueOffset)) var hctDarkColorsHueOffset = ColorPaletteParams.hctDarkColorsHueOffset
     @AppStorage(key(.hctLightChromaFactor)) var hctLightChromaFactor = ColorPaletteParams.hctLightChromaFactor
     @AppStorage(key(.hctDarkChromaFactor)) var hctDarkChromaFactor = ColorPaletteParams.hctDarkChromaFactor
@@ -152,6 +154,7 @@ struct ColorPaletteView: View {
         colorPairs.enumerated().forEach { index, color in
             let lightCode: String
             let tones = ColorPalette.toneNames
+            let index = index + (colorSkipScheme == .light ? colorSkipCount : 0)
             if colorSpace == .rgb {
                 let overlayTone = tones[index]
                 lightCode = String(format: "%03d", overlayTone * 10)
@@ -236,7 +239,7 @@ struct ColorPaletteView: View {
     }
     
     private func shades(for group: ColorConfig) -> [ColorPair] {
-        let colorCount = ColorPalette.shadesCount
+        let colorCount = ColorPalette.shadesCount - colorSkipCount
         return (0..<colorCount).compactMap { index in
             switch colorSpace {
             case .hct:
@@ -249,12 +252,15 @@ struct ColorPaletteView: View {
                 return .rgb(group.color)
             }
         }.enumerated().map { (index: Int, color: ColorModel) in
-            let lightIndex = group.lightConfig.scale.isDarkening ? index : colorCount - index - 1
+            let lightSkip = colorSkipScheme == .light ? colorSkipCount : 0
+            let lightIndex = group.lightConfig.scale.isDarkening ? index + lightSkip : colorCount - index - 1
             let lightConfig = ColorConversion(color: color, index: lightIndex, light: true)
-            let darkIndex = group.darkConfig.scale.isLightening ? index : colorCount - index - 1
+            let darkSkip = colorSkipScheme == .dark ? colorSkipCount : 0
+            let darkIndex = group.darkConfig.scale.isLightening ? index + darkSkip : colorCount - index - 1
             let darkConfig = ColorConversion(color: color, index: darkIndex, light: false)
             let lightColor = generateColor(for: group, using: lightConfig)
             let darkColor = generateColor(for: group, using: darkConfig)
+            let index = index + (colorSkipScheme == .light ? colorSkipCount : 0)
             let overlayTone = ColorPalette.toneNames[index]
             let toneCode = String(format: "%03d", overlayTone * 10)
             return ColorPair(name: group.colorName, toneCode: toneCode, light: lightColor.color, dark: darkColor.color)

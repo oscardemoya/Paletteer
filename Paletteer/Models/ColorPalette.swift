@@ -23,6 +23,8 @@ struct ColorPalette {
 }
 
 struct ColorPaletteParams {
+    static var colorSkipCount = 0
+    static var colorSkipScheme: AppColorScheme = .dark
     // HCT
     static var hctDarkColorsHueOffset = 0.02
     static var hctLightChromaFactor = 1.0

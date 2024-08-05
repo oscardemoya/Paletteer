@@ -13,6 +13,7 @@ enum AppColorScheme: String, CaseIterable, Identifiable {
     case light
     
     var id: Self { self }
+    static var schemes: [Self] = [.light, .dark]
     
     var name: String {
         switch self {

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ColorSettingsView: View {
     @Environment(\.dismiss) private var dismiss
+    @AppStorage(key(.colorSkipCount)) var colorSkipCount = ColorPaletteParams.colorSkipCount
+    @AppStorage(key(.colorSkipScheme)) var colorSkipScheme = ColorPaletteParams.colorSkipScheme
     @AppStorage(key(.hctDarkColorsHueOffset)) var hctDarkColorsHueOffset = ColorPaletteParams.hctDarkColorsHueOffset
     @AppStorage(key(.hctLightChromaFactor)) var hctLightChromaFactor = ColorPaletteParams.hctLightChromaFactor
     @AppStorage(key(.hctDarkChromaFactor)) var hctDarkChromaFactor = ColorPaletteParams.hctDarkChromaFactor
@@ -33,24 +35,38 @@ struct ColorSettingsView: View {
         Form {
             Section {
                 HStack {
+                    integerTextField(value: $colorSkipCount)
+                    Picker("", selection: $colorSkipScheme) {
+                        ForEach(AppColorScheme.schemes, id: \.self) { item in
+                            Text(item.name).tag(item)
+                        }
+                    }
+                    .frame(width: 80)
+                }
+            } header: {
+                Text("Color Skip")
+                    .font(.headline)
+            }
+            Section {
+                HStack {
                     Text("Dark Colors Hue Offset")
-                    numericTextField(value: $hctDarkColorsHueOffset)
+                    decimalTextField(value: $hctDarkColorsHueOffset)
                 }
                 HStack {
                     Text("Light Chroma Factor")
-                    numericTextField(value: $hctLightChromaFactor)
+                    decimalTextField(value: $hctLightChromaFactor)
                 }
                 HStack {
                     Text("Dark Chroma Factor")
-                    numericTextField(value: $hctDarkChromaFactor)
+                    decimalTextField(value: $hctDarkChromaFactor)
                 }
                 HStack {
                     Text("Light Tone Factor")
-                    numericTextField(value: $hctLightToneFactor)
+                    decimalTextField(value: $hctLightToneFactor)
                 }
                 HStack {
                     Text("Dark Tone Factor")
-                    numericTextField(value: $hctDarkToneFactor)
+                    decimalTextField(value: $hctDarkToneFactor)
                 }
             } header: {
                 Text("HCT")
@@ -59,23 +75,23 @@ struct ColorSettingsView: View {
             Section {
                 HStack {
                     Text("Dark Colors Hue Offset")
-                    numericTextField(value: $hsbDarkColorsHueOffset)
+                    decimalTextField(value: $hsbDarkColorsHueOffset)
                 }
                 HStack {
                     Text("Light Saturation Factor")
-                    numericTextField(value: $hsbLightSaturationFactor)
+                    decimalTextField(value: $hsbLightSaturationFactor)
                 }
                 HStack {
                     Text("Dark Saturation Factor")
-                    numericTextField(value: $hsbDarkSaturationFactor)
+                    decimalTextField(value: $hsbDarkSaturationFactor)
                 }
                 HStack {
                     Text("Light Brightness Factor")
-                    numericTextField(value: $hsbLightBrightnessFactor)
+                    decimalTextField(value: $hsbLightBrightnessFactor)
                 }
                 HStack {
                     Text("Dark Brightness Factor")
-                    numericTextField(value: $hsbDarkBrightnessFactor)
+                    decimalTextField(value: $hsbDarkBrightnessFactor)
                 }
             } header: {
                 Text("HSB")
@@ -84,23 +100,23 @@ struct ColorSettingsView: View {
             Section {
                 HStack {
                     Text("Dark Colors Hue Offset")
-                    numericTextField(value: $rgbDarkColorsHueOffset)
+                    decimalTextField(value: $rgbDarkColorsHueOffset)
                 }
                 HStack {
                     Text("Light Saturation Factor")
-                    numericTextField(value: $rgbLightSaturationFactor)
+                    decimalTextField(value: $rgbLightSaturationFactor)
                 }
                 HStack {
                     Text("Dark Saturation Factor")
-                    numericTextField(value: $rgbDarkSaturationFactor)
+                    decimalTextField(value: $rgbDarkSaturationFactor)
                 }
                 HStack {
                     Text("Light Brightness Factor")
-                    numericTextField(value: $rgbLightBrightnessFactor)
+                    decimalTextField(value: $rgbLightBrightnessFactor)
                 }
                 HStack {
                     Text("Dark Brightness Factor")
-                    numericTextField(value: $rgbDarkBrightnessFactor)
+                    decimalTextField(value: $rgbDarkBrightnessFactor)
                 }
             } header: {
                 Text("RGB")
@@ -138,7 +154,15 @@ struct ColorSettingsView: View {
     }
     
     @ViewBuilder
-    func numericTextField<V>(value: Binding<V>) -> some View {
+    func integerTextField(value: Binding<Int>) -> some View {
+#if !os(macOS)
+        Spacer()
+#endif
+        Stepper("\(value.wrappedValue)", value: value, in: 0...(ColorPalette.tonesCount - 1))
+    }
+    
+    @ViewBuilder
+    func decimalTextField<V>(value: Binding<V>) -> some View {
 #if !os(macOS)
         Spacer()
 #endif
