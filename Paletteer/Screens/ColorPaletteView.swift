@@ -9,15 +9,15 @@ import SwiftUI
 
 struct ColorPaletteView: View {
     static var fileName = "Colors.xcassets"
-    var colorList: [ColorConfig]
+    static var defaultColorConfig = ColorConfig(colorModel: .rgb(Color(hex: "#689FD4")), colorName: "")
     var fileURL = FileManager.default.fileURL(fileName: Self.fileName)
     let fileManagerDelegate = CopyFileManagerDelegate()
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @AppStorage(key(.colorPalette)) var colorPalette = [ColorConfig]()
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
     @AppStorage(key(.colorSkipCount)) var colorSkipCount = ColorPaletteParams.colorSkipCount
-    @AppStorage(key(.colorSkipScheme)) var colorSkipScheme = ColorPaletteParams.colorSkipScheme
     @AppStorage(key(.hctDarkColorsHueOffset)) var hctDarkColorsHueOffset = ColorPaletteParams.hctDarkColorsHueOffset
     @AppStorage(key(.hctLightChromaFactor)) var hctLightChromaFactor = ColorPaletteParams.hctLightChromaFactor
     @AppStorage(key(.hctDarkChromaFactor)) var hctDarkChromaFactor = ColorPaletteParams.hctDarkChromaFactor
@@ -40,10 +40,13 @@ struct ColorPaletteView: View {
     @State private var showAlert = false
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
-
+    @State private var isEditing = false
+    @State private var exisitingColor = defaultColorConfig
+    @State private var colorClipboard = ColorClipboard()
+    
     var body: some View {
         colorGrid
-            .frame(minWidth: CGFloat(ColorPalette.shadesCount) * 50)
+            .frame(minWidth: CGFloat(ColorPalette.shadesCount) * 44)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Picker("Color Space", selection: $colorSpace) {
@@ -85,11 +88,12 @@ struct ColorPaletteView: View {
             .onAppear {
                 ColorSchemeSwitcher.shared.overrideDisplayMode()
             }
-            .onAppear {
-                generateColorShades()
-            }
+            .onAppear(perform: generateColorShades)
             .onChange(of: colorSpace) { _, _ in
                 generateColorShades()
+            }
+            .sheet(isPresented: $isEditing, onDismiss: generateColorShades) {
+                ColorConfigForm(colorConfig: $exisitingColor, colorClipboard: $colorClipboard, isEditing: true)
             }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle), message: Text(alertMessage))
@@ -99,7 +103,16 @@ struct ColorPaletteView: View {
     @ViewBuilder var colorGrid: some View {
         VStack(spacing: 0) {
             ScrollView {
-                ForEach(colorList) { colorConfig in
+                ForEach(colorPalette) { colorConfig in
+                    Text(colorConfig.colorName)
+                        .font(.subheadline)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.foreground300)
+                        .padding(.top, 4)
+                        .onTapGesture {
+                            isEditing = true
+                            exisitingColor = colorConfig
+                        }
                     rectangleStack(colorPairs: shades(for: colorConfig))
                 }
                 .scrollTargetLayout()
@@ -142,7 +155,7 @@ struct ColorPaletteView: View {
         if let existingFileURL = fileURL, FileManager.default.fileExists(atPath: existingFileURL.path) {
             FileManager.default.removeDirectory(atURL: existingFileURL)
         }
-        colorList.forEach { config in
+        colorPalette.forEach { config in
             createFile(for: config, colorPairs: shades(for: config))
         }
     }
@@ -152,17 +165,9 @@ struct ColorPaletteView: View {
             saveEmptyFiles(to: config.groupName)
         }
         colorPairs.enumerated().forEach { index, color in
-            let lightCode: String
-            let tones = ColorPalette.toneNames
-            let index = index + (colorSkipScheme == .light ? colorSkipCount : 0)
-            if colorSpace == .rgb {
-                let overlayTone = tones[index]
-                lightCode = String(format: "%03d", overlayTone * 10)
-            } else {
-                let lightTone = tones[index]
-                lightCode = String(format: "%03d", lightTone * 10)
-            }
-            let colorName = "\(config.colorName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))-\(lightCode)"
+            let toneCode = ColorPalette.toneNames[index + colorSkipCount]
+            let toneName = String(format: "%03d", toneCode * 10)
+            let colorName = "\(config.colorName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))-\(toneName)"
             var pathComponents = [String]()
             if !config.groupName.isEmpty {
                 pathComponents.append(config.groupName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))
@@ -213,9 +218,9 @@ struct ColorPaletteView: View {
                     HStack {
                         Text(colorPair.toneCode)
                             .font(.caption)
-                            .fontWeight(.bold)
+                            .fontWeight(.medium)
                             .foregroundStyle((selectedAppearance == .dark ? colorPair.dark : colorPair.light).contrastingColor)
-                            .padding(.top, 2)
+                            .padding(.top, 1)
                             .padding(.leading, 4)
                         Spacer()
                     }
@@ -252,18 +257,23 @@ struct ColorPaletteView: View {
                 return .rgb(group.color)
             }
         }.enumerated().map { (index: Int, color: ColorModel) in
-            let lightSkip = colorSkipScheme == .light ? colorSkipCount : 0
-            let lightIndex = group.lightConfig.scale.isDarkening ? index + lightSkip : colorCount - index - 1
+            let lightSkip = group.skipDirection.isForward ? colorSkipCount : 0
+            let darkSkip = group.skipDirection.isBackward ? colorSkipCount : 0
+
+            // Light Color
+            let lightIndex = group.lightConfig.scale.isDarkening ? index + lightSkip : colorCount - index + darkSkip - 1
             let lightConfig = ColorConversion(color: color, index: lightIndex, light: true)
-            let darkSkip = colorSkipScheme == .dark ? colorSkipCount : 0
-            let darkIndex = group.darkConfig.scale.isLightening ? index + darkSkip : colorCount - index - 1
-            let darkConfig = ColorConversion(color: color, index: darkIndex, light: false)
             let lightColor = generateColor(for: group, using: lightConfig)
+
+            // Dark Color
+            let darkIndex = group.darkConfig.scale.isLightening ? index + darkSkip : colorCount - index + lightSkip - 1
+            let darkConfig = ColorConversion(color: color, index: darkIndex, light: false)
             let darkColor = generateColor(for: group, using: darkConfig)
-            let index = index + (colorSkipScheme == .light ? colorSkipCount : 0)
-            let overlayTone = ColorPalette.toneNames[index]
-            let toneCode = String(format: "%03d", overlayTone * 10)
-            return ColorPair(name: group.colorName, toneCode: toneCode, light: lightColor.color, dark: darkColor.color)
+
+            // Color Pair
+            let toneCode = ColorPalette.toneNames[index + colorSkipCount]
+            let toneName = String(format: "%03d", toneCode * 10)
+            return ColorPair(name: group.colorName, toneCode: toneName, light: lightColor.color, dark: darkColor.color)
         }
     }
     
@@ -355,5 +365,5 @@ class CopyFileManagerDelegate: NSObject, FileManagerDelegate {
 }
 
 #Preview {
-    ColorPaletteView(colorList: .sample, colorSpace: .hsb)
+    ColorPaletteView(colorSpace: .hsb)
 }

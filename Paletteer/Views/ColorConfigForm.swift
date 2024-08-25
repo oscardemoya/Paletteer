@@ -73,6 +73,19 @@ struct ColorConfigForm: View {
                     .textFieldStyle(.plain)
                     .rounded(backgroundColor: .secondaryInputBackground)
                 Group {
+                    HStack {
+                        Text("Skip Direction")
+                        Picker("", selection: $colorConfig.skipDirection) {
+                            ForEach(SkipDirection.allCases) { item in
+                                Text(item.name).tag(item)
+                            }
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .foregroundColor(.foreground050)
+                .rounded(backgroundColor: .secondaryInputBackground, padding: 12)
+                Group {
                     VStack {
                         Text("Light")
                         Grid {
@@ -81,7 +94,7 @@ struct ColorConfigForm: View {
                                     .padding(.horizontal, 4)
                                     .gridColumnAlignment(.leading)
                                 Picker("", selection: $colorConfig.lightConfig.scale) {
-                                    ForEach(ColorScale.allCases, id: \.self) { item in
+                                    ForEach(ColorScale.allCases) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
@@ -92,12 +105,12 @@ struct ColorConfigForm: View {
                                     .padding(.horizontal, 4)
                                     .gridColumnAlignment(.leading)
                                 Picker("", selection: $lightRangeWidth.onChange({ colorConfig.lightConfig.range = $0.defaultRange })) {
-                                    ForEach(ColorRangeWidth.allCases, id: \.self) { item in
+                                    ForEach(ColorRangeWidth.allCases) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
                                 Picker("", selection: $colorConfig.lightConfig.range) {
-                                    ForEach(lightRangeWidth.ranges, id: \.self) { item in
+                                    ForEach(lightRangeWidth.ranges) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
@@ -107,7 +120,7 @@ struct ColorConfigForm: View {
                                     .padding(.horizontal, 4)
                                     .gridColumnAlignment(.leading)
                                 Picker("", selection: $colorConfig.lightConfig.saturationLevel) {
-                                    ForEach(ColorAdjustmentLevel.allCases, id: \.self) { item in
+                                    ForEach(ColorAdjustmentLevel.allCases) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
@@ -118,7 +131,7 @@ struct ColorConfigForm: View {
                                     .padding(.horizontal, 4)
                                     .gridColumnAlignment(.leading)
                                 Picker("", selection: $colorConfig.lightConfig.brightnessLevel) {
-                                    ForEach(ColorAdjustmentLevel.allCases, id: \.self) { item in
+                                    ForEach(ColorAdjustmentLevel.allCases) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
@@ -134,7 +147,7 @@ struct ColorConfigForm: View {
                                     .padding(.horizontal, 4)
                                     .gridColumnAlignment(.leading)
                                 Picker("", selection: $colorConfig.darkConfig.scale) {
-                                    ForEach(ColorScale.allCases, id: \.self) { item in
+                                    ForEach(ColorScale.allCases) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
@@ -145,12 +158,12 @@ struct ColorConfigForm: View {
                                     .padding(.horizontal, 4)
                                     .gridColumnAlignment(.leading)
                                 Picker("", selection: $darkRangeWidth.onChange({ colorConfig.darkConfig.range = $0.defaultRange })) {
-                                    ForEach(ColorRangeWidth.allCases, id: \.self) { item in
+                                    ForEach(ColorRangeWidth.allCases) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
                                 Picker("", selection: $colorConfig.darkConfig.range) {
-                                    ForEach(darkRangeWidth.ranges, id: \.self) { item in
+                                    ForEach(darkRangeWidth.ranges) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
@@ -160,7 +173,7 @@ struct ColorConfigForm: View {
                                     .padding(.horizontal, 4)
                                     .gridColumnAlignment(.leading)
                                 Picker("", selection: $colorConfig.darkConfig.saturationLevel) {
-                                    ForEach(ColorAdjustmentLevel.allCases, id: \.self) { item in
+                                    ForEach(ColorAdjustmentLevel.allCases) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
@@ -171,7 +184,7 @@ struct ColorConfigForm: View {
                                     .padding(.horizontal, 4)
                                     .gridColumnAlignment(.leading)
                                 Picker("", selection: $colorConfig.darkConfig.brightnessLevel) {
-                                    ForEach(ColorAdjustmentLevel.allCases, id: \.self) { item in
+                                    ForEach(ColorAdjustmentLevel.allCases) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }

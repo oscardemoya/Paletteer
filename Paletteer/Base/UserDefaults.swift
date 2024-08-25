@@ -17,7 +17,6 @@ extension UserDefaults {
         case showCopyIcons
         case useColorInClipboard
         case colorSkipCount
-        case colorSkipScheme
         // HCT
         case hctDarkColorsHueOffset
         case hctLightChromaFactor

@@ -66,7 +66,7 @@ struct ColorPaletteSettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
 #endif
             .navigationDestination(for: [ColorConfig].self) { colorList in
-                ColorPaletteView(colorList: colorList)
+                ColorPaletteView()
             }
             .sheet(isPresented: $isAdding) {
                 ColorConfigForm(colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: false)
@@ -153,7 +153,6 @@ struct ColorPaletteSettingsView: View {
     
     @ViewBuilder var colorPaletteView: some View {
         VStack(spacing: 0) {
-            
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 8) {
                     ForEach($colorPalette) { $colorConfig in
