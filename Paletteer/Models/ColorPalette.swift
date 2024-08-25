@@ -12,9 +12,9 @@ struct ColorPalette {
     static var lightestColor: Color = Color(hex: "#FFFFFF")
     static var darkestColor: Color = Color(hex: "#080808")
     static func overlay(light: Bool) -> Color { light ? lightestColor : darkestColor }
-    static let toneNames  = [01, 02, 05, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98, 99]
-    static let lightTones = [99, 98, 95, 90, 85, 80, 75, 70, 60, 50, 40, 30, 20, 10, 05]
-    static let darkTones  = [05, 07, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98, 99]
+    static let toneNames  = [01, 02, 05, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98, 99, 100]
+    static let lightTones = [99, 98, 95, 90, 85, 80, 75, 70, 60, 50, 40, 30, 20, 10, 05, 01]
+    static let darkTones  = [05, 07, 10, 15, 20, 30, 40, 50, 60, 70, 80, 85, 90, 95, 98, 99]
     static var tonesCount: Int { tones(light: false).count }
     
     static func tones(light: Bool) -> [Int] {
@@ -23,7 +23,7 @@ struct ColorPalette {
 }
 
 struct ColorPaletteParams {
-    static var colorSkipCount = 0
+    static var colorSkipCount = 1
     static var colorSkipScheme: AppColorScheme = .dark
     // HCT
     static var hctDarkColorsHueOffset = 0.02
@@ -33,9 +33,9 @@ struct ColorPaletteParams {
     static var hctDarkToneFactor = 0.95
     // HSB
     static var hsbDarkColorsHueOffset = 0.01
-    static var hsbLightSaturationFactor = 2.5
+    static var hsbLightSaturationFactor = 2.52
     static var hsbDarkSaturationFactor = 2.0
-    static var hsbLightBrightnessFactor = 1.25
+    static var hsbLightBrightnessFactor = 1.5
     static var hsbDarkBrightnessFactor = 1.5
     // RGB
     static var rgbDarkColorsHueOffset = 0.02

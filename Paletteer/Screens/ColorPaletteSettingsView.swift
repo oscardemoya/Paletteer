@@ -222,8 +222,8 @@ struct ColorPaletteSettingsView: View {
                     colorModel: .rgb(Color(hex: hexString)),
                     colorName: colorName,
                     groupName: groupName,
-                    lightConfig: SchemeConfig(description: lightConfig, defaultScale: .darkening),
-                    darkConfig: SchemeConfig(description: darkConfig, defaultScale: .lightening)
+                    lightConfig: SchemeConfig(description: lightConfig, defaultScale: .darkening, defaultSkip: .backward),
+                    darkConfig: SchemeConfig(description: darkConfig, defaultScale: .lightening, defaultSkip: .forward)
                 )
             }.first
         }

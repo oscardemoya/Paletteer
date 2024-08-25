@@ -12,9 +12,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
     var colorModel: ColorModel
     var colorName: String
     var groupName: String = ""
-    var lightConfig = SchemeConfig(scale: .darkening)
-    var darkConfig = SchemeConfig(scale: .lightening)
-    var skipDirection: SkipDirection = .forward
+    var lightConfig = SchemeConfig(scale: .darkening, skipDirection: .backward)
+    var darkConfig = SchemeConfig(scale: .lightening, skipDirection: .forward)
     
     var color: Color { colorModel.color }
     var hexColor: String { colorModel.color.hexRGB }
@@ -25,9 +24,8 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         colorModel: ColorModel,
         colorName: String,
         groupName: String = "",
-        lightConfig: SchemeConfig = SchemeConfig(scale: .darkening),
-        darkConfig: SchemeConfig = SchemeConfig(scale: .lightening),
-        skipDirection: SkipDirection = .forward
+        lightConfig: SchemeConfig = SchemeConfig(scale: .darkening, skipDirection: .backward),
+        darkConfig: SchemeConfig = SchemeConfig(scale: .lightening, skipDirection: .forward)
     ) {
         self.id = id
         self.colorModel = colorModel
@@ -35,7 +33,6 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         self.groupName = groupName
         self.lightConfig = lightConfig
         self.darkConfig = darkConfig
-        self.skipDirection = skipDirection
     }
     
     mutating func update(with other: Self) {
@@ -44,7 +41,6 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         self.groupName = other.groupName
         self.lightConfig.update(with: other.lightConfig)
         self.darkConfig.update(with: other.darkConfig)
-        self.skipDirection = other.skipDirection
     }
     
     func hash(into hasher: inout Hasher) {
@@ -55,7 +51,6 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         hasher.combine(groupName)
         hasher.combine(lightConfig)
         hasher.combine(darkConfig)
-        hasher.combine(skipDirection)
     }
     
     var colorPath: String {
@@ -70,13 +65,12 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
     var description: String {
         var components = [String]()
         components.append("\(colorPath): \(color.hexRGB.uppercased())")
-        if let description = lightConfig.description(defaultScale: .darkening) {
+        if let description = lightConfig.description(defaultScale: .darkening, defaultSkip: .backward) {
             components.append("L{\(description)}")
         }
-        if let description = darkConfig.description(defaultScale: .lightening) {
+        if let description = darkConfig.description(defaultScale: .lightening, defaultSkip: .forward) {
             components.append("D{\(description)}")
         }
-        components.append(skipDirection.symbol)
         return components.joined(separator: " ")
     }
 
@@ -99,8 +93,7 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
             colorName: result.colorName,
             groupName: result.groupName,
             lightConfig: result.lightConfig,
-            darkConfig: result.darkConfig,
-            skipDirection: result.skipDirection
+            darkConfig: result.darkConfig
         )
     }
 
@@ -111,7 +104,6 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         case colorName
         case lightConfig
         case darkConfig
-        case skipDirection
     }
     
     init(from decoder: Decoder) throws {
@@ -122,7 +114,6 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         groupName = try container.decode(String.self, forKey: .groupName)
         lightConfig = try container.decode(SchemeConfig.self, forKey: .lightConfig)
         darkConfig = try container.decode(SchemeConfig.self, forKey: .darkConfig)
-        skipDirection = try container.decode(SkipDirection.self, forKey: .skipDirection)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -133,7 +124,6 @@ struct ColorConfig: Codable, RawRepresentable, Identifiable, Hashable {
         try container.encode(groupName, forKey: .groupName)
         try container.encode(lightConfig, forKey: .lightConfig)
         try container.encode(darkConfig, forKey: .darkConfig)
-        try container.encode(skipDirection, forKey: .skipDirection)
     }
 }
 

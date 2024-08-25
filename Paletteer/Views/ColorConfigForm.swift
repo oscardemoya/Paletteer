@@ -73,19 +73,6 @@ struct ColorConfigForm: View {
                     .textFieldStyle(.plain)
                     .rounded(backgroundColor: .secondaryInputBackground)
                 Group {
-                    HStack {
-                        Text("Skip Direction")
-                        Picker("", selection: $colorConfig.skipDirection) {
-                            ForEach(SkipDirection.allCases) { item in
-                                Text(item.name).tag(item)
-                            }
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .foregroundColor(.foreground050)
-                .rounded(backgroundColor: .secondaryInputBackground, padding: 12)
-                Group {
                     VStack {
                         Text("Light")
                         Grid {
@@ -132,6 +119,15 @@ struct ColorConfigForm: View {
                                     .gridColumnAlignment(.leading)
                                 Picker("", selection: $colorConfig.lightConfig.brightnessLevel) {
                                     ForEach(ColorAdjustmentLevel.allCases) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                                .gridCellColumns(2)
+                            }
+                            GridRow {
+                                Text("Skip Direction")
+                                Picker("", selection: $colorConfig.lightConfig.skipDirection) {
+                                    ForEach(SkipDirection.allCases) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
@@ -185,6 +181,15 @@ struct ColorConfigForm: View {
                                     .gridColumnAlignment(.leading)
                                 Picker("", selection: $colorConfig.darkConfig.brightnessLevel) {
                                     ForEach(ColorAdjustmentLevel.allCases) { item in
+                                        Text(item.name).tag(item)
+                                    }
+                                }
+                                .gridCellColumns(2)
+                            }
+                            GridRow {
+                                Text("Skip Direction")
+                                Picker("", selection: $colorConfig.darkConfig.skipDirection) {
+                                    ForEach(SkipDirection.allCases) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }

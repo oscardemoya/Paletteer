@@ -12,6 +12,7 @@ struct SchemeConfig: Codable, RawRepresentable, Hashable {
     var range: ColorRange = .whole
     var saturationLevel: ColorAdjustmentLevel = .medium
     var brightnessLevel: ColorAdjustmentLevel = .medium
+    var skipDirection: SkipDirection = .forward
 
     var isWholeLightening: Bool {
         guard range == .whole else { return false }
@@ -27,19 +28,22 @@ struct SchemeConfig: Codable, RawRepresentable, Hashable {
         scale: ColorScale = .darkening,
         range: ColorRange = .whole,
         saturationLevel: ColorAdjustmentLevel = .medium,
-        brightnessLevel: ColorAdjustmentLevel = .medium
+        brightnessLevel: ColorAdjustmentLevel = .medium,
+        skipDirection: SkipDirection = .forward
     ) {
         self.scale = scale
         self.range = range
         self.saturationLevel = saturationLevel
         self.brightnessLevel = brightnessLevel
+        self.skipDirection = skipDirection
     }
     
-    init(description: String, defaultScale: ColorScale) {
+    init(description: String, defaultScale: ColorScale, defaultSkip: SkipDirection) {
         var scale: ColorScale = defaultScale
         var range: ColorRange = .whole
         var saturationLevel: ColorAdjustmentLevel = .medium
         var brightnessLevel: ColorAdjustmentLevel = .medium
+        var skipDirection: SkipDirection = defaultSkip
         description.split(separator: ";").forEach { substring in
             let string = String(substring)
             let value = String(string.suffix(1))
@@ -49,10 +53,12 @@ struct SchemeConfig: Codable, RawRepresentable, Hashable {
             case "[": range = ColorRange(percentDescription: string) ?? .whole
             case "S": saturationLevel = ColorAdjustmentLevel(symbol: value)
             case "B": brightnessLevel = ColorAdjustmentLevel(symbol: value)
+            case "⏩︎": skipDirection = .forward
+            case "⏪︎": skipDirection = .backward
             default: break
             }
         }
-        self.init(scale: scale, range: range, saturationLevel: saturationLevel, brightnessLevel: brightnessLevel)
+        self.init(scale: scale, range: range, saturationLevel: saturationLevel, brightnessLevel: brightnessLevel, skipDirection: skipDirection)
     }
     
     mutating func update(with other: Self) {
@@ -60,9 +66,10 @@ struct SchemeConfig: Codable, RawRepresentable, Hashable {
         self.range = other.range
         self.saturationLevel = other.saturationLevel
         self.brightnessLevel = other.brightnessLevel
+        self.skipDirection = other.skipDirection
     }
     
-    func description(defaultScale: ColorScale) -> String? {
+    func description(defaultScale: ColorScale, defaultSkip: SkipDirection) -> String? {
         var components = [String]()
         if scale != defaultScale {
             components.append(scale.symbol)
@@ -76,6 +83,9 @@ struct SchemeConfig: Codable, RawRepresentable, Hashable {
         if saturationLevel != .medium {
             components.append("S\(saturationLevel.symbol)")
         }
+        if skipDirection != defaultSkip {
+            components.append(skipDirection.symbol)
+        }
         guard !components.isEmpty else { return nil }
         return components.joined(separator: ";")
     }
@@ -87,6 +97,7 @@ struct SchemeConfig: Codable, RawRepresentable, Hashable {
         case range
         case saturationLevel
         case brightnessLevel
+        case skipDirection
     }
     
     init(from decoder: Decoder) throws {
@@ -95,6 +106,7 @@ struct SchemeConfig: Codable, RawRepresentable, Hashable {
         range = try container.decode(ColorRange.self, forKey: .range)
         saturationLevel = try container.decode(ColorAdjustmentLevel.self, forKey: .saturationLevel)
         brightnessLevel = try container.decode(ColorAdjustmentLevel.self, forKey: .brightnessLevel)
+        skipDirection = try container.decode(SkipDirection.self, forKey: .skipDirection)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -103,6 +115,7 @@ struct SchemeConfig: Codable, RawRepresentable, Hashable {
         try container.encode(range, forKey: .range)
         try container.encode(saturationLevel, forKey: .saturationLevel)
         try container.encode(brightnessLevel, forKey: .brightnessLevel)
+        try container.encode(skipDirection, forKey: .skipDirection)
     }
     
     // RawRepresentable
@@ -136,5 +149,6 @@ struct SchemeConfig: Codable, RawRepresentable, Hashable {
         hasher.combine(range)
         hasher.combine(saturationLevel)
         hasher.combine(brightnessLevel)
+        hasher.combine(skipDirection)
     }
 }

@@ -107,15 +107,24 @@ struct ColorPaletteView: View {
                 Grid {
                     ForEach(colorPalette) { colorConfig in
                         GridRow {
-                            Text(colorConfig.colorName)
-                                .font(.subheadline)
-                                .gridCellAnchor(.leading)
-                                .foregroundColor(.foreground300)
-                                .padding(.top, 4)
-                                .onTapGesture {
-                                    isEditing = true
-                                    exisitingColor = colorConfig
-                                }
+                            VStack(alignment: .leading) {
+                                Text(colorConfig.colorName)
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.foreground300)
+                                Image(systemName: colorConfig.lightConfig.skipDirection.iconName)
+                                    .font(.subheadline)
+                                    .foregroundColor(.bright990)
+                                Image(systemName: colorConfig.darkConfig.skipDirection.iconName)
+                                    .font(.subheadline)
+                                    .foregroundColor(.dark990)
+                            }
+                            .gridCellAnchor(.leading)
+                            .padding(.top, 4)
+                            .onTapGesture {
+                                isEditing = true
+                                exisitingColor = colorConfig
+                            }
                             rectangleStack(colorPairs: shades(for: colorConfig))
                         }
                     }
@@ -263,8 +272,8 @@ struct ColorPaletteView: View {
                 return .rgb(group.color)
             }
         }.enumerated().map { (index: Int, color: ColorModel) in
-            let lightSkip = group.skipDirection.isForward ? colorSkipCount : 0
-            let darkSkip = group.skipDirection.isBackward ? 0 : colorSkipCount
+            let lightSkip = group.lightConfig.skipDirection.isForward ? colorSkipCount : 0
+            let darkSkip = group.darkConfig.skipDirection.isForward ? colorSkipCount : 0
 
             // Light Color
             let lightIndex = group.lightConfig.scale.isDarkening ? index + lightSkip : colorCount - index + lightSkip - 1

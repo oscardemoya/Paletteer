@@ -31,8 +31,8 @@ enum SkipDirection: String, Codable, CaseIterable, Identifiable, Hashable {
     
     var symbol: String {
         switch self {
-        case .forward: return ">>"
-        case .backward: return "<<"
+        case .forward: return "⏩︎"
+        case .backward: return "⏪︎"
         }
     }
 }
