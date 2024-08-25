@@ -10,6 +10,7 @@ import SwiftUI
 struct ColorSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage(key(.colorSkipCount)) var colorSkipCount = ColorPaletteParams.colorSkipCount
+    @AppStorage(key(.colorSkipScheme)) var colorSkipScheme = ColorPaletteParams.colorSkipScheme
     @AppStorage(key(.hctDarkColorsHueOffset)) var hctDarkColorsHueOffset = ColorPaletteParams.hctDarkColorsHueOffset
     @AppStorage(key(.hctLightChromaFactor)) var hctLightChromaFactor = ColorPaletteParams.hctLightChromaFactor
     @AppStorage(key(.hctDarkChromaFactor)) var hctDarkChromaFactor = ColorPaletteParams.hctDarkChromaFactor
@@ -35,6 +36,12 @@ struct ColorSettingsView: View {
             Section {
                 HStack {
                     integerTextField(value: $colorSkipCount)
+                    Picker("", selection: $colorSkipScheme) {
+                        ForEach(AppColorScheme.schemes, id: \.self) { item in
+                            Text(item.name).tag(item)
+                        }
+                    }
+                    .frame(width: 80)
                 }
             } header: {
                 Text("Color Skip")

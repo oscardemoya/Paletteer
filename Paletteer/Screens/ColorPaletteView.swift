@@ -18,6 +18,7 @@ struct ColorPaletteView: View {
     @AppStorage(key(.colorPalette)) var colorPalette = [ColorConfig]()
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
     @AppStorage(key(.colorSkipCount)) var colorSkipCount = ColorPaletteParams.colorSkipCount
+    @AppStorage(key(.colorSkipScheme)) var colorSkipScheme = ColorPaletteParams.colorSkipScheme
     @AppStorage(key(.hctDarkColorsHueOffset)) var hctDarkColorsHueOffset = ColorPaletteParams.hctDarkColorsHueOffset
     @AppStorage(key(.hctLightChromaFactor)) var hctLightChromaFactor = ColorPaletteParams.hctLightChromaFactor
     @AppStorage(key(.hctDarkChromaFactor)) var hctDarkChromaFactor = ColorPaletteParams.hctDarkChromaFactor
@@ -46,7 +47,7 @@ struct ColorPaletteView: View {
     
     var body: some View {
         colorGrid
-            .frame(minWidth: CGFloat(ColorPalette.shadesCount) * 44)
+            .frame(minWidth: CGFloat(ColorPalette.shadesCount) * 50)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Picker("Color Space", selection: $colorSpace) {
@@ -103,17 +104,21 @@ struct ColorPaletteView: View {
     @ViewBuilder var colorGrid: some View {
         VStack(spacing: 0) {
             ScrollView {
-                ForEach(colorPalette) { colorConfig in
-                    Text(colorConfig.colorName)
-                        .font(.subheadline)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.foreground300)
-                        .padding(.top, 4)
-                        .onTapGesture {
-                            isEditing = true
-                            exisitingColor = colorConfig
+                Grid {
+                    ForEach(colorPalette) { colorConfig in
+                        GridRow {
+                            Text(colorConfig.colorName)
+                                .font(.subheadline)
+                                .gridCellAnchor(.leading)
+                                .foregroundColor(.foreground300)
+                                .padding(.top, 4)
+                                .onTapGesture {
+                                    isEditing = true
+                                    exisitingColor = colorConfig
+                                }
+                            rectangleStack(colorPairs: shades(for: colorConfig))
                         }
-                    rectangleStack(colorPairs: shades(for: colorConfig))
+                    }
                 }
                 .scrollTargetLayout()
             }
@@ -165,7 +170,8 @@ struct ColorPaletteView: View {
             saveEmptyFiles(to: config.groupName)
         }
         colorPairs.enumerated().forEach { index, color in
-            let toneCode = ColorPalette.toneNames[index + colorSkipCount]
+            let index = index + (colorSkipScheme == .light ? colorSkipCount : 0)
+            let toneCode = ColorPalette.toneNames[index]
             let toneName = String(format: "%03d", toneCode * 10)
             let colorName = "\(config.colorName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines))-\(toneName)"
             var pathComponents = [String]()
@@ -258,20 +264,21 @@ struct ColorPaletteView: View {
             }
         }.enumerated().map { (index: Int, color: ColorModel) in
             let lightSkip = group.skipDirection.isForward ? colorSkipCount : 0
-            let darkSkip = group.skipDirection.isBackward ? colorSkipCount : 0
+            let darkSkip = group.skipDirection.isBackward ? 0 : colorSkipCount
 
             // Light Color
-            let lightIndex = group.lightConfig.scale.isDarkening ? index + lightSkip : colorCount - index + darkSkip - 1
+            let lightIndex = group.lightConfig.scale.isDarkening ? index + lightSkip : colorCount - index + lightSkip - 1
             let lightConfig = ColorConversion(color: color, index: lightIndex, light: true)
             let lightColor = generateColor(for: group, using: lightConfig)
 
             // Dark Color
-            let darkIndex = group.darkConfig.scale.isLightening ? index + darkSkip : colorCount - index + lightSkip - 1
+            let darkIndex = group.darkConfig.scale.isLightening ? index + darkSkip : colorCount - index + darkSkip - 1
             let darkConfig = ColorConversion(color: color, index: darkIndex, light: false)
             let darkColor = generateColor(for: group, using: darkConfig)
 
             // Color Pair
-            let toneCode = ColorPalette.toneNames[index + colorSkipCount]
+            let index = index + (colorSkipScheme == .light ? colorSkipCount : 0)
+            let toneCode = ColorPalette.toneNames[index]
             let toneName = String(format: "%03d", toneCode * 10)
             return ColorPair(name: group.colorName, toneCode: toneName, light: lightColor.color, dark: darkColor.color)
         }
