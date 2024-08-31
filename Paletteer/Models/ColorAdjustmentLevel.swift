@@ -18,9 +18,11 @@ enum ColorAdjustmentLevel: String, Codable, CaseIterable, Identifiable, Hashable
     
     init(symbol: String) {
         switch symbol {
+        case Self.min.symbol: self = .min
         case Self.low.symbol: self = .low
         case Self.medium.symbol: self = .medium
         case Self.high.symbol: self = .high
+        case Self.max.symbol: self = .max
         default: self = .medium
         }
     }
@@ -47,8 +49,8 @@ enum ColorAdjustmentLevel: String, Codable, CaseIterable, Identifiable, Hashable
     
     var multiplier: Double {
         switch self {
-        case .min: 0.25
-        case .low: 0.5
+        case .min: 0.5
+        case .low: 0.75
         case .medium: 1
         case .high: 1.5
         case .max: 2
