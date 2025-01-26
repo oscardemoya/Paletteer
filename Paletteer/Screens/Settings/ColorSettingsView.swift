@@ -126,8 +126,8 @@ struct ColorSettingsView: View {
         }
 #if os(macOS) || targetEnvironment(macCatalyst)
         .padding()
-#endif
         .fixedSize(horizontal: true, vertical: false)
+#endif
         .navigationTitle("Color Generation")
         .confirmationDialog(destructiveButtonTitle, isPresented: $showDestructiveConfirmation, titleVisibility: .visible) {
             Button(destructiveButtonText, role: .destructive, action: destructiveAction)
@@ -167,5 +167,4 @@ struct ColorSettingsView: View {
 
 #Preview {
     ColorSettingsView()
-        .fixedSize()
 }

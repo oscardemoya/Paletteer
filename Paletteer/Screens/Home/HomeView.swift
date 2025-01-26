@@ -1,5 +1,5 @@
 //
-//  ColorPaletteSettingsView.swift
+//  HomeView.swift
 //  Paletteer
 //
 //  Created by Oscar De Moya on 22/04/24.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct ColorPaletteSettingsView: View {
+struct HomeView: View {
     static var defaultColorConfig = ColorConfig(colorModel: .rgb(Color(hex: "#689FD4")), colorName: "")
     @Query private var items: [ColorPalette]
     @Environment(\.modelContext) private var modelContext
@@ -22,7 +22,6 @@ struct ColorPaletteSettingsView: View {
     @State private var newColor = defaultColorConfig
     @State private var isEditing = false
     @State private var existingColor = defaultColorConfig
-    @State private var isConfiguring = false
     @State private var showAlert = false
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
@@ -95,15 +94,6 @@ struct ColorPaletteSettingsView: View {
                 }
             }
             .toolbar {
-#if !os(macOS) && !targetEnvironment(macCatalyst)
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        isConfiguring = true
-                    } label: {
-                        Image(systemName: "gear")
-                    }
-                }
-#endif
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         selectedAppearance.toggle()
@@ -129,9 +119,6 @@ struct ColorPaletteSettingsView: View {
             }
             .alert(isPresented: $showAlert) {
                 Alert(title: Text(alertTitle), message: Text(alertMessage))
-            }
-            .sheet(isPresented: $isConfiguring) {
-                SettingsPane()
             }
         }
     }
@@ -285,10 +272,15 @@ struct ColorPaletteSettingsView: View {
                 )
             }.first
         }
+        if let selectedPalette {
+            selectedPalette.setConfigs(colorConfigs)
+            modelContext.insert(selectedPalette)
+            try? modelContext.save()
+        }
     }
 }
 
 #Preview {
-    ColorPaletteSettingsView()
+    HomeView()
         .modelContainer(for: ColorPalette.self, inMemory: true)
 }

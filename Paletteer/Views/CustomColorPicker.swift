@@ -19,7 +19,8 @@ struct CustomColorPicker: View {
     @State private var selectedColor: Color = .blue
     @State private var recentColors: [Color] = []
     @State private var isEditingColor = false
-    @State private var sheetHeight: CGFloat = .zero
+    @State private var navigationBarHeight: CGFloat = .zero
+    @State private var contentViewHeight: CGFloat = .zero
     @State private var colorSpace: ColorSpace = .hct
     @State private var hueSliderValue = Self.hueRange.median
     @State private var chromaOrSaturationSliderValue = Self.chromaOrSaturationRange.median
@@ -146,52 +147,64 @@ struct CustomColorPicker: View {
 #endif
     }
     
+    var sheetHeight: CGFloat { contentViewHeight + navigationBarHeight }
+    
     @ViewBuilder
     var wrappedColorPicker: some View {
-#if os(macOS) || targetEnvironment(macCatalyst)
-        colorPickerContent
-            .fixedSize()
-#else
-        ScrollView {
-            colorPickerContent
+        VStack(spacing: .zero) {
+            navigationBar
                 .readSize { size in
-                    sheetHeight = size.height
+                    navigationBarHeight = size.height
                 }
-                .presentationDetents([.height(sheetHeight)])
-                .presentationDragIndicator(.hidden)
-        }
+#if os(macOS) || targetEnvironment(macCatalyst)
+            colorPickerContent
+                .fixedSize()
+#else
+            ScrollView {
+                colorPickerContent
+                    .readSize { size in
+                        contentViewHeight = size.height
+                    }
+                    .presentationDetents([.height(sheetHeight)])
+                    .presentationDragIndicator(.hidden)
+            }
 #endif
+        }
+    }
+    
+    @ViewBuilder
+    var navigationBar: some View {
+        HStack(alignment: .center) {
+            if onDelete != nil {
+                CircularButton(size: .large, systemName: "trash.circle.fill") {
+                    showDeleteConfirmation = true
+                }
+            } else {
+                Spacer()
+                    .frame(width: closeButtonSize.width, height: closeButtonSize.height)
+            }
+            Spacer()
+            Picker("", selection: $colorSpace) {
+                ForEach(ColorSpace.allCases) {
+                    Text($0.title)
+                }
+            }
+            .pickerStyle(.segmented)
+            .fixedSize()
+            Spacer()
+            CircularButton(size: .large) {
+                isEditingColor = false
+            }
+            .readSize { size in
+                closeButtonSize = size
+            }
+        }
+        Divider()
     }
     
     @ViewBuilder
     var colorPickerContent: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .center) {
-                if onDelete != nil {
-                    CircularButton(size: .large, systemName: "trash.circle.fill") {
-                        showDeleteConfirmation = true
-                    }
-                } else {
-                    Spacer()
-                        .frame(width: closeButtonSize.width, height: closeButtonSize.height)
-                }
-                Spacer()
-                Picker("", selection: $colorSpace) {
-                    ForEach(ColorSpace.allCases) {
-                        Text($0.title)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .fixedSize()
-                Spacer()
-                CircularButton(size: .large) {
-                    isEditingColor = false
-                }
-                .readSize { size in
-                    closeButtonSize = size
-                }
-            }
-            Divider()
             VStack(spacing: 16) {
                 selectedColorView
                 switch colorSpace {

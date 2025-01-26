@@ -23,10 +23,8 @@ struct GeneralSettingsView: View {
             Section("New Colors") {
                 Toggle("Show Copy Icons", isOn: $showCopyIcons)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(4)
                 Toggle("Use Color in Clipboard", isOn: $useColorInClipboard)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(4)
             }
             Section("Danger Zone") {
                 Button {
