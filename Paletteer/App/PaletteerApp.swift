@@ -6,13 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct PaletteerApp: App {    
     var body: some Scene {
         WindowGroup {
             ColorPaletteSettingsView()
+            // HomeView()
         }
+        .modelContainer(ModelContainer.shared)
 #if os(macOS)
         Settings {
             SettingsPane()

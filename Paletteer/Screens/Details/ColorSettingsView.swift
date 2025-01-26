@@ -9,23 +9,7 @@ import SwiftUI
 
 struct ColorSettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @AppStorage(key(.colorSkipCount)) var colorSkipCount = ColorPaletteParams.colorSkipCount
-    @AppStorage(key(.colorSkipScheme)) var colorSkipScheme = ColorPaletteParams.colorSkipScheme
-    @AppStorage(key(.hctDarkColorsHueOffset)) var hctDarkColorsHueOffset = ColorPaletteParams.hctDarkColorsHueOffset
-    @AppStorage(key(.hctLightChromaFactor)) var hctLightChromaFactor = ColorPaletteParams.hctLightChromaFactor
-    @AppStorage(key(.hctDarkChromaFactor)) var hctDarkChromaFactor = ColorPaletteParams.hctDarkChromaFactor
-    @AppStorage(key(.hctLightToneFactor)) var hctLightToneFactor = ColorPaletteParams.hctLightToneFactor
-    @AppStorage(key(.hctDarkToneFactor)) var hctDarkToneFactor = ColorPaletteParams.hctDarkToneFactor
-    @AppStorage(key(.hsbDarkColorsHueOffset)) var hsbDarkColorsHueOffset = ColorPaletteParams.hsbDarkColorsHueOffset
-    @AppStorage(key(.hsbLightSaturationFactor)) var hsbLightSaturationFactor = ColorPaletteParams.hsbLightSaturationFactor
-    @AppStorage(key(.hsbDarkSaturationFactor)) var hsbDarkSaturationFactor = ColorPaletteParams.hsbDarkSaturationFactor
-    @AppStorage(key(.hsbLightBrightnessFactor)) var hsbLightBrightnessFactor = ColorPaletteParams.hsbLightBrightnessFactor
-    @AppStorage(key(.hsbDarkBrightnessFactor)) var hsbDarkBrightnessFactor = ColorPaletteParams.hsbDarkBrightnessFactor
-    @AppStorage(key(.rgbDarkColorsHueOffset)) var rgbDarkColorsHueOffset = ColorPaletteParams.rgbDarkColorsHueOffset
-    @AppStorage(key(.rgbLightSaturationFactor)) var rgbLightSaturationFactor = ColorPaletteParams.rgbLightSaturationFactor
-    @AppStorage(key(.rgbDarkSaturationFactor)) var rgbDarkSaturationFactor = ColorPaletteParams.rgbDarkSaturationFactor
-    @AppStorage(key(.rgbLightBrightnessFactor)) var rgbLightBrightnessFactor = ColorPaletteParams.rgbLightBrightnessFactor
-    @AppStorage(key(.rgbDarkBrightnessFactor)) var rgbDarkBrightnessFactor = ColorPaletteParams.rgbDarkBrightnessFactor
+    @AppStorage(key(.colorPaletteParams)) var params = ColorPaletteParams()
     @State private var showDestructiveConfirmation: Bool = false
     @State private var destructiveButtonTitle: LocalizedStringKey = ""
     @State private var destructiveButtonText: LocalizedStringKey = ""
@@ -35,8 +19,8 @@ struct ColorSettingsView: View {
         Form {
             Section {
                 HStack {
-                    integerTextField(value: $colorSkipCount)
-                    Picker("", selection: $colorSkipScheme) {
+                    integerTextField(value: $params.colorSkipCount)
+                    Picker("", selection: $params.colorSkipScheme) {
                         ForEach(AppColorScheme.schemes, id: \.self) { item in
                             Text(item.name).tag(item)
                         }
@@ -50,23 +34,23 @@ struct ColorSettingsView: View {
             Section {
                 HStack {
                     Text("Dark Colors Hue Offset")
-                    decimalTextField(value: $hctDarkColorsHueOffset)
+                    decimalTextField(value: $params.hctDarkColorsHueOffset)
                 }
                 HStack {
                     Text("Light Chroma Factor")
-                    decimalTextField(value: $hctLightChromaFactor)
+                    decimalTextField(value: $params.hctLightChromaFactor)
                 }
                 HStack {
                     Text("Dark Chroma Factor")
-                    decimalTextField(value: $hctDarkChromaFactor)
+                    decimalTextField(value: $params.hctDarkChromaFactor)
                 }
                 HStack {
                     Text("Light Tone Factor")
-                    decimalTextField(value: $hctLightToneFactor)
+                    decimalTextField(value: $params.hctLightToneFactor)
                 }
                 HStack {
                     Text("Dark Tone Factor")
-                    decimalTextField(value: $hctDarkToneFactor)
+                    decimalTextField(value: $params.hctDarkToneFactor)
                 }
             } header: {
                 Text("HCT")
@@ -75,23 +59,23 @@ struct ColorSettingsView: View {
             Section {
                 HStack {
                     Text("Dark Colors Hue Offset")
-                    decimalTextField(value: $hsbDarkColorsHueOffset)
+                    decimalTextField(value: $params.hsbDarkColorsHueOffset)
                 }
                 HStack {
                     Text("Light Saturation Factor")
-                    decimalTextField(value: $hsbLightSaturationFactor)
+                    decimalTextField(value: $params.hsbLightSaturationFactor)
                 }
                 HStack {
                     Text("Dark Saturation Factor")
-                    decimalTextField(value: $hsbDarkSaturationFactor)
+                    decimalTextField(value: $params.hsbDarkSaturationFactor)
                 }
                 HStack {
                     Text("Light Brightness Factor")
-                    decimalTextField(value: $hsbLightBrightnessFactor)
+                    decimalTextField(value: $params.hsbLightBrightnessFactor)
                 }
                 HStack {
                     Text("Dark Brightness Factor")
-                    decimalTextField(value: $hsbDarkBrightnessFactor)
+                    decimalTextField(value: $params.hsbDarkBrightnessFactor)
                 }
             } header: {
                 Text("HSB")
@@ -100,23 +84,23 @@ struct ColorSettingsView: View {
             Section {
                 HStack {
                     Text("Dark Colors Hue Offset")
-                    decimalTextField(value: $rgbDarkColorsHueOffset)
+                    decimalTextField(value: $params.rgbDarkColorsHueOffset)
                 }
                 HStack {
                     Text("Light Saturation Factor")
-                    decimalTextField(value: $rgbLightSaturationFactor)
+                    decimalTextField(value: $params.rgbLightSaturationFactor)
                 }
                 HStack {
                     Text("Dark Saturation Factor")
-                    decimalTextField(value: $rgbDarkSaturationFactor)
+                    decimalTextField(value: $params.rgbDarkSaturationFactor)
                 }
                 HStack {
                     Text("Light Brightness Factor")
-                    decimalTextField(value: $rgbLightBrightnessFactor)
+                    decimalTextField(value: $params.rgbLightBrightnessFactor)
                 }
                 HStack {
                     Text("Dark Brightness Factor")
-                    decimalTextField(value: $rgbDarkBrightnessFactor)
+                    decimalTextField(value: $params.rgbDarkBrightnessFactor)
                 }
             } header: {
                 Text("RGB")
@@ -140,7 +124,7 @@ struct ColorSettingsView: View {
                 .tint(.destructiveBackground)
             }
         }
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
         .padding()
 #endif
         .fixedSize(horizontal: true, vertical: false)
@@ -155,39 +139,29 @@ struct ColorSettingsView: View {
     
     @ViewBuilder
     func integerTextField(value: Binding<Int>) -> some View {
-#if !os(macOS)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
         Spacer()
 #endif
-        Stepper("\(value.wrappedValue)", value: value, in: 0...(ColorPalette.tonesCount - 1))
+        Stepper("\(value.wrappedValue)", value: value, in: 0...(ColorPaletteConstants.tonesCount - 1))
     }
     
     @ViewBuilder
     func decimalTextField<V>(value: Binding<V>) -> some View {
-#if !os(macOS)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
         Spacer()
 #endif
         TextField("", value: value, formatter: NumberFormatter.decimal)
             .multilineTextAlignment(.center)
             .frame(width: 80)
             .textFieldStyle(RoundedBorderTextFieldStyle())
-#if !os(macOS)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
             .keyboardType(.decimalPad)
             .scrollDismissesKeyboard(.interactively)
 #endif
     }
     
     func resetColorSettings() {
-        hctLightChromaFactor = ColorPaletteParams.hctLightChromaFactor
-        hctDarkChromaFactor = ColorPaletteParams.hctDarkChromaFactor
-        hsbDarkColorsHueOffset = ColorPaletteParams.hsbDarkColorsHueOffset
-        hsbLightSaturationFactor = ColorPaletteParams.hsbLightSaturationFactor
-        hsbDarkSaturationFactor = ColorPaletteParams.hsbDarkSaturationFactor
-        hsbLightBrightnessFactor = ColorPaletteParams.hsbLightBrightnessFactor
-        hsbDarkBrightnessFactor = ColorPaletteParams.hsbDarkBrightnessFactor
-        rgbLightSaturationFactor = ColorPaletteParams.rgbLightSaturationFactor
-        rgbDarkSaturationFactor = ColorPaletteParams.rgbDarkSaturationFactor
-        rgbLightBrightnessFactor = ColorPaletteParams.rgbLightBrightnessFactor
-        rgbDarkBrightnessFactor = ColorPaletteParams.rgbDarkBrightnessFactor
+        params = ColorPaletteParams()
     }
 }
 

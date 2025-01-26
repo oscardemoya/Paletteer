@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum AppColorScheme: String, CaseIterable, Identifiable {
+enum AppColorScheme: String, Codable, CaseIterable, Identifiable {
     case system
     case dark
     case light

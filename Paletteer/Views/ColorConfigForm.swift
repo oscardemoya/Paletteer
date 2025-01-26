@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct ColorConfigForm: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @AppStorage(key(.colorPalette)) var colorPalette = [ColorConfig]()
+    @Binding var colorPalette: ColorPalette?
     @Binding var colorConfig: ColorConfig
     @Binding var colorClipboard: ColorClipboard
     var isEditing: Bool
+    var onSave: Action
+    
     @State private var lightRangeWidth: ColorRangeWidth = .whole
     @State private var darkRangeWidth: ColorRangeWidth = .whole
     @State private var sheetHeight: CGFloat = .zero
@@ -204,10 +207,15 @@ struct ColorConfigForm: View {
                 Button {
                     dismiss()
                     if !isEditing {
-                        colorPalette.append(colorConfig)
-                    } else if let index = colorPalette.firstIndex(where: { $0.id == colorConfig.id }) {
-                        colorPalette[index].update(with: colorConfig)
+                        colorPalette?.configs.append(colorConfig)
+                    } else if let index = colorPalette?.configs.firstIndex(where: { $0.id == colorConfig.id }) {
+                        colorPalette?.configs[safe: index]?.update(with: colorConfig)
                     }
+                    if let colorPalette {
+                        modelContext.insert(colorPalette)
+                        try? modelContext.save()
+                    }
+                    onSave()
                 } label: {
                     Text(isEditing ? "Save Changes" : "Add Color")
                         .font(.title3)
@@ -227,7 +235,8 @@ struct ColorConfigForm: View {
 }
 
 #Preview {
-    @State var newColor = ColorConfig(colorModel: .rgb(.blue.muted), colorName: "")
-    @State var colorClipboard = ColorClipboard()
-    return ColorConfigForm(colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: true)
+    @Previewable @State var colorPalette: ColorPalette? = ColorPalette.makeSample()
+    @Previewable @State var newColor = ColorConfig(colorModel: .rgb(.blue.muted), colorName: "")
+    @Previewable @State var colorClipboard = ColorClipboard()
+    ColorConfigForm(colorPalette: $colorPalette, colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: true) {}
 }
