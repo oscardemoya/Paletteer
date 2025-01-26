@@ -17,14 +17,14 @@ import AppKit
 public extension String {
     static var pasteboardString: String? {
         get {
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
             NSPasteboard.general.string(forType: .string)
 #else
             UIPasteboard.general.string
 #endif
         }
         set {
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
             if let newValue {
                 let pasteboard = NSPasteboard.general
                 pasteboard.declareTypes([.string], owner: nil)

@@ -13,7 +13,7 @@ struct ColorSchemeSwitcher {
     static var shared = ColorSchemeSwitcher()
     
     func overrideDisplayMode() {
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
         switch selectedAppearance {
         case .system:
             NSApplication.shared.appearance = NSAppearance()

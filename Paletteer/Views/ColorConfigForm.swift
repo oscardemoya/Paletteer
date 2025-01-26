@@ -32,7 +32,7 @@ struct ColorConfigForm: View {
     
     @ViewBuilder
     var colorConfigForm: some View {
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
         colorConfigFormContent
             .fixedSize()
 #else

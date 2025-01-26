@@ -45,12 +45,6 @@ struct ColorPaletteListView: View {
                     }
                 }
             }
-#if !os(macOS) && !targetEnvironment(macCatalyst)
-            .sheet(item: $selectedPalette) { item in
-                ColorPaletteDetailsView(colorPalette: $colorPalette)
-                    .presentationDragIndicator(.visible)
-            }
-#endif
         }
     }
     

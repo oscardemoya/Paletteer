@@ -136,7 +136,7 @@ struct CustomColorPicker: View {
             .onChange(of: hueSliderValue, updateColor)
             .onChange(of: chromaOrSaturationSliderValue, updateColor)
             .onChange(of: toneOrBrightnessSliderValue, updateColor)
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
             .pasteDestination(for: String.self) { strings in
                 if let string = strings.first {
                     colorClipboard.text = string
@@ -147,7 +147,7 @@ struct CustomColorPicker: View {
     
     @ViewBuilder
     var wrappedColorPicker: some View {
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
         colorPickerContent
             .fixedSize()
 #else
@@ -404,7 +404,7 @@ struct CustomColorPicker: View {
             HStack {
                 TextField("", value: sliderValue, formatter: NumberFormatter())
                     .multilineTextAlignment(.center)
-#if !os(macOS)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
                     .keyboardType(.decimalPad)
 #endif
                     .frame(width: 50)

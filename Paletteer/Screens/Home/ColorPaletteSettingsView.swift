@@ -37,7 +37,7 @@ struct ColorPaletteSettingsView: View {
             .onChange(of: selectedPalette) { oldValue, newValue in
                 colorConfigs = selectedPalette?.configs ?? []
             }
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
             .pasteDestination(for: String.self) { strings in
                 pasteColorPaletteConfig(strings: strings)
             }
@@ -45,7 +45,7 @@ struct ColorPaletteSettingsView: View {
     }
     
     @ViewBuilder var viewContainer: some View {
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
         NavigationSplitView {
             VStack {
                 ColorSettingsView()
@@ -57,7 +57,11 @@ struct ColorPaletteSettingsView: View {
             navigationStack
         }
 #else
-        navigationStack
+        ColorPaletteListView(selectedPalette: $selectedPalette)
+            .sheet(item: $selectedPalette) { item in
+                navigationStack
+                    .presentationDragIndicator(.visible)
+            }
 #endif
     }
     
@@ -74,7 +78,7 @@ struct ColorPaletteSettingsView: View {
             }
             .background(.primaryBackground)
             .navigationTitle("Paletteer")
-#if !os(macOS)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
             .navigationBarTitleDisplayMode(.inline)
 #endif
             .navigationDestination(for: ColorPalette.self) { colorPalette in
@@ -91,7 +95,7 @@ struct ColorPaletteSettingsView: View {
                 }
             }
             .toolbar {
-#if !os(macOS)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         isConfiguring = true

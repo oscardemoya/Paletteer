@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SettingsPane: View {
     var body: some View {
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
         tabView
 #else
         navigationStack

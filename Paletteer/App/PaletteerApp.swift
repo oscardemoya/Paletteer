@@ -16,7 +16,7 @@ struct PaletteerApp: App {
             // HomeView()
         }
         .modelContainer(ModelContainer.shared)
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
         Settings {
             SettingsPane()
         }

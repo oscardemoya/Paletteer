@@ -137,7 +137,7 @@ struct ColorPalettePreview: View {
 #else
     @ViewBuilder var contentView: some View {
         List {
-            ForEach(colorPalette) { colorConfig in
+            ForEach(colorConfigs) { colorConfig in
                 VStack(spacing: 8) {
                     if showColorInfo {
                         HStack {
@@ -145,13 +145,13 @@ struct ColorPalettePreview: View {
                             Spacer()
                         }
                     }
-                    rectangleStack(colorPairs: shades(for: colorConfig))
+                    rectangleStack(colorPairs: colorConfig.shades(params: params, colorSpace: colorSpace))
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
             }
             .onMove { from, to in
-                colorPalette.move(fromOffsets: from, toOffset: to)
+                colorConfigs.move(fromOffsets: from, toOffset: to)
             }
             .background(Color.clear)
             .listRowInsets(EdgeInsets())

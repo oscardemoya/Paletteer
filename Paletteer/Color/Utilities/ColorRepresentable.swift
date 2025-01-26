@@ -113,7 +113,7 @@ extension CrossPlatformColor {
         var green: CGFloat = 0
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
         guard let rgbColor = self.usingColorSpace(NSColorSpace.deviceRGB) else { return nil }
 #else
         let rgbColor = self
@@ -127,7 +127,7 @@ extension CrossPlatformColor {
         var saturation: CGFloat = 0
         var brightness: CGFloat = 0
         var alpha: CGFloat = 0
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
         guard let hsbColor = self.usingColorSpace(NSColorSpace.deviceRGB) else { return nil }
 #else
         let hsbColor = self

@@ -25,6 +25,7 @@ struct ColorPaletteRow: View {
                 }
             }
         }
+        .padding(16)
         .onAppear {
             updateColors()
         }

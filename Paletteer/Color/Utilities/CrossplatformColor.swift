@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-#if os(macOS)
+#if os(macOS) || targetEnvironment(macCatalyst)
     import AppKit
     /// NSColor on macOS
     public typealias CrossPlatformColor = NSColor
