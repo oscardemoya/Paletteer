@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ColorPaletteSettingsView: View {
     static var defaultColorConfig = ColorConfig(colorModel: .rgb(Color(hex: "#689FD4")), colorName: "")
+    @Query private var items: [ColorPalette]
     @Environment(\.modelContext) private var modelContext
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
     @AppStorage(key(.useColorInClipboard)) var useColorInClipboard: Bool = true
@@ -24,7 +26,7 @@ struct ColorPaletteSettingsView: View {
     @State private var showAlert = false
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
-    var columns = [GridItem(.adaptive(minimum: 200), spacing: 12)]
+    var columns = [GridItem(.adaptive(minimum: 240), spacing: 12)]
     
     var body: some View {
         viewContainer
@@ -52,12 +54,12 @@ struct ColorPaletteSettingsView: View {
                 Spacer()
             }
         } content: {
-            ColorPaletteListView(selectedPalette: $selectedPalette)
+            ColorPaletteListView(items: items, selectedPalette: $selectedPalette)
         } detail: {
             navigationStack
         }
 #else
-        ColorPaletteListView(selectedPalette: $selectedPalette)
+        ColorPaletteListView(items: items, selectedPalette: $selectedPalette)
             .sheet(item: $selectedPalette) { item in
                 navigationStack
                     .presentationDragIndicator(.visible)
@@ -70,8 +72,6 @@ struct ColorPaletteSettingsView: View {
             Group {
                 if selectedPalette == nil {
                     emptySelectionView
-                } else if colorConfigs.isEmpty {
-                    emptyStateView
                 } else {
                     colorPaletteView
                 }
@@ -159,10 +159,7 @@ struct ColorPaletteSettingsView: View {
     @ViewBuilder var generateButton: some View {
         Button {
             if let selectedPalette {
-                colorConfigs.forEach { config in
-                    print("XXX Color Config: \(config.id)")
-                }
-                selectedPalette.configs = colorConfigs
+                selectedPalette.setConfigs(colorConfigs)
                 modelContext.insert(selectedPalette)
                 try? modelContext.save()
                 path.append(selectedPalette)
@@ -181,23 +178,32 @@ struct ColorPaletteSettingsView: View {
     
     @ViewBuilder var colorPaletteView: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach($colorConfigs) { $colorConfig in
-                        CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {
-                            colorConfigs.removeAll { colorConfig.id == $0.id }
-                        } onEdit: {
-                            existingColor = colorConfig
-                            isEditing = true
+            if colorConfigs.isEmpty {
+                emptyStateView
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 8) {
+                        ForEach($colorConfigs) { $colorConfig in
+                            CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {
+                                colorConfigs.removeAll { colorConfig.id == $0.id }
+                                if let selectedPalette {
+                                    selectedPalette.setConfigs(colorConfigs)
+                                    modelContext.insert(selectedPalette)
+                                    try? modelContext.save()
+                                }
+                            } onEdit: {
+                                existingColor = colorConfig
+                                isEditing = true
+                            }
+                            .buttonStyle(.custom(backgroundColor: .primaryInputBackground,
+                                                 foregroundColor: .primaryActionForeground))
                         }
-                        .buttonStyle(.custom(backgroundColor: .primaryInputBackground,
-                                             foregroundColor: .primaryActionForeground))
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity)
                 }
-                .padding()
-                .frame(maxWidth: .infinity)
+                Spacer(minLength: 0)
             }
-            Spacer(minLength: 0)
             Divider()
             HStack(spacing: 12) {
                 addButton
@@ -226,7 +232,7 @@ struct ColorPaletteSettingsView: View {
             Button("Add Sample Palette") {
                 if let selectedPalette {
                     colorConfigs = .sample
-                    selectedPalette.configs = colorConfigs
+                    selectedPalette.setConfigs(colorConfigs)
                     modelContext.insert(selectedPalette)
                     try? modelContext.save()
                 }
@@ -275,4 +281,5 @@ struct ColorPaletteSettingsView: View {
 
 #Preview {
     ColorPaletteSettingsView()
+        .modelContainer(for: ColorPalette.self, inMemory: true)
 }

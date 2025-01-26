@@ -15,11 +15,7 @@ final class ColorPalette: Identifiable, Hashable, Equatable {
     var name: String = ""
     var representation: String = ""
     
-    @Transient var configs: [ColorConfig] = [] {
-        didSet {
-            representation = configs.representation
-        }
-    }
+    @Transient var configs: [ColorConfig] = []
     
     init(id: String = UUID().uuidString,
          createdAt: Date = Date.now,
@@ -33,6 +29,11 @@ final class ColorPalette: Identifiable, Hashable, Equatable {
     
     static func makeSample() -> Self {
         .init(representation: [ColorConfig].sample.representation)
+    }
+    
+    func setConfigs(_ configs: [ColorConfig]) {
+        self.configs = configs
+        self.representation = configs.representation
     }
     
     func setConfigs(from representation: String) {
@@ -74,7 +75,7 @@ final class ColorPalette: Identifiable, Hashable, Equatable {
         guard lhs.id == rhs.id else { return false }
         guard lhs.createdAt == rhs.createdAt else { return false }
         guard lhs.name == rhs.name else { return false }
-        guard lhs.configs == rhs.configs else { return false }
+        guard lhs.representation == rhs.representation else { return false }
         return true
     }
 }

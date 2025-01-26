@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct ColorPaletteRow: View {
-    var colorPalette: ColorPalette
-    
     @AppStorage(key(.colorPaletteParams)) var params = ColorPaletteParams()
     
+    var colorPalette: ColorPalette
     @State var colors: [[Color]] = []
     
     var body: some View {
@@ -25,11 +24,13 @@ struct ColorPaletteRow: View {
                 }
             }
         }
+#if !os(macOS) && !targetEnvironment(macCatalyst)
         .padding(16)
+#endif
         .onAppear {
             updateColors()
         }
-        .onChange(of: colorPalette) { _, newValue in
+        .onChange(of: colorPalette.configs) { _, newValue in
             updateColors()
         }
         .frame(maxWidth: .infinity, alignment: .leading)

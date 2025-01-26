@@ -13,7 +13,6 @@ struct PaletteerApp: App {
     var body: some Scene {
         WindowGroup {
             ColorPaletteSettingsView()
-            // HomeView()
         }
         .modelContainer(ModelContainer.shared)
 #if os(macOS) || targetEnvironment(macCatalyst)

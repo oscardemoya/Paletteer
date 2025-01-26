@@ -125,7 +125,9 @@ struct ColorPalettePreview: View {
                     GridRow {
                         titleView(colorConfig: colorConfig)
                             .gridCellAnchor(.leading)
-                        rectangleStack(colorPairs: colorConfig.shades(params: params, colorSpace: colorSpace))
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            rectangleStack(colorPairs: colorConfig.shades(params: params, colorSpace: colorSpace))
+                        }
                     }
                 }
             }

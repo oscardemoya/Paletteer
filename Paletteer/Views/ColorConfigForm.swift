@@ -206,12 +206,14 @@ struct ColorConfigForm: View {
                 .rounded(backgroundColor: .secondaryInputBackground, padding: 12)
                 Button {
                     dismiss()
-                    if !isEditing {
-                        colorPalette?.configs.append(colorConfig)
-                    } else if let index = colorPalette?.configs.firstIndex(where: { $0.id == colorConfig.id }) {
-                        colorPalette?.configs[safe: index]?.update(with: colorConfig)
-                    }
                     if let colorPalette {
+                        var configs = colorPalette.configs
+                        if !isEditing {
+                            configs.append(colorConfig)
+                        } else if let index = colorPalette.configs.firstIndex(where: { $0.id == colorConfig.id }) {
+                            configs[index].update(with: colorConfig)
+                        }
+                        colorPalette.setConfigs(configs)
                         modelContext.insert(colorPalette)
                         try? modelContext.save()
                     }
