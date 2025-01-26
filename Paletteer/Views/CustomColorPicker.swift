@@ -13,8 +13,9 @@ struct CustomColorPicker: View {
     @Binding var colorConfig: ColorConfig
     @Binding var colorClipboard: ColorClipboard
     var isEditing: Bool
-    var onDelete: Action?
-    var onEdit: Action?
+    var onDelete: Action? = nil
+    var onEdit: Action? = nil
+    var onDismiss: Action? = nil
     @State private var selectedColor: Color = .blue
     @State private var recentColors: [Color] = []
     @State private var isEditingColor = false
@@ -118,7 +119,7 @@ struct CustomColorPicker: View {
         .onAppear {
             selectedColor = colorConfig.color
         }
-        .sheet(isPresented: $isEditingColor) {
+        .sheet(isPresented: $isEditingColor, onDismiss: onDismiss) {
             colorPicker
         }
     }
@@ -560,7 +561,7 @@ struct CustomColorPicker: View {
 }
 
 #Preview {
-    @State var colorConfig = ColorConfig(
+    @Previewable @State var colorConfig = ColorConfig(
         colorModel: .rgb(.blue.muted),
         colorName: "Primary",
         groupName: "Brand",
@@ -571,6 +572,6 @@ struct CustomColorPicker: View {
             scale: .darkening, range: .firstHalf
         )
     )
-    @State var colorClipboard = ColorClipboard()
-    return CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {} onEdit: {}
+    @Previewable @State var colorClipboard = ColorClipboard()
+    CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false)
 }

@@ -194,6 +194,15 @@ struct ColorPaletteSettingsView: View {
                             } onEdit: {
                                 existingColor = colorConfig
                                 isEditing = true
+                            } onDismiss: {
+                                if let selectedPalette {
+                                    if let index = colorConfigs.firstIndex(where: { $0.id == colorConfig.id }) {
+                                        colorConfigs[index].update(with: colorConfig)
+                                    }
+                                    selectedPalette.setConfigs(colorConfigs)
+                                    modelContext.insert(selectedPalette)
+                                    try? modelContext.save()
+                                }
                             }
                             .buttonStyle(.custom(backgroundColor: .primaryInputBackground,
                                                  foregroundColor: .primaryActionForeground))
