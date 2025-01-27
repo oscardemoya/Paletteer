@@ -14,13 +14,15 @@ struct ColorConfigForm: View {
     @Binding var colorConfig: ColorConfig
     @Binding var colorClipboard: ColorClipboard
     var isEditing: Bool
-    var onSave: Action
+    var onDelete: Action? = nil
+    var onSave: Action? = nil
     
     @State private var lightRangeWidth: ColorRangeWidth = .whole
     @State private var darkRangeWidth: ColorRangeWidth = .whole
     @State private var navigationBarHeight: CGFloat = .zero
     @State private var contentViewHeight: CGFloat = .zero
     @State private var closeButtonSize: CGSize = .zero
+    @State private var showDeleteConfirmation: Bool = false
     
     var body: some View {
         colorConfigForm
@@ -59,8 +61,14 @@ struct ColorConfigForm: View {
     @ViewBuilder
     var navigationBar: some View {
         HStack(alignment: .center) {
-            Spacer()
-                .frame(width: closeButtonSize.width, height: closeButtonSize.height)
+            if onDelete != nil {
+                CircularButton(size: .large, systemName: "trash.circle.fill") {
+                    showDeleteConfirmation = true
+                }
+            } else {
+                Spacer()
+                    .frame(width: closeButtonSize.width, height: closeButtonSize.height)
+            }
             Spacer()
             Text(colorConfig.colorName.isEmpty ? "Color Name" : colorConfig.colorName)
                 .font(.title3)
@@ -83,18 +91,26 @@ struct ColorConfigForm: View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(spacing: 12) {
                 CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: true)
-                    .buttonStyle(.custom(backgroundColor: .secondaryInputBackground,
-                                         foregroundColor: .secondaryActionForeground))
+                    .buttonStyle(
+                        .custom(
+                            backgroundColor: .secondaryInputBackground,
+                            foregroundColor: .secondaryActionForeground
+                        )
+                    )
                 TextField("Group Name (Optional)", text: $colorConfig.groupName)
                     .textFieldStyle(.plain)
                     .rounded(backgroundColor: .secondaryInputBackground)
                 Group {
                     VStack {
                         Text("Light")
+                            .font(.headline)
                         VStack {
                             HStack {
                                 Text("Color Scale")
-                                    .padding(.horizontal, 4)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
+                                    .padding(.leading, 8)
+#endif
+                                    .frame(minWidth: 120, alignment: .leading)
                                 Spacer()
                                 Picker("", selection: $colorConfig.lightConfig.scale) {
                                     ForEach(ColorScale.allCases) { item in
@@ -104,24 +120,28 @@ struct ColorConfigForm: View {
                             }
                             HStack {
                                 Text("Color Range")
-                                    .padding(.horizontal, 4)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
+                                    .padding(.leading, 8)
+#endif
+                                    .frame(minWidth: 120, alignment: .leading)
                                 Spacer()
                                 Picker("", selection: $lightRangeWidth.onChange({ colorConfig.lightConfig.range = $0.defaultRange })) {
                                     ForEach(ColorRangeWidth.allCases) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
-                                .gridColumnAlignment(.trailing)
                                 Picker("", selection: $colorConfig.lightConfig.range) {
                                     ForEach(lightRangeWidth.ranges) { item in
                                         Text(item.name).tag(item)
                                     }
                                 }
-                                .gridColumnAlignment(.trailing)
                             }
                             HStack {
                                 Text("Saturation")
-                                    .padding(.horizontal, 4)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
+                                    .padding(.leading, 8)
+#endif
+                                    .frame(minWidth: 120, alignment: .leading)
                                 Spacer()
                                 Picker("", selection: $colorConfig.lightConfig.saturationLevel) {
                                     ForEach(ColorAdjustmentLevel.allCases) { item in
@@ -131,7 +151,10 @@ struct ColorConfigForm: View {
                             }
                             HStack {
                                 Text("Brightness")
-                                    .padding(.horizontal, 4)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
+                                    .padding(.leading, 8)
+#endif
+                                    .frame(minWidth: 120, alignment: .leading)
                                 Spacer()
                                 Picker("", selection: $colorConfig.lightConfig.brightnessLevel) {
                                     ForEach(ColorAdjustmentLevel.allCases) { item in
@@ -141,6 +164,10 @@ struct ColorConfigForm: View {
                             }
                             HStack {
                                 Text("Skip Direction")
+#if !os(macOS) && !targetEnvironment(macCatalyst)
+                                    .padding(.leading, 8)
+#endif
+                                    .frame(minWidth: 120, alignment: .leading)
                                 Spacer()
                                 Picker("", selection: $colorConfig.lightConfig.skipDirection) {
                                     ForEach(SkipDirection.allCases) { item in
@@ -153,10 +180,14 @@ struct ColorConfigForm: View {
                     }
                     VStack {
                         Text("Dark")
+                            .font(.headline)
                         VStack {
                             HStack {
                                 Text("Color Scale")
-                                    .padding(.horizontal, 4)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
+                                    .padding(.leading, 8)
+#endif
+                                    .frame(minWidth: 120, alignment: .leading)
                                 Spacer()
                                 Picker("", selection: $colorConfig.darkConfig.scale) {
                                     ForEach(ColorScale.allCases) { item in
@@ -166,7 +197,10 @@ struct ColorConfigForm: View {
                             }
                             HStack {
                                 Text("Color Range")
-                                    .padding(.horizontal, 4)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
+                                    .padding(.leading, 8)
+#endif
+                                    .frame(minWidth: 120, alignment: .leading)
                                 Spacer()
                                 Picker("", selection: $darkRangeWidth.onChange({ colorConfig.darkConfig.range = $0.defaultRange })) {
                                     ForEach(ColorRangeWidth.allCases) { item in
@@ -181,7 +215,10 @@ struct ColorConfigForm: View {
                             }
                             HStack {
                                 Text("Saturation")
-                                    .padding(.horizontal, 4)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
+                                    .padding(.leading, 8)
+#endif
+                                    .frame(minWidth: 120, alignment: .leading)
                                 Spacer()
                                 Picker("", selection: $colorConfig.darkConfig.saturationLevel) {
                                     ForEach(ColorAdjustmentLevel.allCases) { item in
@@ -191,7 +228,10 @@ struct ColorConfigForm: View {
                             }
                             HStack {
                                 Text("Brightness")
-                                    .padding(.horizontal, 4)
+#if !os(macOS) && !targetEnvironment(macCatalyst)
+                                    .padding(.leading, 8)
+#endif
+                                    .frame(minWidth: 120, alignment: .leading)
                                 Spacer()
                                 Picker("", selection: $colorConfig.darkConfig.brightnessLevel) {
                                     ForEach(ColorAdjustmentLevel.allCases) { item in
@@ -201,6 +241,10 @@ struct ColorConfigForm: View {
                             }
                             HStack {
                                 Text("Skip Direction")
+#if !os(macOS) && !targetEnvironment(macCatalyst)
+                                    .padding(.leading, 8)
+#endif
+                                    .frame(minWidth: 120, alignment: .leading)
                                 Spacer()
                                 Picker("", selection: $colorConfig.darkConfig.skipDirection) {
                                     ForEach(SkipDirection.allCases) { item in
@@ -227,7 +271,7 @@ struct ColorConfigForm: View {
                         modelContext.insert(colorPalette)
                         try? modelContext.save()
                     }
-                    onSave()
+                    onSave?()
                 } label: {
                     Text(isEditing ? "Save Changes" : "Add Color")
                         .font(.title3)
@@ -243,6 +287,17 @@ struct ColorConfigForm: View {
             .frame(minWidth: 300)
             .padding(12)
         }
+        .confirmationDialog("Delete Color?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                DispatchQueue.main.async {
+                    dismiss()
+                    onDelete?()
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This action cannot be undone.")
+        }
     }
 }
 
@@ -250,5 +305,5 @@ struct ColorConfigForm: View {
     @Previewable @State var colorPalette: ColorPalette? = ColorPalette.makeSample()
     @Previewable @State var newColor = ColorConfig(colorModel: .rgb(.blue.muted), colorName: "")
     @Previewable @State var colorClipboard = ColorClipboard()
-    ColorConfigForm(colorPalette: $colorPalette, colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: true) {}
+    ColorConfigForm(colorPalette: $colorPalette, colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: true)
 }

@@ -9,8 +9,8 @@ import SwiftUI
 
 enum ColorRange: String, Codable, CaseIterable, Identifiable, Hashable {
     case whole
-    case waningGibbous
-    case waxingGibbous
+    case startThreeQuarters
+    case endThreeQuarters
     case firstHalf
     case centerHalf
     case lastHalf
@@ -43,8 +43,8 @@ enum ColorRange: String, Codable, CaseIterable, Identifiable, Hashable {
     var name: String {
         switch self {
         case .whole: String(localized: "Whole")
-        case .waningGibbous: String(localized: "Waning")
-        case .waxingGibbous: String(localized: "Waxing")
+        case .startThreeQuarters: String(localized: "Start")
+        case .endThreeQuarters: String(localized: "End")
         case .firstHalf: String(localized: "First")
         case .centerHalf: String(localized: "Center")
         case .lastHalf: String(localized: "Last")
@@ -58,7 +58,7 @@ enum ColorRange: String, Codable, CaseIterable, Identifiable, Hashable {
     var width: ColorRangeWidth {
         switch self {
         case .whole: .whole
-        case .waningGibbous, .waxingGibbous: .gibbous
+        case .startThreeQuarters, .endThreeQuarters: .threeQuarters
         case .firstHalf, .centerHalf, .lastHalf: .half
         case .firstQuarter, .secondQuarter, .thirdQuarter, .lastQuarter: .quarter
         }
@@ -67,13 +67,13 @@ enum ColorRange: String, Codable, CaseIterable, Identifiable, Hashable {
 
 enum ColorRangeWidth: String, Codable, CaseIterable, Identifiable, Hashable {
     case whole
-    case gibbous
+    case threeQuarters
     case half
     case quarter
     
     var id: Self { self }
     var isWhole: Bool { self == .whole }
-    var isGibbous: Bool { self == .gibbous }
+    var isThreeQuarters: Bool { self == .threeQuarters }
     var isHalf: Bool { self == .half }
     var isQuarter: Bool { self == .quarter }
     var percent: Double { value * 100 }
@@ -81,7 +81,7 @@ enum ColorRangeWidth: String, Codable, CaseIterable, Identifiable, Hashable {
     var name: String {
         switch self {
         case .whole: String(localized: "Whole")
-        case .gibbous: String(localized: "Gibbous")
+        case .threeQuarters: String(localized: "Three Quarters")
         case .half: String(localized: "Half")
         case .quarter: String(localized: "Quarter")
         }
@@ -90,7 +90,7 @@ enum ColorRangeWidth: String, Codable, CaseIterable, Identifiable, Hashable {
     var ranges: [ColorRange] {
         switch self {
         case .whole: [.whole]
-        case .gibbous: [.waningGibbous, .waxingGibbous]
+        case .threeQuarters: [.startThreeQuarters, .endThreeQuarters]
         case .half: [.firstHalf, .centerHalf, .lastHalf]
         case .quarter: [.firstQuarter, .secondQuarter, .thirdQuarter, .lastQuarter]
         }
@@ -99,7 +99,7 @@ enum ColorRangeWidth: String, Codable, CaseIterable, Identifiable, Hashable {
     var defaultRange: ColorRange {
         switch self {
         case .whole: .whole
-        case .gibbous: .waningGibbous
+        case .threeQuarters: .startThreeQuarters
         case .half: .firstHalf
         case .quarter: .firstQuarter
         }
@@ -108,7 +108,7 @@ enum ColorRangeWidth: String, Codable, CaseIterable, Identifiable, Hashable {
     var value: Double {
         switch self {
         case .whole: 1.0
-        case .gibbous: 0.75
+        case .threeQuarters: 0.75
         case .half: 0.5
         case .quarter: 0.25
         }

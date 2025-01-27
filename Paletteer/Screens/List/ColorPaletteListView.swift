@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct ColorPaletteListView: View {
-    var items: [ColorPalette]
+    @Query var items: [ColorPalette]
     @Binding var selectedPalette: ColorPalette?
     @Environment(\.modelContext) private var modelContext
     @AppStorage(key(.colorPaletteParams)) var params = ColorPaletteParams()
@@ -61,8 +61,9 @@ struct ColorPaletteListView: View {
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button(role: .destructive) {
                             withAnimation {
-                                modelContext.delete(item)
                                 selectedPalette = nil
+                                modelContext.delete(item)
+                                try? modelContext.save()
                             }
                         } label: {
                             Label("Delete", systemImage: "trash")
@@ -100,8 +101,7 @@ struct ColorPaletteListView: View {
 }
 
 #Preview {
-    @Previewable @State var items: [ColorPalette] = [.makeSample()]
     @Previewable @State var selectedPalette: ColorPalette?
-    ColorPaletteListView(items: items, selectedPalette: $selectedPalette)
+    ColorPaletteListView(selectedPalette: $selectedPalette)
         .modelContainer(for: ColorPalette.self, inMemory: true)
 }

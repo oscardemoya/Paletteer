@@ -11,7 +11,8 @@ import SwiftData
 struct HomeView: View {
     static var defaultColorConfig = ColorConfig(colorModel: .rgb(Color(hex: "#689FD4")), colorName: "")
     @Query private var items: [ColorPalette]
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @AppStorage(key(.colorScheme)) var selectedAppearance: AppColorScheme = .system
     @AppStorage(key(.useColorInClipboard)) var useColorInClipboard: Bool = true
     @State private var path = NavigationPath()
@@ -21,7 +22,7 @@ struct HomeView: View {
     @State private var isAdding = false
     @State private var newColor = defaultColorConfig
     @State private var isEditing = false
-    @State private var existingColor = defaultColorConfig
+    @State private var editingColor = defaultColorConfig
     @State private var showAlert = false
     @State private var alertTitle: String = ""
     @State private var alertMessage: String = ""
@@ -36,6 +37,9 @@ struct HomeView: View {
                 ColorSchemeSwitcher.shared.overrideDisplayMode()
             }
             .onChange(of: selectedPalette) { oldValue, newValue in
+                if newValue != nil, !path.isEmpty {
+                    path.removeLast()
+                }
                 colorConfigs = selectedPalette?.configs ?? []
             }
 #if os(macOS) || targetEnvironment(macCatalyst)
@@ -46,24 +50,24 @@ struct HomeView: View {
     }
     
     @ViewBuilder var viewContainer: some View {
-#if os(macOS) || targetEnvironment(macCatalyst)
-        NavigationSplitView {
-            VStack {
-                ColorSettingsView()
-                Spacer()
-            }
-        } content: {
-            ColorPaletteListView(items: items, selectedPalette: $selectedPalette)
-        } detail: {
-            navigationStack
-        }
-#else
-        ColorPaletteListView(items: items, selectedPalette: $selectedPalette)
-            .sheet(item: $selectedPalette) { item in
+        if horizontalSizeClass == .compact {
+            ColorPaletteListView(selectedPalette: $selectedPalette)
+                .sheet(item: $selectedPalette) { item in
+                    navigationStack
+                        .presentationDragIndicator(.visible)
+                }
+        } else {
+            NavigationSplitView {
+                VStack {
+                    ColorSettingsView()
+                    Spacer()
+                }
+            } content: {
+                ColorPaletteListView(selectedPalette: $selectedPalette)
+            } detail: {
                 navigationStack
-                    .presentationDragIndicator(.visible)
             }
-#endif
+        }
     }
     
     @ViewBuilder var navigationStack: some View {
@@ -76,7 +80,7 @@ struct HomeView: View {
                 }
             }
             .background(.primaryBackground)
-            .navigationTitle("Paletteer")
+            .navigationTitle(selectedPalette?.name ?? "Paletteer")
 #if !os(macOS) && !targetEnvironment(macCatalyst)
             .navigationBarTitleDisplayMode(.inline)
 #endif
@@ -84,12 +88,15 @@ struct HomeView: View {
                 ColorPalettePreview(colorPalette: colorPalette)
             }
             .sheet(isPresented: $isAdding) {
-                ColorConfigForm(colorPalette: $selectedPalette, colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: false) {
+                ColorConfigForm(colorPalette: $selectedPalette, colorConfig: $newColor, colorClipboard: $colorClipboard, isEditing: false, onDelete: nil) {
                     colorConfigs = selectedPalette?.configs ?? []
                 }
             }
             .sheet(isPresented: $isEditing) {
-                ColorConfigForm(colorPalette: $selectedPalette, colorConfig: $existingColor, colorClipboard: $colorClipboard, isEditing: true) {
+                ColorConfigForm(colorPalette: $selectedPalette, colorConfig: $editingColor, colorClipboard: $colorClipboard, isEditing: true) {
+                    colorConfigs.removeAll { editingColor.id == $0.id }
+                    updateColorPalette()
+                } onSave: {
                     colorConfigs = selectedPalette?.configs ?? []
                 }
             }
@@ -145,10 +152,8 @@ struct HomeView: View {
     
     @ViewBuilder var generateButton: some View {
         Button {
+            updateColorPalette()
             if let selectedPalette {
-                selectedPalette.setConfigs(colorConfigs)
-                modelContext.insert(selectedPalette)
-                try? modelContext.save()
                 path.append(selectedPalette)
             }
         } label: {
@@ -158,9 +163,15 @@ struct HomeView: View {
                 .fontDesign(.rounded)
                 .frame(maxWidth: .infinity)
         }
-        .buttonStyle(.custom(backgroundColor: .primaryActionBackground,
-                             foregroundColor: .primaryActionForeground,
-                             cornerRadius: 16))
+        .disabled(colorConfigs.isEmpty)
+        .buttonStyle(
+            .custom(
+                backgroundColor: .primaryActionBackground,
+                foregroundColor: .primaryActionForeground,
+                disabledBackgroundColor: .primaryActionBackground.opacity(0.5),
+                disabledForegroundColor: .primaryActionForeground
+            )
+        )
     }
     
     @ViewBuilder var colorPaletteView: some View {
@@ -168,37 +179,7 @@ struct HomeView: View {
             if colorConfigs.isEmpty {
                 emptyStateView
             } else {
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 8) {
-                        ForEach($colorConfigs) { $colorConfig in
-                            CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {
-                                colorConfigs.removeAll { colorConfig.id == $0.id }
-                                if let selectedPalette {
-                                    selectedPalette.setConfigs(colorConfigs)
-                                    modelContext.insert(selectedPalette)
-                                    try? modelContext.save()
-                                }
-                            } onEdit: {
-                                existingColor = colorConfig
-                                isEditing = true
-                            } onDismiss: {
-                                if let selectedPalette {
-                                    if let index = colorConfigs.firstIndex(where: { $0.id == colorConfig.id }) {
-                                        colorConfigs[index].update(with: colorConfig)
-                                    }
-                                    selectedPalette.setConfigs(colorConfigs)
-                                    modelContext.insert(selectedPalette)
-                                    try? modelContext.save()
-                                }
-                            }
-                            .buttonStyle(.custom(backgroundColor: .primaryInputBackground,
-                                                 foregroundColor: .primaryActionForeground))
-                        }
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                }
-                Spacer(minLength: 0)
+                colorConfigList
             }
             Divider()
             HStack(spacing: 12) {
@@ -207,6 +188,36 @@ struct HomeView: View {
             }
             .padding()
         }
+    }
+    
+    @ViewBuilder var colorConfigList: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 8) {
+                ForEach($colorConfigs) { $colorConfig in
+                    CustomColorPicker(colorConfig: $colorConfig, colorClipboard: $colorClipboard, isEditing: false) {
+                        colorConfigs.removeAll { colorConfig.id == $0.id }
+                        updateColorPalette()
+                    } onEdit: {
+                        editingColor = colorConfig
+                        isEditing = true
+                    } onDismiss: {
+                        if let index = colorConfigs.firstIndex(where: { $0.id == colorConfig.id }) {
+                            colorConfigs[index].update(with: colorConfig)
+                        }
+                        updateColorPalette()
+                    }
+                    .buttonStyle(
+                        .custom(
+                            backgroundColor: .primaryInputBackground,
+                            foregroundColor: .primaryActionForeground
+                        )
+                    )
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     @ViewBuilder var emptySelectionView: some View {
@@ -226,17 +237,20 @@ struct HomeView: View {
             Text("Please add colors using the plus button")
         } actions: {
             Button("Add Sample Palette") {
-                if let selectedPalette {
-                    colorConfigs = .sample
-                    selectedPalette.setConfigs(colorConfigs)
-                    modelContext.insert(selectedPalette)
-                    try? modelContext.save()
-                }
+                colorConfigs = .sample
+                updateColorPalette()
             }
             .buttonBorderShape(.capsule)
             .buttonStyle(.borderedProminent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    func updateColorPalette() {
+        guard let selectedPalette else { return }
+        selectedPalette.setConfigs(colorConfigs)
+        modelContext.insert(selectedPalette)
+        try? modelContext.save()
     }
     
     func copyColorPaletteConfig() {
@@ -272,11 +286,7 @@ struct HomeView: View {
                 )
             }.first
         }
-        if let selectedPalette {
-            selectedPalette.setConfigs(colorConfigs)
-            modelContext.insert(selectedPalette)
-            try? modelContext.save()
-        }
+        updateColorPalette()
     }
 }
 

@@ -15,6 +15,7 @@ struct ColorPalettePreview: View {
     var fileURL = FileManager.default.fileURL(fileName: Self.fileName)
     let fileManagerDelegate = CopyFileManagerDelegate()
     
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
@@ -101,6 +102,9 @@ struct ColorPalettePreview: View {
             }
             .sheet(isPresented: $isEditing, onDismiss: generateColorShades) {
                 ColorConfigForm(colorPalette: $colorPalette, colorConfig: $existingColor, colorClipboard: $colorClipboard, isEditing: true) {
+                    colorConfigs.removeAll { existingColor.id == $0.id }
+                    updateColorPalette()
+                } onSave: {
                     colorConfigs = colorPalette?.configs ?? []
                 }
             }
@@ -154,6 +158,7 @@ struct ColorPalettePreview: View {
             }
             .onMove { from, to in
                 colorConfigs.move(fromOffsets: from, toOffset: to)
+                updateColorPalette()
             }
             .background(Color.clear)
             .listRowInsets(EdgeInsets())
@@ -192,6 +197,13 @@ struct ColorPalettePreview: View {
         return response == .OK ? savePanel.url : nil
     }
 #endif
+    
+    private func updateColorPalette() {
+        guard let colorPalette else { return }
+        colorPalette.setConfigs(colorConfigs)
+        modelContext.insert(colorPalette)
+        try? modelContext.save()
+    }
     
     private func generateColorShades() {
         if let existingFileURL = fileURL, FileManager.default.fileExists(atPath: existingFileURL.path) {
